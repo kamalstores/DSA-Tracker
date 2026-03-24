@@ -1,0 +1,23 @@
+{
+  "name": "primary",
+  "version": "1.0.0",
+  "description": "A premium, interactive web app to track your progress through **Striver's A2Z DSA Course** — 454 problems across 16 steps.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamalstores/DSA-Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kamalstores/DSA-Tracker/issues"
+  },
+  "homepage": "https://github.com/kamalstores/DSA-Tracker#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}
