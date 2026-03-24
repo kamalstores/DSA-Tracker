@@ -1,2 +1,8 @@
 # OS files
 .DS_Store
+
+# Dependencies
+node_modules/
+
+# Lock files
+package-lock.json
