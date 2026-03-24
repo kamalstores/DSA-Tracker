@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="darkreader-lock">
+    <title>A2Z SHEET</title>
+    <meta name="description" content="Track your progress through Striver's A2Z DSA Course roadmap with celebrations, dark mode, and cloud sync.">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="app-header" id="appHeader">
+        <div class="header-inner">
+            <div class="header-left">
+                <div class="app-logo">A2Z SHEET</div>
+                <div class="global-progress" id="globalProgress">
+                    <span class="count" id="globalCount">0</span> / <span id="globalTotal">0</span> Solved
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="https://www.chai4.me/kamalstores" target="_blank" rel="noopener noreferrer" class="auth-btn" style="text-decoration:none; background: linear-gradient(135deg, #f59e0b, #ef4444); border-color: transparent; color: #fff;" title="Support Me">
+                    ☕ <span>Support Me</span>
+                </a>
+                <button class="auth-btn" id="authBtn" onclick="openAuthModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Backup</span>
+                </button>
+                <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+                    <div class="theme-toggle-knob" id="themeKnob">🌙</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero-section">
+        <div class="hero-title">
+            <h1>MASTER DSA</h1>
+            <p>Track your progress through Striver's A2Z DSA Course</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Total Problems</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="statCompleted">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-value" id="statProgress">0%</div>
+                <div class="stat-label">Progress</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="statStreak">0</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search -->
+    <div class="search-wrapper">
+        <div class="search-container">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search topics or problems..." autocomplete="off">
+            <div class="search-shortcut">
+                <kbd>⌘</kbd><kbd>K</kbd>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All</button>
+        <button class="filter-btn" data-filter="done" onclick="setFilter('done')">✅ Done</button>
+        <button class="filter-btn" data-filter="revision" onclick="setFilter('revision')">⭐ Revision</button>
+        <button class="filter-btn" data-filter="not-done" onclick="setFilter('not-done')">⬜ Not Done</button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="loading-skeleton"></div>
+        <div class="loading-skeleton"></div>
+        <div class="loading-skeleton"></div>
+    </main>
+
+    <!-- Celebration container -->
+    <div class="celebration-container" id="celebrationContainer"></div>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal" style="position: relative;">
+            <button class="modal-close" onclick="closeAuthModal()">✕</button>
+            <h2>📦 Backup & Restore</h2>
+            <p>Export your progress as a JSON file for backup, or import a previous backup to restore.</p>
+            <div class="modal-actions">
+                <div class="export-import-row">
+                    <button onclick="exportProgress()">📥 Export JSON</button>
+                    <button onclick="importProgress()">📤 Import JSON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════
+        // CONFIGURATION
+        // ═══════════════════════════════════════════════
+        const STORAGE_KEY = 'dsaRoadmapProgress';
+        const STREAK_KEY = 'dsaStreak';
+        const THEME_KEY = 'dsaTheme';
+        const REVISION_KEY = 'dsaRevision';
+        let currentFilter = 'all';
+
+        const platformLogos = {
+            'BLOG': `<img src="./assets/logo/post.svg" alt="Blog">`,
+            'YT':   `<img src="./assets/logo/yt.svg" alt="YouTube">`,
+            'TUF':  `<img src="./assets/logo/tuf.svg" alt="TUF+">`,
+            'GFG':  `<img src="./assets/logo/gfg.svg" alt="GFG">`,
+            'LC':   `<img src="./assets/logo/lc.svg" alt="LeetCode">`,
+        };
+
+        let roadmapData = null;
+        let lastCelebration = -1;
+
+        // ═══════════════════════════════════════════════
+        // THEME
+        // ═══════════════════════════════════════════════
+        function initTheme() {
+            const saved = localStorage.getItem(THEME_KEY);
+            const theme = saved || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem(THEME_KEY, next);
+            updateThemeIcon(next);
+        }
+
+        function updateThemeIcon(theme) {
+            const knob = document.getElementById('themeKnob');
+            knob.textContent = theme === 'dark' ? '🌙' : '☀️';
+        }
+
+        // ═══════════════════════════════════════════════
+        // STORAGE
+        // ═══════════════════════════════════════════════
+        function getStorageKey() {
+            return STORAGE_KEY;
+        }
+
+        function loadRevision() {
+            try {
+                const d = localStorage.getItem(REVISION_KEY);
+                return d ? JSON.parse(d) : {};
+            } catch { return {}; }
+        }
+
+        function saveRevision(revision) {
+            try {
+                localStorage.setItem(REVISION_KEY, JSON.stringify(revision));
+            } catch (e) { console.error('Revision save failed', e); }
+        }
+
+        function loadProgress() {
+            try {
+                const d = localStorage.getItem(getStorageKey());
+                return d ? JSON.parse(d) : {};
+            } catch { return {}; }
+        }
+
+        function saveProgress(progress) {
+            try {
+                localStorage.setItem(getStorageKey(), JSON.stringify(progress));
+            } catch (e) { console.error('Save failed', e); }
+        }
+
+        // ═══════════════════════════════════════════════
+        // STREAK
+        // ═══════════════════════════════════════════════
+        function getStreakKey() {
+            return STREAK_KEY;
+        }
+
+        function loadStreak() {
+            try {
+                const d = localStorage.getItem(getStreakKey());
+                if (!d) return { count: 0, lastDate: null };
+                return JSON.parse(d);
+            } catch { return { count: 0, lastDate: null }; }
+        }
+
+        function updateStreak() {
+            const streak = loadStreak();
+            const today = new Date().toISOString().split('T')[0];
+            if (streak.lastDate === today) return streak.count;
+
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+            if (streak.lastDate === yesterday) {
+                streak.count++;
+            } else if (streak.lastDate !== today) {
+                streak.count = 1;
+            }
+            streak.lastDate = today;
+            localStorage.setItem(getStreakKey(), JSON.stringify(streak));
+            return streak.count;
+        }
+
+        // ═══════════════════════════════════════════════
+        // CELEBRATION SYSTEM
+        // ═══════════════════════════════════════════════
+        const CELEBRATION_COLORS = ['#10b981','#3b82f6','#f59e0b','#ef4444','#8b5cf6','#ec4899','#06b6d4','#f97316'];
+        const EMOJIS = ['🎉','🔥','⭐','💪','🚀','✨','🏅','💯','👏','🎊'];
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function pickCelebration() {
+            let pick;
+            do { pick = getRandomInt(0, 7); } while (pick === lastCelebration);
+            lastCelebration = pick;
+            return pick;
+        }
+
+        function triggerQuestionCelebration(checkboxEl) {
+            const type = pickCelebration();
+            const rect = checkboxEl.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+
+            switch(type) {
+                case 0: celebrationConfetti(cx, cy); break;
+                case 1: celebrationEmojiRain(); break;
+                case 2: celebrationPulseRing(cx, cy); break;
+                case 3: celebrationStarBurst(cx, cy); break;
+                case 4: celebrationCheckmarkZoom(); break;
+                case 5: celebrationSparkles(cx, cy); break;
+                case 6: celebrationTrophy(); break;
+                case 7: celebrationWave(cx, cy); break;
+            }
+        }
+
+        function triggerSubStepCelebration(title) {
+            celebrationConfettiShower();
+            showToast('🎉 Sub-topic Complete!', `You finished "${title}"! Keep going!`);
+        }
+
+        function triggerStepCelebration(title) {
+            // Screen flash
+            const flash = document.createElement('div');
+            flash.className = 'screen-flash';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 700);
+
+            // Heavy confetti
+            celebrationConfettiShower(80);
+
+            // Level-up banner
+            const banner = document.createElement('div');
+            banner.className = 'level-up-banner';
+            banner.innerHTML = `<div class="banner-content"><h2>🏆 STEP COMPLETE! 🏆</h2><p>${title}</p></div>`;
+            document.body.appendChild(banner);
+            setTimeout(() => banner.remove(), 3200);
+        }
+
+        const container = () => document.getElementById('celebrationContainer');
+
+        function celebrationConfetti(x, y) {
+            for (let i = 0; i < 30; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti';
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+                el.style.background = CELEBRATION_COLORS[i % CELEBRATION_COLORS.length];
+                el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                el.style.width = getRandomInt(6, 12) + 'px';
+                el.style.height = getRandomInt(6, 12) + 'px';
+                const angle = (Math.PI * 2 / 30) * i;
+                const dist = getRandomInt(60, 180);
+                el.style.animation = `confetti-fall ${getRandomInt(800, 1500)}ms ease-out forwards`;
+                el.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+                el.style.setProperty('--ty', Math.sin(angle) * dist - 100 + 'px');
+                el.animate([
+                    { transform: 'translate(0, 0) rotate(0deg) scale(1)', opacity: 1 },
+                    { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist - 100}px) rotate(${getRandomInt(360,720)}deg) scale(0.3)`, opacity: 0 }
+                ], { duration: getRandomInt(800, 1500), easing: 'ease-out', fill: 'forwards' });
+                container().appendChild(el);
+                setTimeout(() => el.remove(), 1600);
+            }
+        }
+
+        function celebrationEmojiRain() {
+            for (let i = 0; i < 15; i++) {
+                const el = document.createElement('div');
+                el.className = 'emoji-particle';
+                el.textContent = EMOJIS[getRandomInt(0, EMOJIS.length - 1)];
+                el.style.left = getRandomInt(10, 90) + 'vw';
+                el.style.top = '-40px';
+                el.style.animationDelay = (i * 80) + 'ms';
+                el.style.animationDuration = getRandomInt(1200, 2200) + 'ms';
+                container().appendChild(el);
+                setTimeout(() => el.remove(), 2500);
+            }
+        }
+
+        function celebrationPulseRing(x, y) {
+            for (let i = 0; i < 3; i++) {
+                const el = document.createElement('div');
+                el.className = 'pulse-ring';
+                el.style.left = (x - 15) + 'px';
+                el.style.top = (y - 15) + 'px';
+                el.style.animationDelay = (i * 200) + 'ms';
+                el.style.borderColor = CELEBRATION_COLORS[i];
+                container().appendChild(el);
+                setTimeout(() => el.remove(), 1200);
+            }
+        }
+
+        function celebrationStarBurst(x, y) {
+            const stars = ['⭐','🌟','✨','💫','⚡'];
+            for (let i = 0; i < 12; i++) {
+                const el = document.createElement('div');
+                el.className = 'star-particle';
+                el.textContent = stars[i % stars.length];
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+                const angle = (Math.PI * 2 / 12) * i;
+                const dist = getRandomInt(80, 160);
+                el.animate([
+                    { transform: 'translate(0, 0) scale(0.3)', opacity: 1 },
+                    { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(1.2)`, opacity: 0 }
+                ], { duration: 900, easing: 'ease-out', fill: 'forwards' });
+                container().appendChild(el);
+                setTimeout(() => el.remove(), 1000);
+            }
+        }
+
+        function celebrationCheckmarkZoom() {
+            const el = document.createElement('div');
+            el.className = 'checkmark-zoom';
+            el.textContent = '✅';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 900);
+        }
+
+        function celebrationSparkles(x, y) {
+            for (let i = 0; i < 16; i++) {
+                const el = document.createElement('div');
+                el.className = 'sparkle';
+                el.style.left = (x + getRandomInt(-40, 40)) + 'px';
+                el.style.top = y + 'px';
+                el.style.background = CELEBRATION_COLORS[i % CELEBRATION_COLORS.length];
+                el.style.animationDelay = (i * 60) + 'ms';
+                el.style.width = getRandomInt(4, 8) + 'px';
+                el.style.height = el.style.width;
+                container().appendChild(el);
+                setTimeout(() => el.remove(), 1500);
+            }
+        }
+
+        function celebrationTrophy() {
+            const el = document.createElement('div');
+            el.className = 'trophy-flash';
+            el.textContent = '🏆';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1300);
+        }
+
+        function celebrationWave(x, y) {
+            for (let i = 0; i < 3; i++) {
+                const el = document.createElement('div');
+                el.className = 'wave-ripple';
+                el.style.left = (x - 10) + 'px';
+                el.style.top = (y - 10) + 'px';
+                el.style.width = '20px';
+                el.style.height = '20px';
+                el.style.animationDelay = (i * 150) + 'ms';
+                container().appendChild(el);
+                setTimeout(() => el.remove(), 1200);
+            }
+        }
+
+        function celebrationConfettiShower(count = 50) {
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti';
+                el.style.left = getRandomInt(0, window.innerWidth) + 'px';
+                el.style.top = '-20px';
+                el.style.background = CELEBRATION_COLORS[i % CELEBRATION_COLORS.length];
+                el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                el.style.width = getRandomInt(6, 14) + 'px';
+                el.style.height = getRandomInt(6, 14) + 'px';
+                el.style.animationDelay = (i * 30) + 'ms';
+                el.style.animationDuration = getRandomInt(1000, 2500) + 'ms';
+                container().appendChild(el);
+                setTimeout(() => el.remove(), 3000);
+            }
+        }
+
+        function showToast(title, message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<h3>${title}</h3><p>${message}</p>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3200);
+        }
+
+        // ═══════════════════════════════════════════════
+        // ROADMAP GENERATION
+        // ═══════════════════════════════════════════════
+        function generateRoadmap(data, progress) {
+            const main = document.getElementById('mainContent');
+            const revision = loadRevision();
+            let totalProblems = 0;
+            let totalCompleted = 0;
+            let html = '';
+
+            data.forEach(step => {
+                let stepTotal = 0, stepDone = 0;
+                let subHtml = '';
+
+                if (step.sub_steps) {
+                    step.sub_steps.forEach(sub => {
+                        const subTotal = sub.topics.length;
+                        const subDone = sub.topics.filter(t => progress[t.id]).length;
+                        stepTotal += subTotal;
+                        stepDone += subDone;
+
+                        const subPct = subTotal > 0 ? (subDone / subTotal * 100) : 0;
+                        const subComplete = subTotal > 0 && subDone === subTotal;
+
+                        subHtml += `
+                        <button type="button" class="sub-collapsible ${subComplete ? 'completed' : ''}"
+                            style="--progress-width: ${subPct}%"
+                            data-step="${step.step_no}" data-substep="${sub.sub_step_no}"
+                            data-title="${sub.sub_step_title.replace(/\n/g, ' ').replace(/"/g, '&quot;')}">
+                            <span class="collapsible-title">${sub.sub_step_no}. ${sub.sub_step_title.replace(/\n/g, ' ')}</span>
+                            <span class="progress-counter">${subDone}/${subTotal}</span>
+                            <span class="collapse-icon">▼</span>
+                        </button>
+                        <div class="sub-content">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Topic</th>
+                                            <th title="Blog">BLOG</th>
+                                            <th title="YouTube">YT</th>
+                                            <th title="LeetCode">LC</th>
+                                            <th title="GeeksForGeeks">GFG</th>
+                                            <th title="TakeUForward+">TUF</th>
+                                            <th>Done</th>
+                                            <th>Rev</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${sub.topics.map(topic => {
+                                            const done = progress[topic.id] || false;
+                                            const starred = revision[topic.id] || false;
+                                            const diffClass = ['difficulty-easy','difficulty-medium','difficulty-hard'][topic.difficulty] || '';
+                                            return `
+                                            <tr class="${diffClass} ${done ? 'completed' : ''} ${starred ? 'starred' : ''}" data-topic-id="${topic.id}" data-title="${topic.question_title}">
+                                                <td class="topic-cell">
+                                                    <div class="topic-title">${topic.question_title}</div>
+                                                </td>
+                                                ${linkCell(topic.post_link, 'BLOG')}
+                                                ${linkCell(topic.yt_link, 'YT')}
+                                                ${linkCell(topic.lc_link, 'LC')}
+                                                ${linkCell(topic.gfg_link, 'GFG')}
+                                                ${linkCell(topic.plus_link, 'TUF')}
+                                                <td class="status-cell">
+                                                    <input type="checkbox" class="status-checkbox" data-id="${topic.id}" ${done ? 'checked' : ''}>
+                                                </td>
+                                                <td class="revision-cell" data-id="${topic.id}">
+                                                    <span class="revision-star ${starred ? 'active' : ''}" title="Mark for revision">★</span>
+                                                </td>
+                                            </tr>`;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>`;
+                    });
+                }
+
+                totalProblems += stepTotal;
+                totalCompleted += stepDone;
+
+                const stepPct = stepTotal > 0 ? (stepDone / stepTotal * 100) : 0;
+                const stepComplete = stepTotal > 0 && stepDone === stepTotal;
+
+                html += `
+                <div class="step-section" data-step="${step.step_no}">
+                    <button type="button" class="collapsible ${stepComplete ? 'completed' : ''}"
+                        style="--progress-width: ${stepPct}%"
+                        data-step="${step.step_no}"
+                        data-title="${step.step_title}">
+                        <span class="collapsible-title">Step ${step.step_no}: ${step.step_title}</span>
+                        <span class="progress-counter">${stepDone}/${stepTotal}</span>
+                        <span class="collapse-icon">▼</span>
+                    </button>
+                    <div class="content">${subHtml}</div>
+                </div>`;
+            });
+
+            main.innerHTML = html;
+            updateGlobalStats(totalCompleted, totalProblems);
+        }
+
+        function linkCell(url, label) {
+            if (url) {
+                const logo = platformLogos[label] || label;
+                return `<td class="link-cell"><a href="${url}" target="_blank" rel="noopener noreferrer" title="${label}">${logo}</a></td>`;
+            }
+            return `<td class="na-cell">—</td>`;
+        }
+
+        // ═══════════════════════════════════════════════
+        // STATS
+        // ═══════════════════════════════════════════════
+        function updateGlobalStats(completed, total) {
+            document.getElementById('globalCount').textContent = completed;
+            document.getElementById('globalTotal').textContent = total;
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statCompleted').textContent = completed;
+            document.getElementById('statProgress').textContent = total > 0 ? Math.round(completed / total * 100) + '%' : '0%';
+            document.getElementById('statStreak').textContent = loadStreak().count;
+        }
+
+        function recalcGlobalStats() {
+            const progress = loadProgress();
+            const allCheckboxes = document.querySelectorAll('.status-checkbox');
+            const total = allCheckboxes.length;
+            const completed = Array.from(allCheckboxes).filter(cb => progress[cb.dataset.id]).length;
+            updateGlobalStats(completed, total);
+        }
+
+        // ═══════════════════════════════════════════════
+        // COUNTERS & COMPLETION DETECTION
+        // ═══════════════════════════════════════════════
+        function updateCounters(checkbox) {
+            const progress = loadProgress();
+
+            // Sub-step
+            const subContent = checkbox.closest('.sub-content');
+            let subStepJustCompleted = false;
+            let subTitle = '';
+            if (subContent) {
+                const subBtn = subContent.previousElementSibling;
+                const boxes = Array.from(subContent.querySelectorAll('.status-checkbox'));
+                const total = boxes.length;
+                const done = boxes.filter(cb => progress[cb.dataset.id]).length;
+                subBtn.querySelector('.progress-counter').textContent = `${done}/${total}`;
+                const pct = total > 0 ? (done / total * 100) : 0;
+                subBtn.style.setProperty('--progress-width', pct + '%');
+                const wasComplete = subBtn.classList.contains('completed');
+                const isComplete = total > 0 && done === total;
+                subBtn.classList.toggle('completed', isComplete);
+                if (isComplete && !wasComplete) {
+                    subStepJustCompleted = true;
+                    subTitle = subBtn.dataset.title || '';
+                }
+            }
+
+            // Step
+            const content = checkbox.closest('.content');
+            let stepJustCompleted = false;
+            let stepTitle = '';
+            if (content) {
+                const stepBtn = content.previousElementSibling;
+                const boxes = Array.from(content.querySelectorAll('.status-checkbox'));
+                const total = boxes.length;
+                const done = boxes.filter(cb => progress[cb.dataset.id]).length;
+                stepBtn.querySelector('.progress-counter').textContent = `${done}/${total}`;
+                const pct = total > 0 ? (done / total * 100) : 0;
+                stepBtn.style.setProperty('--progress-width', pct + '%');
+                const wasComplete = stepBtn.classList.contains('completed');
+                const isComplete = total > 0 && done === total;
+                stepBtn.classList.toggle('completed', isComplete);
+                if (isComplete && !wasComplete) {
+                    stepJustCompleted = true;
+                    stepTitle = stepBtn.dataset.title || '';
+                }
+            }
+
+            recalcGlobalStats();
+
+            return { subStepJustCompleted, subTitle, stepJustCompleted, stepTitle };
+        }
+
+        // ═══════════════════════════════════════════════
+        // EVENT LISTENERS
+        // ═══════════════════════════════════════════════
+        function addEventListeners() {
+            const main = document.getElementById('mainContent');
+
+            main.addEventListener('click', function(e) {
+                // Collapsible toggle
+                const collapsible = e.target.closest('.collapsible, .sub-collapsible');
+                if (collapsible && !e.target.closest('.status-cell') && !e.target.closest('.revision-cell')) {
+                    collapsible.classList.toggle('active');
+                    const content = collapsible.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        // Expand parents too
+                        const parentContent = content.closest('.content');
+                        if (parentContent && parentContent.style.maxHeight) {
+                            parentContent.style.maxHeight = (parentContent.scrollHeight + content.scrollHeight) + 'px';
+                        }
+                    }
+                    return;
+                }
+
+                // Checkbox toggle
+                const statusCell = e.target.closest('.status-cell');
+                if (statusCell) {
+                    const cb = statusCell.querySelector('.status-checkbox');
+                    if (!cb) return;
+                    cb.checked = !cb.checked;
+                    const id = cb.dataset.id;
+                    const progress = loadProgress();
+                    progress[id] = cb.checked;
+                    saveProgress(progress);
+                    cb.closest('tr').classList.toggle('completed', cb.checked);
+
+                    const result = updateCounters(cb);
+
+                    if (cb.checked) {
+                        updateStreak();
+                        document.getElementById('statStreak').textContent = loadStreak().count;
+
+                        // Trigger celebrations in priority order
+                        if (result.stepJustCompleted) {
+                            triggerStepCelebration(result.stepTitle);
+                        } else if (result.subStepJustCompleted) {
+                            triggerSubStepCelebration(result.subTitle);
+                        } else {
+                            triggerQuestionCelebration(cb);
+                        }
+                    }
+                }
+
+                // Revision star toggle
+                const revCell = e.target.closest('.revision-cell');
+                if (revCell) {
+                    const id = revCell.dataset.id;
+                    const star = revCell.querySelector('.revision-star');
+                    const revision = loadRevision();
+                    revision[id] = !revision[id];
+                    if (!revision[id]) delete revision[id];
+                    saveRevision(revision);
+                    star.classList.toggle('active', !!revision[id]);
+                    revCell.closest('tr').classList.toggle('starred', !!revision[id]);
+                    applyFilter();
+                }
+            });
+
+            // Prevent link clicks from toggling collapsibles
+            main.addEventListener('click', function(e) {
+                if (e.target.closest('.link-cell a')) {
+                    e.stopPropagation();
+                }
+            }, true);
+        }
+
+        // ═══════════════════════════════════════════════
+        // SEARCH
+        // ═══════════════════════════════════════════════
+        function initSearch() {
+            const input = document.getElementById('searchInput');
+            let debounce;
+
+            input.addEventListener('input', function() {
+                clearTimeout(debounce);
+                debounce = setTimeout(() => performSearch(this.value.trim()), 200);
+            });
+
+            // Cmd+K shortcut
+            document.addEventListener('keydown', function(e) {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                    e.preventDefault();
+                    input.focus();
+                    input.select();
+                }
+                if (e.key === 'Escape') {
+                    input.blur();
+                    input.value = '';
+                    performSearch('');
+                }
+            });
+        }
+
+        function performSearch(query) {
+            const main = document.getElementById('mainContent');
+            const steps = main.querySelectorAll('.step-section');
+
+            if (!query) {
+                // Reset all visibility
+                steps.forEach(step => {
+                    step.style.display = '';
+                    step.querySelectorAll('tr').forEach(r => r.style.display = '');
+                    step.querySelectorAll('tr').forEach(r => r.classList.remove('search-match'));
+                    step.querySelectorAll('.sub-collapsible').forEach(s => s.style.display = '');
+                });
+                return;
+            }
+
+            const q = query.toLowerCase();
+            steps.forEach(step => {
+                let stepHasMatch = false;
+                const stepBtn = step.querySelector('.collapsible');
+                const subs = step.querySelectorAll('.sub-collapsible');
+
+                subs.forEach(sub => {
+                    const subContent = sub.nextElementSibling;
+                    const rows = subContent.querySelectorAll('tr[data-topic-id]');
+                    let subHasMatch = false;
+
+                    rows.forEach(row => {
+                        const title = (row.dataset.title || '').toLowerCase();
+                        if (title.includes(q)) {
+                            row.style.display = '';
+                            row.classList.add('search-match');
+                            subHasMatch = true;
+                        } else {
+                            row.style.display = 'none';
+                            row.classList.remove('search-match');
+                        }
+                    });
+
+                    if (subHasMatch) {
+                        sub.style.display = '';
+                        stepHasMatch = true;
+                        // Auto-expand
+                        if (!sub.classList.contains('active')) {
+                            sub.classList.add('active');
+                            subContent.style.maxHeight = subContent.scrollHeight + 'px';
+                        }
+                    } else {
+                        sub.style.display = 'none';
+                        subContent.style.maxHeight = null;
+                    }
+                });
+
+                if (stepHasMatch) {
+                    step.style.display = '';
+                    const content = stepBtn.nextElementSibling;
+                    if (!stepBtn.classList.contains('active')) {
+                        stepBtn.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                    // Recalculate parent heights
+                    setTimeout(() => {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }, 50);
+                } else {
+                    step.style.display = 'none';
+                }
+            });
+        }
+
+        // ═══════════════════════════════════════════════
+        // FILTER
+        // ═══════════════════════════════════════════════
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            applyFilter();
+        }
+
+        function applyFilter() {
+            const progress = loadProgress();
+            const revision = loadRevision();
+            const main = document.getElementById('mainContent');
+            const rows = main.querySelectorAll('tr[data-topic-id]');
+
+            rows.forEach(row => {
+                const id = row.dataset.topicId;
+                const isDone = !!progress[id];
+                const isRevision = !!revision[id];
+                let show = true;
+
+                switch (currentFilter) {
+                    case 'done': show = isDone; break;
+                    case 'revision': show = isRevision; break;
+                    case 'not-done': show = !isDone; break;
+                    default: show = true;
+                }
+
+                row.style.display = show ? '' : 'none';
+            });
+
+            // Hide empty sub-steps and steps
+            main.querySelectorAll('.sub-collapsible').forEach(sub => {
+                const subContent = sub.nextElementSibling;
+                const visibleRows = subContent.querySelectorAll('tr[data-topic-id]:not([style*="display: none"])');
+                sub.style.display = visibleRows.length > 0 ? '' : 'none';
+                if (visibleRows.length === 0) subContent.style.maxHeight = null;
+            });
+
+            main.querySelectorAll('.step-section').forEach(step => {
+                const visibleSubs = step.querySelectorAll('.sub-collapsible:not([style*="display: none"])');
+                step.style.display = visibleSubs.length > 0 ? '' : 'none';
+            });
+        }
+
+        // ═══════════════════════════════════════════════
+        // MODAL
+        // ═══════════════════════════════════════════════
+        function openAuthModal() {
+            document.getElementById('authModal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+
+        // ═══════════════════════════════════════════════
+        // EXPORT / IMPORT
+        // ═══════════════════════════════════════════════
+        function exportProgress() {
+            const progress = loadProgress();
+            const streak = loadStreak();
+            const revision = loadRevision();
+            const data = { progress, streak, revision, exportedAt: new Date().toISOString() };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `dsa-progress-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showToast('📥 Exported', 'Progress saved as JSON file.');
+            closeAuthModal();
+        }
+
+        function importProgress() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    try {
+                        const data = JSON.parse(ev.target.result);
+                        if (data.progress) {
+                            saveProgress(data.progress);
+                            if (data.streak) {
+                                localStorage.setItem(getStreakKey(), JSON.stringify(data.streak));
+                            }
+                            if (data.revision) {
+                                saveRevision(data.revision);
+                            }
+                            generateRoadmap(roadmapData, data.progress);
+                            addEventListeners();
+                            applyFilter();
+                            showToast('📤 Imported', 'Progress restored successfully!');
+                        } else {
+                            showToast('❌ Error', 'Invalid format. Expected { progress: {...} }');
+                        }
+                    } catch {
+                        showToast('❌ Error', 'Failed to parse JSON file.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+            closeAuthModal();
+        }
+
+        // ═══════════════════════════════════════════════
+        // INIT
+        // ═══════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initSearch();
+
+            fetch('a2z_flawless.json')
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to load a2z_flawless.json');
+                    return res.json();
+                })
+                .then(data => {
+                    roadmapData = data;
+                    const progress = loadProgress();
+                    generateRoadmap(data, progress);
+                    addEventListeners();
+                    // Update streak display
+                    document.getElementById('statStreak').textContent = loadStreak().count;
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('mainContent').innerHTML = `
+                        <div class="no-results">
+                            <span>😕</span>
+                            <p>Failed to load roadmap data. Make sure <strong>a2z_flawless.json</strong> is in the same directory.</p>
+                            <p style="font-size:0.85rem; margin-top:0.5rem">${err.message}</p>
+                        </div>`;
+                });
+        });
+
+        // Close modal on outside click
+        document.getElementById('authModal').addEventListener('click', function(e) {
+            if (e.target === this) closeAuthModal();
+        });
+    </script>
+</body>
+
+</html>
