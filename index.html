@@ -9,11 +9,12 @@
     <meta name="description" content="Track your progress through Striver's A2Z DSA Course roadmap with celebrations, dark mode, and cloud sync.">
     <link rel="stylesheet" href="styles.css">
     
-    <!-- Vercel Web Analytics -->
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
+    <!-- Firebase Config (gitignored — won't be committed) -->
+    <script src="firebase-config.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 </head>
 
@@ -28,13 +29,20 @@
                 </div>
             </div>
             <div class="header-right">
-                <a href="https://www.chai4.me/kamalstores" target="_blank" rel="noopener noreferrer" class="auth-btn" style="text-decoration:none; background: linear-gradient(135deg, #f59e0b, #ef4444); border-color: transparent; color: #fff;" title="Support Me">
-                    ☕ <span>Support Me</span>
+                <!-- Support the Creator button -->
+                <a href="https://www.chai4.me/kamalsharma" target="_blank" rel="noopener noreferrer" class="auth-btn" style="text-decoration:none; background: linear-gradient(135deg, #f59e0b, #ef4444); border-color: transparent; color: #fff;" title="Support the Creator">
+                    ☕ <span>Support the Creator</span>
                 </a>
-                <button class="auth-btn" id="authBtn" onclick="openAuthModal()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    <span>Backup</span>
+                <button class="auth-btn" id="googleAuthBtn" onclick="handleGoogleAuth()" title="Sign in with Google">
+                    <svg viewBox="0 0 24 24" width="16" height="16"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    <span id="googleAuthLabel">Sign In</span>
                 </button>
+                <!-- GitHub link (commented out)
+                <a href="https://github.com/kamalstores/DSA-Tracker-main" target="_blank" rel="noopener noreferrer" class="auth-btn" title="GitHub">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span>GitHub</span>
+                </a>
+                -->
                 <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
                     <div class="theme-toggle-knob" id="themeKnob">🌙</div>
                 </div>
@@ -110,9 +118,12 @@
             <h2>📦 Backup & Restore</h2>
             <p>Export your progress as a JSON file for backup, or import a previous backup to restore.</p>
             <div class="modal-actions">
+                <button class="google-signin-btn" id="modalGoogleBtn" onclick="handleGoogleAuth()">
+                    <svg viewBox="0 0 24 24" width="20" height="20"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    <span id="modalGoogleLabel">Sign in with Google to Sync</span>
+                </button>
+                <div class="modal-divider">or use local backup</div>
                 <div class="export-import-row">
-                    <button onclick="exportProgress()">📥 Export JSON</button>
-                    <button onclick="importProgress()">📤 Import JSON</button>
                 </div>
             </div>
         </div>
@@ -134,10 +145,81 @@
             'TUF':  `<img src="./assets/logo/tuf.svg" alt="TUF+">`,
             'GFG':  `<img src="./assets/logo/gfg.svg" alt="GFG">`,
             'LC':   `<img src="./assets/logo/lc.svg" alt="LeetCode">`,
+            'CN':   `<img src="./assets/logo/cn.svg" alt="Coding Ninjas">`,
         };
 
         let roadmapData = null;
         let lastCelebration = -1;
+
+        // ═══════════════════════════════════════════════
+        // FIREBASE CONFIG
+        // ═══════════════════════════════════════════════
+        // firebaseConfig is loaded from firebase-config.js (gitignored)
+
+        let firebaseApp = null;
+        let firebaseAuth = null;
+        let firebaseDb = null;
+        let currentUser = null;
+
+        try {
+            if (typeof firebaseConfig !== 'undefined' && firebaseConfig.apiKey !== 'YOUR_API_KEY') {
+                firebaseApp = firebase.initializeApp(firebaseConfig);
+                firebaseAuth = firebase.auth();
+                firebaseDb = firebase.firestore();
+            } else {
+                console.info('Firebase not configured. Add your credentials to firebase-config.js');
+            }
+        } catch(e) {
+            console.warn('Firebase init error:', e.message);
+        }
+
+        // ═══════════════════════════════════════════════
+        // MOTIVATIONAL PRAISE
+        // ═══════════════════════════════════════════════
+        const PRAISE_MESSAGES = [
+            { emoji: '🔥', text: 'You\'re on fire!' },
+            { emoji: '💪', text: 'Unstoppable!' },
+            { emoji: '🧠', text: 'Genius move!' },
+            { emoji: '⚡', text: 'Lightning fast!' },
+            { emoji: '🚀', text: 'To the moon!' },
+            { emoji: '🎯', text: 'Bullseye!' },
+            { emoji: '👑', text: 'DSA Royalty!' },
+            { emoji: '💎', text: 'Diamond coder!' },
+            { emoji: '🏆', text: 'Champion effort!' },
+            { emoji: '✨', text: 'Brilliant!' },
+            { emoji: '🌟', text: 'Star performer!' },
+            { emoji: '💥', text: 'Crushing it!' },
+            { emoji: '🎸', text: 'Rock star!' },
+            { emoji: '🦾', text: 'Machine mode!' },
+            { emoji: '🧩', text: 'Puzzle master!' },
+            { emoji: '🏅', text: 'Gold standard!' },
+            { emoji: '🔑', text: 'Key insight unlocked!' },
+            { emoji: '🎪', text: 'Showstopper!' },
+            { emoji: '🍀', text: 'On a roll!' },
+            { emoji: '⭐', text: 'Superstar!' },
+        ];
+
+        const MILESTONE_MESSAGES = {
+            10:  { emoji: '🎉', title: '10 Down!', text: 'Double digits! You\'re building momentum!' },
+            25:  { emoji: '🌟', title: '25 Solved!', text: 'Quarter century! You\'re getting serious!' },
+            50:  { emoji: '🔥', title: '50 Conquered!', text: 'Half a hundred! You\'re a force to reckon with!' },
+            75:  { emoji: '💎', title: '75 Crushed!', text: 'Three quarters! Almost at 100!' },
+            100: { emoji: '🏆', title: '100 COMPLETE!', text: 'TRIPLE DIGITS! You are a DSA warrior!' },
+            150: { emoji: '🚀', title: '150 Destroyed!', text: 'You\'re in the stratosphere!' },
+            200: { emoji: '👑', title: '200 Mastered!', text: 'Two hundred! Absolute legend!' },
+            250: { emoji: '⚡', title: '250 Done!', text: 'You\'re halfway to 500!' },
+            300: { emoji: '🦾', title: '300 Annihilated!', text: 'Spartan-level dedication!' },
+            400: { emoji: '🎯', title: '400 Solved!', text: 'You\'re an unstoppable machine!' },
+            450: { emoji: '💥', title: '450 Completed!', text: 'Almost at the finish line!' },
+        };
+
+        let lastPraiseIndex = -1;
+        function getRandomPraise() {
+            let idx;
+            do { idx = getRandomInt(0, PRAISE_MESSAGES.length - 1); } while (idx === lastPraiseIndex);
+            lastPraiseIndex = idx;
+            return PRAISE_MESSAGES[idx];
+        }
 
         // ═══════════════════════════════════════════════
         // THEME
@@ -261,9 +343,70 @@
             }
         }
 
+        // Escalating praise tiers
+        const SUB_STEP_PRAISE = [
+            // Tier 1 (1st-3rd sub-step)
+            [
+                { emoji: '✅', title: 'Nice work!', text: 'Sub-topic cleared!' },
+                { emoji: '👏', title: 'Well done!', text: 'Another one bites the dust!' },
+                { emoji: '💪', title: 'Solid effort!', text: 'You\'re making progress!' },
+            ],
+            // Tier 2 (4th-7th)
+            [
+                { emoji: '🔥', title: 'You\'re heating up!', text: 'Keep this momentum going!' },
+                { emoji: '⚡', title: 'Electrifying!', text: 'You can\'t be stopped!' },
+                { emoji: '🌟', title: 'Star performer!', text: 'DSA is becoming your forte!' },
+                { emoji: '💎', title: 'Diamond focus!', text: 'Your consistency is rare!' },
+            ],
+            // Tier 3 (8th-15th)
+            [
+                { emoji: '🚀', title: 'LIFTOFF!', text: 'You\'re in orbit now!' },
+                { emoji: '🏅', title: 'CHAMPION!', text: 'An absolute force of nature!' },
+                { emoji: '👑', title: 'ROYALTY!', text: 'They should name an algorithm after you!' },
+                { emoji: '🦁', title: 'BEAST MODE!', text: 'Nothing can stand in your way!' },
+            ],
+            // Tier 4 (16th+)
+            [
+                { emoji: '🏆', title: 'LEGENDARY!', text: 'You are writing history!' },
+                { emoji: '⭐', title: 'SUPERSTAR!', text: 'The DSA world bows to you!' },
+                { emoji: '🔱', title: 'MYTHICAL!', text: 'Your dedication is beyond human!' },
+                { emoji: '💫', title: 'TRANSCENDENT!', text: 'You have ascended!' },
+            ],
+        ];
+
+        const STEP_PRAISE = [
+            { emoji: '🏆', title: 'STEP CONQUERED!', text: 'You just demolished an entire chapter!' },
+            { emoji: '⚔️', title: 'WARRIOR STATUS!', text: 'A full step vanquished! Bow before your might!' },
+            { emoji: '👑', title: 'ABSOLUTE KING!', text: 'Another empire falls to your brilliance!' },
+            { emoji: '🌋', title: 'UNSTOPPABLE FORCE!', text: 'You\'re rewriting the rules of DSA mastery!' },
+            { emoji: '🔱', title: 'GODMODE ACTIVATED!', text: 'Mere mortals tremble at your progress!' },
+            { emoji: '💫', title: 'BEYOND LEGENDARY!', text: 'You\'ve transcended what was thought possible!' },
+        ];
+
+        let completedSubSteps = 0;
+        let completedSteps = 0;
+
+        function getSubStepPraise() {
+            completedSubSteps++;
+            let tier;
+            if (completedSubSteps <= 3) tier = 0;
+            else if (completedSubSteps <= 7) tier = 1;
+            else if (completedSubSteps <= 15) tier = 2;
+            else tier = 3;
+            const pool = SUB_STEP_PRAISE[tier];
+            return pool[getRandomInt(0, pool.length - 1)];
+        }
+
+        function getStepPraise() {
+            completedSteps++;
+            const idx = Math.min(completedSteps - 1, STEP_PRAISE.length - 1);
+            return STEP_PRAISE[idx];
+        }
+
         function triggerSubStepCelebration(title) {
             celebrationConfettiShower();
-            showToast('🎉 Sub-topic Complete!', `You finished "${title}"! Keep going!`);
+            const praise = getSubStepPraise();
+            showPraiseToast(praise.emoji, praise.title, `"${title}" complete! ${praise.text}`);
         }
 
         function triggerStepCelebration(title) {
@@ -276,10 +419,13 @@
             // Heavy confetti
             celebrationConfettiShower(80);
 
-            // Level-up banner
+            // Escalating praise
+            const praise = getStepPraise();
+
+            // Level-up banner with praise
             const banner = document.createElement('div');
             banner.className = 'level-up-banner';
-            banner.innerHTML = `<div class="banner-content"><h2>🏆 STEP COMPLETE! 🏆</h2><p>${title}</p></div>`;
+            banner.innerHTML = `<div class="banner-content"><h2>${praise.emoji} ${praise.title} ${praise.emoji}</h2><p style="color:#f8fafc; font-size:1.3rem; font-weight:600;">${title}</p><p style="margin-top:0.75rem; font-size:1.15rem; color:#34d399; font-weight:700; letter-spacing:0.5px;">${praise.text}</p></div>`;
             document.body.appendChild(banner);
             setTimeout(() => banner.remove(), 3200);
         }
@@ -469,6 +615,7 @@
                                             <th title="YouTube">YT</th>
                                             <th title="LeetCode">LC</th>
                                             <th title="GeeksForGeeks">GFG</th>
+                                            <th title="Coding Ninjas">CN</th>
                                             <th title="TakeUForward+">TUF</th>
                                             <th>Done</th>
                                             <th>Rev</th>
@@ -488,6 +635,7 @@
                                                 ${linkCell(topic.yt_link, 'YT')}
                                                 ${linkCell(topic.lc_link, 'LC')}
                                                 ${linkCell(topic.gfg_link, 'GFG')}
+                                                ${linkCell(topic.cs_link, 'CN')}
                                                 ${linkCell(topic.plus_link, 'TUF')}
                                                 <td class="status-cell">
                                                     <input type="checkbox" class="status-checkbox" data-id="${topic.id}" ${done ? 'checked' : ''}>
@@ -652,6 +800,12 @@
                         updateStreak();
                         document.getElementById('statStreak').textContent = loadStreak().count;
 
+                        // Save to Firebase if signed in
+                        syncToFirebase();
+
+                        // Count total completed for milestone check
+                        const totalDone = Object.values(loadProgress()).filter(Boolean).length;
+
                         // Trigger celebrations in priority order
                         if (result.stepJustCompleted) {
                             triggerStepCelebration(result.stepTitle);
@@ -659,7 +813,17 @@
                             triggerSubStepCelebration(result.subTitle);
                         } else {
                             triggerQuestionCelebration(cb);
+                            // Show motivational praise
+                            if (MILESTONE_MESSAGES[totalDone]) {
+                                const m = MILESTONE_MESSAGES[totalDone];
+                                showPraiseToast(m.emoji, m.title, m.text);
+                            } else {
+                                const praise = getRandomPraise();
+                                showPraiseToast(praise.emoji, praise.text);
+                            }
                         }
+                    } else {
+                        syncToFirebase();
                     }
                 }
 
@@ -675,6 +839,7 @@
                     star.classList.toggle('active', !!revision[id]);
                     revCell.closest('tr').classList.toggle('starred', !!revision[id]);
                     applyFilter();
+                    syncToFirebase();
                 }
             });
 
@@ -895,11 +1060,134 @@
         }
 
         // ═══════════════════════════════════════════════
+        // PRAISE TOAST
+        // ═══════════════════════════════════════════════
+        function showPraiseToast(emoji, title, subtitle) {
+            const toast = document.createElement('div');
+            toast.className = 'praise-toast';
+            if (subtitle) {
+                toast.innerHTML = `<span class="praise-emoji">${emoji}</span><div><strong>${title}</strong><br><small>${subtitle}</small></div>`;
+            } else {
+                toast.innerHTML = `<span class="praise-emoji">${emoji}</span><span>${title}</span>`;
+            }
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        // ═══════════════════════════════════════════════
+        // GOOGLE AUTH & FIREBASE SYNC
+        // ═══════════════════════════════════════════════
+        function handleGoogleAuth() {
+            if (!firebaseAuth) {
+                showToast('⚠️ Firebase Not Configured', 'Add your Firebase config to enable Google Sign-In.');
+                return;
+            }
+            if (currentUser) {
+                // Sign out
+                firebaseAuth.signOut().then(() => {
+                    showToast('👋 Signed Out', 'Your progress is still saved locally.');
+                });
+            } else {
+                // Sign in
+                const provider = new firebase.auth.GoogleAuthProvider();
+                firebaseAuth.signInWithPopup(provider).then(result => {
+                    showToast('🎉 Welcome!', `Signed in as ${result.user.displayName}`);
+                }).catch(err => {
+                    if (err.code !== 'auth/popup-closed-by-user') {
+                        showToast('❌ Sign-In Failed', err.message);
+                    }
+                });
+            }
+        }
+
+        function updateAuthUI(user) {
+            currentUser = user;
+            const headerBtn = document.getElementById('googleAuthBtn');
+            const headerLabel = document.getElementById('googleAuthLabel');
+            const modalBtn = document.getElementById('modalGoogleBtn');
+            const modalLabel = document.getElementById('modalGoogleLabel');
+
+            if (user) {
+                headerLabel.textContent = user.displayName ? user.displayName.split(' ')[0] : 'Account';
+                headerBtn.title = `Signed in as ${user.email}. Click to sign out.`;
+                if (modalLabel) modalLabel.textContent = `Sign out (${user.email})`;
+            } else {
+                headerLabel.textContent = 'Sign In';
+                headerBtn.title = 'Sign in with Google';
+                if (modalLabel) modalLabel.textContent = 'Sign in with Google to Sync';
+            }
+        }
+
+        async function syncToFirebase() {
+            if (!currentUser || !firebaseDb) return;
+            try {
+                const progress = loadProgress();
+                const streak = loadStreak();
+                const revision = loadRevision();
+                await firebaseDb.collection('users').doc(currentUser.uid).set({
+                    progress,
+                    streak,
+                    revision,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    email: currentUser.email,
+                    displayName: currentUser.displayName
+                }, { merge: true });
+            } catch(e) {
+                console.error('Firebase sync failed:', e);
+            }
+        }
+
+        async function loadFromFirebase() {
+            if (!currentUser || !firebaseDb) return;
+            try {
+                const doc = await firebaseDb.collection('users').doc(currentUser.uid).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    // Merge: Firebase data wins for keys that exist there
+                    const localProgress = loadProgress();
+                    const cloudProgress = data.progress || {};
+                    const merged = { ...localProgress, ...cloudProgress };
+                    saveProgress(merged);
+
+                    if (data.revision) {
+                        const localRev = loadRevision();
+                        const mergedRev = { ...localRev, ...data.revision };
+                        saveRevision(mergedRev);
+                    }
+
+                    if (data.streak) {
+                        localStorage.setItem(getStreakKey(), JSON.stringify(data.streak));
+                    }
+
+                    // Re-render
+                    if (roadmapData) {
+                        generateRoadmap(roadmapData, loadProgress());
+                        applyFilter();
+                    }
+                    showToast('☁️ Synced', 'Progress loaded from the cloud!');
+                } else {
+                    // First time: push local to cloud
+                    await syncToFirebase();
+                }
+            } catch(e) {
+                console.error('Firebase load failed:', e);
+            }
+        }
+
+        // ═══════════════════════════════════════════════
         // INIT
         // ═══════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             initSearch();
+
+            // Firebase auth state listener
+            if (firebaseAuth) {
+                firebaseAuth.onAuthStateChanged(user => {
+                    updateAuthUI(user);
+                    if (user) loadFromFirebase();
+                });
+            }
 
             fetch('a2z_flawless.json')
                 .then(res => {
