@@ -846,6 +846,8 @@ tr.completed a {
 /* Checkbox */
 .status-cell {
     cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .status-checkbox {
@@ -858,6 +860,7 @@ tr.completed a {
     background: transparent;
     cursor: pointer;
     display: grid;
+    margin: 0 auto;
     place-content: center;
     pointer-events: none;
     transition: all var(--transition-fast);
