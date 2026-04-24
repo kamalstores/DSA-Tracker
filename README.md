@@ -69,6 +69,6 @@ Open **http://localhost:3000** in your browser.
 |Celebrations | Confetti, emoji rain, trophies on completion |
 |Backup | Export/import your full progress as JSON |
 
-##License
+## License
 
 MIT — feel free to fork and customize!
