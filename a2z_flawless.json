@@ -841,7 +841,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/check-if-the-array-is-sorted?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/check-if-an-array-is-sorted0701/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/ninja-and-the-sorted-check_6581957",
-                        "lc_link": "https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/",
+                        "lc_link": "https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/#:~:text=Input%3A%20nums%20%3D%20%5B2%2C,no%20rotation)%20to%20make%20nums.",
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -860,7 +860,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/remove-duplicates-from-sorted-array?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/remove-duplicate-elements-from-sorted-array/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/remove-duplicates-from-sorted-array_1102307",
-                        "lc_link": "https://leetcode.com/problems/remove-duplicates-from-sorted-array/",
+                        "lc_link": "https://leetcode.com/problems/remove-duplicates-from-sorted-array/#:~:text=Input%3A%20nums%20%3D%20%5B0%2C,%2C%203%2C%20and%204%20respectively.",
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -1442,7 +1442,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/count-subarrays-with-given-xor-k?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/subsets-with-xor-value2023/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/subarrays-with-xor-k_6826258",
-                        "lc_link": "https://www.interviewbit.com/problems/subarray-with-given-xor/",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -1644,7 +1644,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/search-insert-position?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/search-insert-position-of-k-in-a-sorted-array/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/algorithm-to-find-best-insert-position-in-sorted-array_839813",
-                        "lc_link": "https://leetcode.com/problems/search-insert-position/",
+                        "lc_link": "https://leetcode.com/problems/search-insert-position/#:~:text=Search%20Insert%20Position%20%2D%20LeetCode&text=Given%20a%20sorted%20array%20of,(log%20n)%20runtime%20complexity.",
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -1815,7 +1815,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/find-peak-element?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/peak-element/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/find-peak-element_1081482",
-                        "lc_link": "https://leetcode.com/problems/find-peak-element/",
+                        "lc_link": "https://leetcode.com/problems/find-peak-element/#:~:text=Find%20Peak%20Element%20%2D%20LeetCode&text=A%20peak%20element%20is%20an,to%20any%20of%20the%20peaks.",
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -1954,7 +1954,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/kth-missing-positive-number?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/k-th-missing-element3635/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/kth-missing-element_893215",
-                        "lc_link": "https://leetcode.com/problems/kth-missing-positive-number/",
+                        "lc_link": "https://leetcode.com/problems/kth-missing-positive-number/#:~:text=Given%20an%20array%20arr%20of,13%2C...%5D.",
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -1973,7 +1973,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/aggressive-cows?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/aggressive-cows/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/aggressive-cows_1082559",
-                        "lc_link": "https://www.spoj.com/problems/AGGRCOW/",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -1992,7 +1992,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/book-allocation-problem?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/allocate-minimum-number-of-pages0937/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/allocate-books_1090540",
-                        "lc_link": "https://www.naukri.com/code360/problems/allocate-books_1090540",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -2333,7 +2333,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/valid-anagram?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/dsa/check-whether-two-strings-are-anagram-of-each-other/",
                         "cs_link": "https://www.codingninjas.com/studio/problems/anagram-pairs_626517",
-                        "lc_link": "https://leetcode.com/problems/valid-anagram/",
+                        "lc_link": "https://leetcode.com/problems/valid-anagram/#:~:text=Given%20two%20strings%20s%20and,the%20original%20letters%20exactly%20once.&text=Constraints%3A,.length%20%3C%3D%205%20*%2010",
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -2522,7 +2522,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/introduction-to-singly-linkedlist",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/introduction-to-linked-list/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/introduction-to-linked-list_8144737",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -2541,7 +2541,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/insertion-at-the-head-of-ll?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/linked-list-insertion-1587115620/0",
                         "cs_link": "https://www.codingninjas.com/studio/problems/insert-node-at-the-beginning_8144739",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -2579,7 +2579,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/count-nodes-of-linked-list/0",
                         "cs_link": "https://www.codingninjas.com/studio/problems/count-nodes-of-linked-list_5884",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -2598,7 +2598,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/search-in-linked-list-1664434326/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/search-in-a-linked-list_975381",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -2623,7 +2623,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/introduction-to-doubly-ll?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/introduction-to-doubly-linked-list/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/introduction-to-doubly-linked-list_8160413",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -2800,7 +2800,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/length-of-loop-in-ll?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/find-length-of-loop/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/find-length-of-loop_8160455",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -2876,7 +2876,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/delete-the-middle-node-in-ll?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/delete-middle-of-linked-list/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/delete-middle-node_763267",
-                        "lc_link": "https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/",
+                        "lc_link": "https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/#:~:text=You%20are%20given%20the%20head,than%20or%20equal%20to%20x%20.",
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -3539,7 +3539,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/rat-in-a-maze?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/rat-in-a-maze-problem/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/rat-in-a-maze-_8842357",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/rat-in-a-maze-problem/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -3577,7 +3577,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/m-coloring-problem?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/m-coloring-problem-1587115620/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/m-coloring-problem_981273",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/m-coloring-problem-1587115620/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -4012,7 +4012,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/implement-stack-using-arrays?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/implement-stack-using-array/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/stack-implementation-using-array_3210209",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -4031,7 +4031,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/implement-queue-using-arrays?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/implement-queue-using-array/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/implement-queue-using-arrays_8390825",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -4088,7 +4088,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/implement-stack-using-linkedlist?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/implement-stack-using-linked-list/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/implement-stack-with-linked-list_1279905",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -4107,7 +4107,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/implement-queue-using-linkedlist?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/implement-queue-using-linked-list/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/implement-queue-using-linked-list_8161235",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -4170,7 +4170,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/infix-to-postfix-1587115620/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/day-23-:-infix-to-postfix-_1382146",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -4189,7 +4189,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/prefix-to-infix-conversion/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/prefix-to-infix_1215000",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -4208,7 +4208,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/prefix-to-postfix-conversion/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/convert-prefix-to-postfix_8391014",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -4227,7 +4227,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/postfix-to-prefix-conversion/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/postfix-to-prefix_1788455",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -4246,7 +4246,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/postfix-to-infix-conversion/1",
                         "cs_link": "https://www.codingninjas.com/codestudio/problems/postfix-to-infix_8382386",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 0,
                         "ques_topic": "[]"
@@ -4265,7 +4265,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/infix-to-prefix-notation/1",
                         "cs_link": null,
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -4328,7 +4328,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/immediate-smaller-element1142/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/immediate-smaller-element-_1062597",
-                        "lc_link": "https://www.interviewbit.com/problems/nearest-smaller-element/",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -4461,7 +4461,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/largest-rectangle-in-a-histogram?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/remove-k-digits/1",
                         "cs_link": "https://www.naukri.com/code360/problems/largest-rectangle-in-a-histogram_1058184",
-                        "lc_link": "https://leetcode.com/problems/largest-rectangle-in-histogram/description/",
+                        "lc_link": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -4480,7 +4480,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/maximum-rectangles?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/maximum-rectangular-area-in-a-histogram-1587115620/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/largest-rectangle-in-a-histogram_1058184",
-                        "lc_link": "https://leetcode.com/problems/maximal-rectangle/description/",
+                        "lc_link": "https://leetcode.com/problems/maximal-rectangle/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -4543,7 +4543,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/celebrity-problem?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/the-celebrity-problem/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/the-celebrity-problem_982769",
-                        "lc_link": "https://leetcode.com/problems/find-the-celebrity",
+                        "lc_link": "https://leetcode.com/accounts/login/?next=/problems/find-the-celebrity/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -4581,7 +4581,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/lfu-cache?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/lru-cache/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/lru-cache-implementation_670276",
-                        "lc_link": "https://leetcode.com/problems/lru-cache/",
+                        "lc_link": "https://leetcode.com/problems/lfu-cache/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -5117,7 +5117,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/kth-largest-element-in-a-stream-of-running-integers?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/kth-largest-element-in-a-stream2220/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/kth-largest-element-in-a-stream_800301",
-                        "lc_link": "https://leetcode.com/problems/kth-largest-element-in-a-stream/",
+                        "lc_link": "https://leetcode.com/problems/kth-largest-element-in-a-stream/#:~:text=Implement%20KthLargest%20class%3A,largest%20element%20in%20the%20stream.",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -5136,7 +5136,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/maximum-sum-combination/1",
                         "cs_link": null,
-                        "lc_link": "https://www.interviewbit.com/problems/maximum-sum-combinations/",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -5224,7 +5224,7 @@
                         "editorial_link": null,
                         "gfg_link": "https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/fractional-knapsack_975286",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -5243,7 +5243,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/minimum-coins?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/-minimum-number-of-coins4426/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/find-minimum-number-of-coins_975277",
-                        "lc_link": "https://www.geeksforgeeks.org/find-minimum-number-of-coins-that-make-a-change/",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -5306,7 +5306,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/n-meetings-in-one-room?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/n-meetings-in-one-room-1587115620/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/maximum-meetings_1062658",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/n-meetings-in-one-room-1587115620/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -5363,7 +5363,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/minimum-number-of-platforms-required-for-a-railway?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/minimum-platforms-1587115620/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/minimum-number-of-platforms_799400",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/minimum-platforms-1587115620/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -5382,7 +5382,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/job-sequencing-problem?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/job-sequencing-problem-1587115620/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/job-sequencing-problem_1169460",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/job-sequencing-problem-1587115620/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -5420,7 +5420,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/shortest-job-first?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/shortest-job-first/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/sjf_1172165",
-                        "lc_link": "",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -5932,7 +5932,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/top-view-of-bt?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/top-view-of-binary-tree/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/top-view-of-binary-tree_799401",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/top-view-of-binary-tree/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -5951,7 +5951,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/bottom-view-of-bt?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/bottom-view-of-binary-tree/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/bottom-view-of-binary-tree_893110",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/bottom-view-of-binary-tree/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -6526,7 +6526,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/bst-iterator?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/merge-two-bst-s/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/merge-two-bsts_920474",
-                        "lc_link": null,
+                        "lc_link": "https://leetcode.com/problems/binary-search-tree-iterator/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -6583,7 +6583,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/largest-bst-in-binary-tree?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/largest-bst/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/size-of-largest-bst-in-binary-tree_893103",
-                        "lc_link": null,
+                        "lc_link": "https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -6690,7 +6690,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/traversal-techniques?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/bfs-traversal-of-graph/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/bfs-in-graph_973002",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/bfs-traversal-of-graph/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -6709,7 +6709,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/traversal-techniques?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/depth-first-traversal-for-a-graph/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/dfs-traversal_630462",
-                        "lc_link": "https://practice.geeksforgeeks.org/problems/depth-first-traversal-for-a-graph/1",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -6734,7 +6734,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/number-of-provinces?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/number-of-provinces/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/find-the-number-of-states_1377943",
-                        "lc_link": "https://leetcode.com/problems/number-of-provinces/",
+                        "lc_link": "https://leetcode.com/problems/number-of-provinces/#:~:text=A%20province%20is%20a%20group,the%20total%20number%20of%20provinces.",
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -6829,7 +6829,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/detect-a-cycle-in-an-undirected-graph?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/detect-cycle-in-an-undirected-graph-_758967",
-                        "lc_link": null,
+                        "lc_link": "https://leetcode.com/problems/course-schedule/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -6943,7 +6943,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/number-of-islands?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/number-of-distinct-islands/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/distinct-islands_630460",
-                        "lc_link": "https://leetcode.com/problems/number-of-distinct-islands-ii/",
+                        "lc_link": "https://leetcode.com/problems/number-of-islands/",
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -7493,7 +7493,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/most-stones-removed-with-same-row-or-column?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/connecting-the-graph/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/number-of-operations-to-make-graph-connected._1385179",
-                        "lc_link": "https://leetcode.com/problems/number-of-operations-to-make-network-connected/",
+                        "lc_link": "https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/",
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -7512,7 +7512,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/accounts-merge?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/maximum-stone-removal-1662179442/1",
                         "cs_link": null,
-                        "lc_link": "https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/",
+                        "lc_link": "https://leetcode.com/problems/accounts-merge/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -7531,7 +7531,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/number-of-islands-ii?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/merging-details/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/accounts-merge_1089558",
-                        "lc_link": "https://leetcode.com/problems/accounts-merge/",
+                        "lc_link": "https://leetcode.com/problems/number-of-islands-ii/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -7550,7 +7550,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/making-a-large-island?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/find-the-number-of-islands/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/largest-island_840701",
-                        "lc_link": "https://leetcode.com/problems/number-of-islands-ii/",
+                        "lc_link": "https://leetcode.com/problems/making-a-large-island/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -7569,7 +7569,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/swim-in-rising-water?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/maximum-connected-group/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/making-the-largest-island_1381282",
-                        "lc_link": "https://leetcode.com/problems/making-a-large-island/",
+                        "lc_link": "https://leetcode.com/problems/swim-in-rising-water/",
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -7632,7 +7632,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/kosaraju's-algorithm?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/strongly-connected-components-kosarajus-algo/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/count-strongly-connected-components-(kosaraju\u2019s-algorithm)_1171151",
-                        "lc_link": null,
+                        "lc_link": "https://leetcode.com/problems/maximum-number-of-non-overlapping-substrings/discuss/766485/kosaraju-algorithm-on",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -7884,7 +7884,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/minimum-falling-path-sum?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/path-in-matrix3805/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/maximum-path-sum-in-the-matrix_797998",
-                        "lc_link": "https://leetcode.com/problems/minimum-falling-path-sum/",
+                        "lc_link": "https://leetcode.com/problems/minimum-path-sum/",
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -8812,7 +8812,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/trie-implementation-and-advanced-operations?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/trie-delete/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/trie-delete-operation_1062663",
-                        "lc_link": "https://www.naukri.com/code360/problems/implement-trie_1387095",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -8831,7 +8831,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/longest-word-with-all-prefixes?tab=editorial",
                         "gfg_link": null,
                         "cs_link": "https://www.codingninjas.com/studio/problems/longest-common-prefix_2090383",
-                        "lc_link": "https://www.naukri.com/code360/problems/complete-string_2687860",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -8850,7 +8850,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/number-of-distinct-substrings-in-a-string?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/count-of-distinct-substrings/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/count-distinct-substrings_985292",
-                        "lc_link": "https://www.naukri.com/code360/problems/count-distinct-substrings_985292",
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
@@ -9090,7 +9090,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/count-palindromic-subsequences?tab=editorial",
                         "gfg_link": "https://practice.geeksforgeeks.org/problems/count-palindromic-subsequences/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/count-palindromic-subsequences_1062696",
-                        "lc_link": null,
+                        "lc_link": "https://leetcode.com/problems/palindromic-substrings/",
                         "company_tags": null,
                         "difficulty": 1,
                         "ques_topic": "[]"
