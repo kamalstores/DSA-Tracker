@@ -1248,12 +1248,6 @@
                     // Re-render
                     if (roadmapData) {
                         generateRoadmap(roadmapData, loadProgress());
-                        // Bug 2 fix: addEventListeners() must be called after every re-render
-                        // Bug 3 fix: the _listenersAttached guard inside addEventListeners()
-                        //   prevents duplicate stacking. Reset the flag so listeners re-attach
-                        //   fresh to the newly rendered DOM.
-                        _listenersAttached = false;
-                        addEventListeners();
                         applyFilter();
                     }
                     showToast('☁️ Synced', 'Progress loaded from the cloud!');
