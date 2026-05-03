@@ -125,6 +125,8 @@
                 </button>
                 <div class="modal-divider">or use local backup</div>
                 <div class="export-import-row">
+                    <button class="export-btn" id="exportBtn" onclick="exportProgress()">📥 Export JSON</button>
+                    <button class="import-btn" id="importBtn" onclick="importProgress()">📤 Import JSON</button>
                 </div>
             </div>
         </div>
@@ -293,16 +295,29 @@
             } catch { return { count: 0, lastDate: null }; }
         }
 
+        // Returns what the streak SHOULD display right now, without mutating storage.
+        // If the user missed a day and hasn't solved anything today, shows 0.
+        function getDisplayStreak() {
+            const streak = loadStreak();
+            if (!streak.lastDate) return 0;
+            const today = new Date().toISOString().split('T')[0];
+            if (streak.lastDate === today) return streak.count;  // active today
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+            if (streak.lastDate === yesterday) return streak.count;  // still alive, just not solved yet today
+            return 0;  // missed a day — streak is broken
+        }
+
+        // Call this when the user solves a problem. Mutates and saves the new streak.
         function updateStreak() {
             const streak = loadStreak();
             const today = new Date().toISOString().split('T')[0];
-            if (streak.lastDate === today) return streak.count;
+            if (streak.lastDate === today) return streak.count;  // already incremented today
 
             const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
             if (streak.lastDate === yesterday) {
-                streak.count++;
-            } else if (streak.lastDate !== today) {
-                streak.count = 1;
+                streak.count++;  // consecutive day
+            } else {
+                streak.count = 1;  // missed a day, restart
             }
             streak.lastDate = today;
             localStorage.setItem(getStreakKey(), JSON.stringify(streak));
@@ -404,11 +419,35 @@
             return STEP_PRAISE[idx];
         }
 
+        let completedSubHeadings = 0;
+
         function triggerSubStepCelebration(title) {
-            celebrationConfettiShower();
-            const praise = getSubStepPraise();
-            showPraiseToast(praise.emoji, praise.title, `"${title}" complete! ${praise.text}`);
+            completedSubHeadings++;
+
+            // Screen flash (slightly softer than full step)
+            const flash = document.createElement('div');
+            flash.className = 'screen-flash';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 700);
+
+            // Confetti shower
+            celebrationConfettiShower(65);
+
+            // Pick from STEP_PRAISE — random each time so it feels fresh
+            const praise = STEP_PRAISE[getRandomInt(0, STEP_PRAISE.length - 1)];
+
+            // Level-up banner
+            const banner = document.createElement('div');
+            banner.className = 'level-up-banner';
+            banner.innerHTML = `<div class="banner-content">
+                <h2>${praise.emoji} ${praise.title} ${praise.emoji}</h2>
+                <p style="color:#f8fafc; font-size:1.15rem; font-weight:600;">"${title}" — Subheading Complete!</p>
+                <p style="margin-top:0.75rem; font-size:1.05rem; color:#34d399; font-weight:700; letter-spacing:0.5px;">${praise.text}</p>
+            </div>`;
+            document.body.appendChild(banner);
+            setTimeout(() => banner.remove(), 3200);
         }
+
 
         function triggerStepCelebration(title) {
             // Screen flash
@@ -694,7 +733,8 @@
             document.getElementById('statTotal').textContent = total;
             document.getElementById('statCompleted').textContent = completed;
             document.getElementById('statProgress').textContent = total > 0 ? Math.round(completed / total * 100) + '%' : '0%';
-            document.getElementById('statStreak').textContent = loadStreak().count;
+            // Use getDisplayStreak() so we show 0 if the user missed a day
+            document.getElementById('statStreak').textContent = getDisplayStreak();
         }
 
         function recalcGlobalStats() {
@@ -761,8 +801,13 @@
         // ═══════════════════════════════════════════════
         // EVENT LISTENERS
         // ═══════════════════════════════════════════════
+        // Guard flag — ensure only ONE delegated listener lives on #mainContent
+        let _listenersAttached = false;
+
         function addEventListeners() {
             const main = document.getElementById('mainContent');
+            if (_listenersAttached) return;
+            _listenersAttached = true;
 
             main.addEventListener('click', function(e) {
                 // Collapsible toggle
@@ -770,14 +815,23 @@
                 if (collapsible && !e.target.closest('.status-cell') && !e.target.closest('.revision-cell')) {
                     collapsible.classList.toggle('active');
                     const content = collapsible.nextElementSibling;
+                    const parentContent = content.closest('.content');
+
                     if (content.style.maxHeight) {
+                        // Collapsing a sub-step: shrink the parent by this sub-content's height
+                        const delta = content.scrollHeight;
                         content.style.maxHeight = null;
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + 'px';
-                        // Expand parents too
-                        const parentContent = content.closest('.content');
                         if (parentContent && parentContent.style.maxHeight) {
-                            parentContent.style.maxHeight = (parentContent.scrollHeight + content.scrollHeight) + 'px';
+                            parentContent.style.maxHeight =
+                                (parseInt(parentContent.style.maxHeight) - delta) + 'px';
+                        }
+                    } else {
+                        // Expanding a sub-step: grow the parent to fit
+                        const delta = content.scrollHeight;
+                        content.style.maxHeight = delta + 'px';
+                        if (parentContent && parentContent.style.maxHeight) {
+                            parentContent.style.maxHeight =
+                                (parseInt(parentContent.style.maxHeight) + delta) + 'px';
                         }
                     }
                     return;
@@ -788,7 +842,9 @@
                 if (statusCell) {
                     const cb = statusCell.querySelector('.status-checkbox');
                     if (!cb) return;
-                    cb.checked = !cb.checked;
+                    // Bug 1 fix: only flip if the click was NOT directly on the checkbox itself
+                    // (browser already toggled it in that case)
+                    if (e.target !== cb) cb.checked = !cb.checked;
                     const id = cb.dataset.id;
                     const progress = loadProgress();
                     progress[id] = cb.checked;
@@ -799,7 +855,8 @@
 
                     if (cb.checked) {
                         updateStreak();
-                        document.getElementById('statStreak').textContent = loadStreak().count;
+                        // After updating, use getDisplayStreak for consistency
+                        document.getElementById('statStreak').textContent = getDisplayStreak();
 
                         // Save to Firebase if signed in
                         syncToFirebase();
@@ -820,7 +877,8 @@
                                 showPraiseToast(m.emoji, m.title, m.text);
                             } else {
                                 const praise = getRandomPraise();
-                                showPraiseToast(praise.emoji, praise.text);
+                                // Bug 9 fix: pass empty string so subtitle branch is skipped cleanly
+                                showPraiseToast(praise.emoji, praise.text, '');
                             }
                         }
                     } else {
@@ -908,9 +966,26 @@
                     rows.forEach(row => {
                         const title = (row.dataset.title || '').toLowerCase();
                         if (title.includes(q)) {
-                            row.style.display = '';
-                            row.classList.add('search-match');
-                            subHasMatch = true;
+                            // Bug 6 fix: also respect the active filter when searching
+                            const id = row.dataset.topicId;
+                            const progress = loadProgress();
+                            const revision = loadRevision();
+                            const isDone = !!progress[id];
+                            const isRevision = !!revision[id];
+                            let filterPass = true;
+                            switch (currentFilter) {
+                                case 'done': filterPass = isDone; break;
+                                case 'revision': filterPass = isRevision; break;
+                                case 'not-done': filterPass = !isDone; break;
+                            }
+                            if (filterPass) {
+                                row.style.display = '';
+                                row.classList.add('search-match');
+                                subHasMatch = true;
+                            } else {
+                                row.style.display = 'none';
+                                row.classList.remove('search-match');
+                            }
                         } else {
                             row.style.display = 'none';
                             row.classList.remove('search-match');
@@ -981,16 +1056,18 @@
                 row.style.display = show ? '' : 'none';
             });
 
-            // Hide empty sub-steps and steps
+            // Bug 8 fix: use JS .style.display check instead of fragile attribute selector
             main.querySelectorAll('.sub-collapsible').forEach(sub => {
                 const subContent = sub.nextElementSibling;
-                const visibleRows = subContent.querySelectorAll('tr[data-topic-id]:not([style*="display: none"])');
+                const visibleRows = Array.from(subContent.querySelectorAll('tr[data-topic-id]'))
+                    .filter(r => r.style.display !== 'none');
                 sub.style.display = visibleRows.length > 0 ? '' : 'none';
                 if (visibleRows.length === 0) subContent.style.maxHeight = null;
             });
 
             main.querySelectorAll('.step-section').forEach(step => {
-                const visibleSubs = step.querySelectorAll('.sub-collapsible:not([style*="display: none"])');
+                const visibleSubs = Array.from(step.querySelectorAll('.sub-collapsible'))
+                    .filter(s => s.style.display !== 'none');
                 step.style.display = visibleSubs.length > 0 ? '' : 'none';
             });
         }
@@ -1144,10 +1221,18 @@
                 const doc = await firebaseDb.collection('users').doc(currentUser.uid).get();
                 if (doc.exists) {
                     const data = doc.data();
-                    // Merge: Firebase data wins for keys that exist there
+                    // Bug 11 fix: smart merge — cloud only wins for keys it explicitly
+                    // sets to TRUE. Local unchecks (false/missing) are preserved.
+                    // Strategy: cloud wins if cloud says true; local wins if local says false.
                     const localProgress = loadProgress();
                     const cloudProgress = data.progress || {};
-                    const merged = { ...localProgress, ...cloudProgress };
+                    const allKeys = new Set([...Object.keys(localProgress), ...Object.keys(cloudProgress)]);
+                    const merged = {};
+                    allKeys.forEach(key => {
+                        // If cloud says done AND local doesn't explicitly say not-done, use cloud
+                        // If local says not-done (false or missing), local wins
+                        merged[key] = !!(cloudProgress[key] && localProgress[key] !== false);
+                    });
                     saveProgress(merged);
 
                     if (data.revision) {
@@ -1163,6 +1248,12 @@
                     // Re-render
                     if (roadmapData) {
                         generateRoadmap(roadmapData, loadProgress());
+                        // Bug 2 fix: addEventListeners() must be called after every re-render
+                        // Bug 3 fix: the _listenersAttached guard inside addEventListeners()
+                        //   prevents duplicate stacking. Reset the flag so listeners re-attach
+                        //   fresh to the newly rendered DOM.
+                        _listenersAttached = false;
+                        addEventListeners();
                         applyFilter();
                     }
                     showToast('☁️ Synced', 'Progress loaded from the cloud!');
@@ -1200,8 +1291,10 @@
                     const progress = loadProgress();
                     generateRoadmap(data, progress);
                     addEventListeners();
-                    // Update streak display
-                    document.getElementById('statStreak').textContent = loadStreak().count;
+                    // Bug 5 fix: apply the active filter immediately after initial render
+                    applyFilter();
+                    // Update streak display — use getDisplayStreak() so a missed day shows 0
+                    document.getElementById('statStreak').textContent = getDisplayStreak();
                 })
                 .catch(err => {
                     console.error(err);
