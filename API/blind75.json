@@ -1,0 +1,382 @@
+[
+    {
+        "title": "0",
+        "url": "https://leetcode.com/problems/rotate-image/?envType=daily-question&envId=2026-05-04",
+        "id": "blind75_0_1"
+    },
+    {
+        "title": "128. Longest Consecutive Sequence\n47.1%\n\nMed.",
+        "url": "https://leetcode.com/problems/longest-consecutive-sequence?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_128longestconse_2"
+    },
+    {
+        "title": "1. Two Sum\n57.4%\n\nEasy",
+        "url": "https://leetcode.com/problems/two-sum?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_1twosum574easy_3"
+    },
+    {
+        "title": "3. Longest Substring Without Repeating Characters\n39.0%\n\nMed.",
+        "url": "https://leetcode.com/problems/longest-substring-wi\u2026characters?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_3longestsubstri_4"
+    },
+    {
+        "title": "5. Longest Palindromic Substring\n37.8%\n\nMed.",
+        "url": "https://leetcode.com/problems/longest-palindromic-substring?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_5longestpalindr_5"
+    },
+    {
+        "title": "133. Clone Graph\n65.2%\n\nMed.",
+        "url": "https://leetcode.com/problems/clone-graph?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_133clonegraph65_6"
+    },
+    {
+        "title": "261. Graph Valid Tree\n50.0%\n\nMed.",
+        "url": "https://leetcode.com/problems/graph-valid-tree?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_261graphvalidtr_7"
+    },
+    {
+        "title": "647. Palindromic Substrings\n72.8%\n\nMed.",
+        "url": "https://leetcode.com/problems/palindromic-substrings?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_647palindromics_8"
+    },
+    {
+        "title": "11. Container With Most Water\n59.9%\n\nMed.",
+        "url": "https://leetcode.com/problems/container-with-most-water?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_11containerwith_9"
+    },
+    {
+        "title": "139. Word Break\n49.4%\n\nMed.",
+        "url": "https://leetcode.com/problems/word-break?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_139wordbreak494_10"
+    },
+    {
+        "title": "141. Linked List Cycle\n54.3%\n\nEasy",
+        "url": "https://leetcode.com/problems/linked-list-cycle?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_141linkedlistcy_11"
+    },
+    {
+        "title": "268. Missing Number\n71.9%\n\nEasy",
+        "url": "https://leetcode.com/problems/missing-number?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_268missingnumbe_12"
+    },
+    {
+        "title": "15. 3Sum\n39.0%\n\nMed.",
+        "url": "https://leetcode.com/problems/3sum?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_153sum390med_13"
+    },
+    {
+        "title": "143. Reorder List\n65.2%\n\nMed.",
+        "url": "https://leetcode.com/problems/reorder-list?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_143reorderlist6_14"
+    },
+    {
+        "title": "269. Alien Dictionary\n37.2%\n\nHard",
+        "url": "https://leetcode.com/problems/alien-dictionary?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_269aliendiction_15"
+    },
+    {
+        "title": "271. Encode and Decode Strings\n51.5%\n\nMed.",
+        "url": "https://leetcode.com/problems/encode-and-decode-strings?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_271encodeanddec_16"
+    },
+    {
+        "title": "19. Remove Nth Node From End of List\n51.5%\n\nMed.",
+        "url": "https://leetcode.com/problems/remove-nth-node-from\u2026nd-of-list?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_19removenthnode_17"
+    },
+    {
+        "title": "20. Valid Parentheses\n44.1%\n\nEasy",
+        "url": "https://leetcode.com/problems/valid-parentheses?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_20validparenthe_18"
+    },
+    {
+        "title": "21. Merge Two Sorted Lists\n68.2%\n\nEasy",
+        "url": "https://leetcode.com/problems/merge-two-sorted-lists?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_21mergetwosorte_19"
+    },
+    {
+        "title": "23. Merge k Sorted Lists\n59.5%\n\nHard",
+        "url": "https://leetcode.com/problems/merge-k-sorted-lists?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_23mergeksortedl_20"
+    },
+    {
+        "title": "152. Maximum Product Subarray\n36.3%\n\nMed.",
+        "url": "https://leetcode.com/problems/maximum-product-subarray?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_152maximumprodu_21"
+    },
+    {
+        "title": "153. Find Minimum in Rotated Sorted Array\n54.1%\n\nMed.",
+        "url": "https://leetcode.com/problems/find-minimum-in-rota\u2026rted-array?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_153findminimumi_22"
+    },
+    {
+        "title": "33. Search in Rotated Sorted Array\n44.5%\n\nMed.",
+        "url": "https://leetcode.com/problems/search-in-rotated-sorted-array?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_33searchinrotat_23"
+    },
+    {
+        "title": "417. Pacific Atlantic Water Flow\n60.9%\n\nMed.",
+        "url": "https://leetcode.com/problems/pacific-atlantic-water-flow?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_417pacificatlan_24"
+    },
+    {
+        "title": "39. Combination Sum\n76.5%\n\nMed.",
+        "url": "https://leetcode.com/problems/combination-sum?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_39combinationsu_25"
+    },
+    {
+        "title": "295. Find Median from Data Stream\n54.4%\n\nHard",
+        "url": "https://leetcode.com/problems/find-median-from-data-stream?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_295findmedianfr_26"
+    },
+    {
+        "title": "297. Serialize and Deserialize Binary Tree\n60.7%\n\nHard",
+        "url": "https://leetcode.com/problems/serialize-and-deseri\u2026inary-tree?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_297serializeand_27"
+    },
+    {
+        "title": "424. Longest Repeating Character Replacement\n59.5%\n\nMed.",
+        "url": "https://leetcode.com/problems/longest-repeating-ch\u2026eplacement?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_424longestrepea_28"
+    },
+    {
+        "title": "300. Longest Increasing Subsequence\n59.3%\n\nMed.",
+        "url": "https://leetcode.com/problems/longest-increasing-subsequence?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_300longestincre_29"
+    },
+    {
+        "title": "48. Rotate Image\n79.9%\n\nMed.",
+        "url": "https://leetcode.com/problems/rotate-image?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_48rotateimage79_30"
+    },
+    {
+        "title": "49. Group Anagrams\n72.5%\n\nMed.",
+        "url": "https://leetcode.com/problems/group-anagrams?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_49groupanagrams_31"
+    },
+    {
+        "title": "435. Non-overlapping Intervals\n57.0%\n\nMed.",
+        "url": "https://leetcode.com/problems/non-overlapping-intervals?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_435nonoverlappi_32"
+    },
+    {
+        "title": "53. Maximum Subarray\n53.3%\n\nMed.",
+        "url": "https://leetcode.com/problems/maximum-subarray?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_53maximumsubarr_33"
+    },
+    {
+        "title": "54. Spiral Matrix\n56.7%\n\nMed.",
+        "url": "https://leetcode.com/problems/spiral-matrix?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_54spiralmatrix5_34"
+    },
+    {
+        "title": "55. Jump Game\n40.8%\n\nMed.",
+        "url": "https://leetcode.com/problems/jump-game?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_55jumpgame408me_35"
+    },
+    {
+        "title": "56. Merge Intervals\n51.7%\n\nMed.",
+        "url": "https://leetcode.com/problems/merge-intervals?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_56mergeinterval_36"
+    },
+    {
+        "title": "57. Insert Interval\n45.1%\n\nMed.",
+        "url": "https://leetcode.com/problems/insert-interval?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_57insertinterva_37"
+    },
+    {
+        "title": "572. Subtree of Another Tree\n51.5%\n\nEasy",
+        "url": "https://leetcode.com/problems/subtree-of-another-tree?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_572subtreeofano_38"
+    },
+    {
+        "title": "62. Unique Paths\n66.8%\n\nMed.",
+        "url": "https://leetcode.com/problems/unique-paths?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_62uniquepaths66_39"
+    },
+    {
+        "title": "190. Reverse Bits\n68.3%\n\nEasy",
+        "url": "https://leetcode.com/problems/reverse-bits?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_190reversebits6_40"
+    },
+    {
+        "title": "191. Number of 1 Bits\n76.7%\n\nEasy",
+        "url": "https://leetcode.com/problems/number-of-1-bits?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_191numberof1bit_41"
+    },
+    {
+        "title": "322. Coin Change\n48.3%\n\nMed.",
+        "url": "https://leetcode.com/problems/coin-change?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_322coinchange48_42"
+    },
+    {
+        "title": "323. Number of Connected Components in an Undirected Graph\n64.9%\n\nMed.",
+        "url": "https://leetcode.com/problems/number-of-connected-\u2026cted-graph?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_323numberofconn_43"
+    },
+    {
+        "title": "70. Climbing Stairs\n54.1%\n\nEasy",
+        "url": "https://leetcode.com/problems/climbing-stairs?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_70climbingstair_44"
+    },
+    {
+        "title": "198. House Robber\n53.2%\n\nMed.",
+        "url": "https://leetcode.com/problems/house-robber?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_198houserobber5_45"
+    },
+    {
+        "title": "200. Number of Islands\n64.3%\n\nMed.",
+        "url": "https://leetcode.com/problems/number-of-islands?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_200numberofisla_46"
+    },
+    {
+        "title": "73. Set Matrix Zeroes\n62.8%\n\nMed.",
+        "url": "https://leetcode.com/problems/set-matrix-zeroes?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_73setmatrixzero_47"
+    },
+    {
+        "title": "76. Minimum Window Substring\n47.4%\n\nHard",
+        "url": "https://leetcode.com/problems/minimum-window-substring?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_76minimumwindow_48"
+    },
+    {
+        "title": "206. Reverse Linked List\n80.5%\n\nEasy",
+        "url": "https://leetcode.com/problems/reverse-linked-list?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_206reverselinke_49"
+    },
+    {
+        "title": "79. Word Search\n47.3%\n\nMed.",
+        "url": "https://leetcode.com/problems/word-search?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_79wordsearch473_50"
+    },
+    {
+        "title": "207. Course Schedule\n51.3%\n\nMed.",
+        "url": "https://leetcode.com/problems/course-schedule?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_207courseschedu_51"
+    },
+    {
+        "title": "208. Implement Trie (Prefix Tree)\n69.4%\n\nMed.",
+        "url": "https://leetcode.com/problems/implement-trie-prefix-tree?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_208implementtri_52"
+    },
+    {
+        "title": "338. Counting Bits\n80.6%\n\nEasy",
+        "url": "https://leetcode.com/problems/counting-bits?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_338countingbits_53"
+    },
+    {
+        "title": "211. Design Add and Search Words Data Structure\n48.4%\n\nMed.",
+        "url": "https://leetcode.com/problems/design-add-and-searc\u2026-structure?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_211designaddand_54"
+    },
+    {
+        "title": "212. Word Search II\n38.4%\n\nHard",
+        "url": "https://leetcode.com/problems/word-search-ii?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_212wordsearchii_55"
+    },
+    {
+        "title": "213. House Robber II\n44.9%\n\nMed.",
+        "url": "https://leetcode.com/problems/house-robber-ii?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_213houserobberi_56"
+    },
+    {
+        "title": "217. Contains Duplicate\n64.3%\n\nEasy",
+        "url": "https://leetcode.com/problems/contains-duplicate?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_217containsdupl_57"
+    },
+    {
+        "title": "91. Decode Ways\n37.9%\n\nMed.",
+        "url": "https://leetcode.com/problems/decode-ways?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_91decodeways379_58"
+    },
+    {
+        "title": "347. Top K Frequent Elements\n66.3%\n\nMed.",
+        "url": "https://leetcode.com/problems/top-k-frequent-elements?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_347topkfrequent_59"
+    },
+    {
+        "title": "253. Meeting Rooms II\n52.7%\n\nMed.",
+        "url": "https://leetcode.com/problems/meeting-rooms-ii?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_253meetingrooms_60"
+    },
+    {
+        "title": "98. Validate Binary Search Tree\n35.7%\n\nMed.",
+        "url": "https://leetcode.com/problems/validate-binary-search-tree?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_98validatebinar_61"
+    },
+    {
+        "title": "226. Invert Binary Tree\n80.0%\n\nEasy",
+        "url": "https://leetcode.com/problems/invert-binary-tree?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_226invertbinary_62"
+    },
+    {
+        "title": "100. Same Tree\n67.1%\n\nEasy",
+        "url": "https://leetcode.com/problems/same-tree?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_100sametree671e_63"
+    },
+    {
+        "title": "1143. Longest Common Subsequence\n59.1%\n\nMed.",
+        "url": "https://leetcode.com/problems/longest-common-subsequence?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_1143longestcomm_64"
+    },
+    {
+        "title": "102. Binary Tree Level Order Traversal\n72.6%\n\nMed.",
+        "url": "https://leetcode.com/problems/binary-tree-level-or\u2026-traversal?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_102binarytreele_65"
+    },
+    {
+        "title": "230. Kth Smallest Element in a BST\n76.8%\n\nMed.",
+        "url": "https://leetcode.com/problems/kth-smallest-element-in-a-bst?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_230kthsmalleste_66"
+    },
+    {
+        "title": "104. Maximum Depth of Binary Tree\n78.1%\n\nEasy",
+        "url": "https://leetcode.com/problems/maximum-depth-of-binary-tree?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_104maximumdepth_67"
+    },
+    {
+        "title": "105. Construct Binary Tree from Preorder and Inorder Traversal\n68.8%\n\nMed.",
+        "url": "https://leetcode.com/problems/construct-binary-tre\u2026-traversal?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_105constructbin_68"
+    },
+    {
+        "title": "235. Lowest Common Ancestor of a Binary Search Tree\n70.5%\n\nMed.",
+        "url": "https://leetcode.com/problems/lowest-common-ancest\u2026earch-tree?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_235lowestcommon_69"
+    },
+    {
+        "title": "238. Product of Array Except Self\n68.8%\n\nMed.",
+        "url": "https://leetcode.com/problems/product-of-array-except-self?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_238productofarr_70"
+    },
+    {
+        "title": "242. Valid Anagram\n68.0%\n\nEasy",
+        "url": "https://leetcode.com/problems/valid-anagram?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_242validanagram_71"
+    },
+    {
+        "title": "371. Sum of Two Integers\n55.4%\n\nMed.",
+        "url": "https://leetcode.com/problems/sum-of-two-integers?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_371sumoftwointe_72"
+    },
+    {
+        "title": "252. Meeting Rooms\n59.4%\n\nEasy",
+        "url": "https://leetcode.com/problems/meeting-rooms?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_252meetingrooms_73"
+    },
+    {
+        "title": "121. Best Time to Buy and Sell Stock\n56.7%\n\nEasy",
+        "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_121besttimetobu_74"
+    },
+    {
+        "title": "124. Binary Tree Maximum Path Sum\n42.3%\n\nHard",
+        "url": "https://leetcode.com/problems/binary-tree-maximum-path-sum?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_124binarytreema_75"
+    },
+    {
+        "title": "125. Valid Palindrome\n53.2%\n\nEasy",
+        "url": "https://leetcode.com/problems/valid-palindrome?envType=problem-list-v2&envId=oizxjoit",
+        "id": "blind75_125validpalindr_76"
+    }
+]
