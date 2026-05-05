@@ -1,41 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-color: #0f1115; /* Dark premium background */
-  --surface-color: #1a1d24; /* Card background */
-  --surface-hover: #242831;
-  --text-primary: #f8f9fa;
-  --text-secondary: #9ca3af;
-  --border-color: #2d313a;
-  
-  --primary-color: #10b981; /* Emerald green */
-  --primary-hover: #059669;
-  --danger-color: #ef4444;
-  --warning-color: #eab308;
-  --revision-color: #f59e0b;
-  
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --glass-bg: rgba(26, 29, 36, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  /* ── Dark mode — Android Developer Console palette ── */
+  --bg-color:       #000000;  /* True black body */
+  --surface-color:  #202124;  /* Google dark card gray */
+  --surface-hover:  #2d2f31;  /* Slightly lighter on hover */
+  --text-primary:   #e8eaed;  /* Off-white — high readability */
+  --text-secondary: #9aa0a6;  /* Muted gray subtext */
+  --border-color:   #3c4043;  /* Dark gray divider */
+
+  --primary-color:  #8ab4f8;  /* Google soft blue */
+  --primary-hover:  #1a73e8;  /* Google vibrant blue on hover */
+  --danger-color:   #f28b82;  /* Soft red */
+  --warning-color:  #fdd663;  /* Warm amber */
+  --revision-color: #3ddc84;  /* Android green for revision star */
+
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 12px -1px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 30px -3px rgb(0 0 0 / 0.6), 0 4px 10px -4px rgb(0 0 0 / 0.4);
+  --glass-bg:     rgba(32, 33, 36, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.07);
 
   --sidebar-width: 280px;
   --header-height: 70px;
 }
 
 [data-theme='light'] {
-  --bg-color: #f3f4f6;
-  --surface-color: #ffffff;
-  --surface-hover: #f9fafb;
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --border-color: #e5e7eb;
-  
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(0, 0, 0, 0.05);
+  /* ── Light mode — Exteragram.app palette ── */
+  --bg-color:       #f8fafc;  /* Soft slate off-white */
+  --surface-color:  #ffffff;  /* Pure white card */
+  --surface-hover:  #f1f5f9;  /* Neutral hover */
+  --text-primary:   #000000;  /* Pure black */
+  --text-secondary: #4f4f4f;  /* Deep gray */
+  --border-color:   #e2e8f0;  /* Light slate border */
+
+  --primary-color:  #eb5757;  /* Exteragram coral-red */
+  --primary-hover:  #dc2626;  /* Darker red on hover */
+  --danger-color:   #ef4444;
+  --warning-color:  #f59e0b;
+  --revision-color: #f97316;  /* Orange for revision */
+
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06);
+  --shadow-md: 0 4px 12px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 30px -3px rgb(0 0 0 / 0.15);
+  --glass-bg:     rgba(248, 250, 252, 0.88);
+  --glass-border: rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -145,12 +154,41 @@ body {
 /* Sidebar */
 .sidebar {
   width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
   background-color: var(--surface-color);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   padding: 1.5rem 0;
   overflow-y: auto;
+  transition: width 0.3s ease, min-width 0.3s ease, padding 0.3s ease;
+  position: relative;
+}
+
+.sidebar.collapsed {
+  width: 72px;
+  min-width: 72px;
+  padding: 1.5rem 0;
+}
+
+.sidebar-toggle-btn {
+  width: 36px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.sidebar-toggle-btn:hover {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
 }
 
 .sidebar-title {
@@ -160,6 +198,14 @@ body {
   letter-spacing: 0.05em;
   color: var(--text-secondary);
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar.collapsed .sidebar-title,
+.sidebar.collapsed .sheet-list {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .sheet-list {
@@ -168,6 +214,7 @@ body {
   flex-direction: column;
   gap: 0.25rem;
   padding: 0 1rem;
+  transition: opacity 0.2s ease;
 }
 
 .sheet-item {
@@ -180,13 +227,14 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  white-space: nowrap;
 }
 .sheet-item:hover {
   background-color: var(--surface-hover);
   color: var(--text-primary);
 }
 .sheet-item.active {
-  background-color: rgba(16, 185, 129, 0.1);
+  background-color: rgba(138, 180, 248, 0.1);
   color: var(--primary-color);
 }
 

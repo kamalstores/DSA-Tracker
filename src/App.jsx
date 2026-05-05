@@ -10,6 +10,7 @@ import Dashboard from './components/Dashboard'
 function App() {
   const [activeSheet, setActiveSheet] = useState('a2z_flawless')
   const [showDashboard, setShowDashboard] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
     <ThemeProvider>
@@ -22,7 +23,9 @@ function App() {
                 activeSheet={activeSheet} 
                 setActiveSheet={setActiveSheet} 
                 showDashboard={showDashboard}
-                setShowDashboard={setShowDashboard} 
+                setShowDashboard={setShowDashboard}
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
               />
               <main className="main-content" style={{ display: 'flex', flexDirection: 'column' }}>
                 <div style={{ flex: 1 }}>
