@@ -1,16 +1,48 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
-import { auth, googleProvider, analytics } from '../firebase-config';
+import { auth, googleProvider, analytics, db } from '../firebase-config';
 import { logEvent } from 'firebase/analytics';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export const AuthContext = createContext();
+
+// Ensures every authenticated user has a Firestore document.
+// This runs on every page load for logged-in users, so it will
+// automatically backfill documents for users who signed up before
+// this logic was added.
+const ensureUserDocument = async (firebaseUser) => {
+  if (!firebaseUser) return;
+  try {
+    const userRef = doc(db, 'users', firebaseUser.uid);
+    const docSnap = await getDoc(userRef);
+
+    if (!docSnap.exists()) {
+      // Brand new user — create their document immediately
+      await setDoc(userRef, {
+        displayName: firebaseUser.displayName || '',
+        email: firebaseUser.email || '',
+        photoURL: firebaseUser.photoURL || '',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        progress: {},
+        totalSolved: 0,
+      });
+      console.log('✅ New user document created in Firestore:', firebaseUser.uid);
+    }
+  } catch (err) {
+    console.error('Error ensuring user document:', err);
+  }
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      // Ensure Firestore doc exists for every authenticated user
+      // (catches both new sign-ups and existing users missing from Firestore)
+      await ensureUserDocument(currentUser);
       setUser(currentUser);
       setLoading(false);
     });
@@ -20,30 +52,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      logEvent(analytics, "sign_up", { method: "google" });
-      
-      // Ensure user document exists in Firestore immediately upon signup
-      if (result.user) {
-        const { doc, getDoc, setDoc, serverTimestamp } = await import('firebase/firestore');
-        const { db } = await import('../firebase-config');
-        const userRef = doc(db, 'users', result.user.uid);
-        const docSnap = await getDoc(userRef);
-        
-        if (!docSnap.exists()) {
-          await setDoc(userRef, {
-            displayName: result.user.displayName || '',
-            email: result.user.email || '',
-            photoURL: result.user.photoURL || '',
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-            progress: {},
-            totalSolved: 0
-          });
-        }
-      }
+      await signInWithPopup(auth, googleProvider);
+      logEvent(analytics, 'sign_up', { method: 'google' });
     } catch (error) {
-      console.error("Error signing in with Google", error);
+      console.error('Error signing in with Google', error);
     }
   };
 
@@ -51,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await signOut(auth);
     } catch (error) {
-      console.error("Error signing out", error);
+      console.error('Error signing out', error);
     }
   };
 
