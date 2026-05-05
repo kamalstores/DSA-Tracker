@@ -198,10 +198,6 @@ const CelebrationOverlay = ({ type, title, tagline, onClose }) => {
           from { opacity: 0; transform: translateY(28px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes cin-fade {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
       `}</style>
     </div>
   );
@@ -302,7 +298,6 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
   const showCn   = sheetId === 'a2z_flawless';
   const showTuf  = sheetId === 'a2z_flawless';
 
-  const guard = (fn) => { if (!user) { onAuthRequired(); return; } fn(); };
 
   return (
     <div style={{ overflowX: 'auto' }}>
