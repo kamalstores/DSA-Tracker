@@ -124,7 +124,7 @@ export const ProgressProvider = ({ children }) => {
         }
 
         setProgress(parsed);
-      } catch (_) {}
+      } catch (_) { }
     }
   }, []);
 

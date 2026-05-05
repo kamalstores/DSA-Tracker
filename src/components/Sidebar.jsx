@@ -13,17 +13,17 @@ const getSavedOrder = () => {
       const remaining = SHEETS.filter(s => !ids.includes(s.id));
       return [...ordered, ...remaining];
     }
-  } catch {}
+  } catch { }
   return SHEETS;
 };
 
-const Sidebar = ({ 
-  activeSheet, 
-  setActiveSheet, 
-  showDashboard, 
+const Sidebar = ({
+  activeSheet,
+  setActiveSheet,
+  showDashboard,
   setShowDashboard,
   sidebarOpen,
-  setSidebarOpen 
+  setSidebarOpen
 }) => {
   const [sheets, setSheets] = useState(getSavedOrder);
   const [sheetsOpen, setSheetsOpen] = useState(true);
@@ -49,16 +49,16 @@ const Sidebar = ({
 
   return (
     <aside className={`sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: sidebarOpen ? 'space-between' : 'center',
         padding: '0 1rem 1rem',
         borderBottom: sidebarOpen ? '1px solid var(--border-color)' : 'none',
         marginBottom: '1rem'
       }}>
         {sidebarOpen && <div className="sidebar-title" style={{ padding: 0, margin: 0 }}>Menu</div>}
-        <button 
+        <button
           className="sidebar-toggle-btn"
           onClick={() => setSidebarOpen(!sidebarOpen)}
           style={{ position: 'static', transform: 'none' }}
