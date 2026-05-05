@@ -20,8 +20,28 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
       logEvent(analytics, "sign_up", { method: "google" });
+      
+      // Ensure user document exists in Firestore immediately upon signup
+      if (result.user) {
+        const { doc, getDoc, setDoc, serverTimestamp } = await import('firebase/firestore');
+        const { db } = await import('../firebase-config');
+        const userRef = doc(db, 'users', result.user.uid);
+        const docSnap = await getDoc(userRef);
+        
+        if (!docSnap.exists()) {
+          await setDoc(userRef, {
+            displayName: result.user.displayName || '',
+            email: result.user.email || '',
+            photoURL: result.user.photoURL || '',
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            progress: {},
+            totalSolved: 0
+          });
+        }
+      }
     } catch (error) {
       console.error("Error signing in with Google", error);
     }
