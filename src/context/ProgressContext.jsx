@@ -206,15 +206,31 @@ export const ProgressProvider = ({ children }) => {
             }
           }
         } else {
-          // No cloud doc at all → sync local to cloud
-          console.log('No cloud doc. Syncing local data to cloud...');
+          // No cloud doc at all → sync local to cloud or create new doc
+          console.log('No cloud doc. Creating one and syncing local data...');
           const localStored = localStorage.getItem('dsaTrackerProgress');
+          let localData = {};
           if (localStored) {
-            const localData = JSON.parse(localStored);
-            if (!isOldFormat(localData)) {
-              await setDoc(docRef, { progress: localData }, { merge: true });
+            const parsed = JSON.parse(localStored);
+            if (!isOldFormat(parsed)) {
+              localData = parsed;
             }
           }
+          
+          let totalSolved = 0;
+          Object.values(localData).forEach(sheet => {
+            Object.values(sheet).forEach(q => { if (q.status) totalSolved++; });
+          });
+
+          await setDoc(docRef, { 
+            progress: localData,
+            totalSolved,
+            displayName: user.displayName || '',
+            email: user.email || '',
+            photoURL: user.photoURL || '',
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          }, { merge: true });
         }
       } catch (error) {
         console.error('Error fetching cloud progress:', error);
