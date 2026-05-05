@@ -6,10 +6,12 @@ import Header from './components/Header'
 import Sidebar from './components/Sidebar'
 import SheetView from './components/SheetView'
 import Dashboard from './components/Dashboard'
+import AdminDashboard from './components/AdminDashboard'
 
 function App() {
   const [activeSheet, setActiveSheet] = useState('a2z_flawless')
   const [showDashboard, setShowDashboard] = useState(false)
+  const [showAdmin, setShowAdmin] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
@@ -17,7 +19,10 @@ function App() {
       <AuthProvider>
         <ProgressProvider>
           <div className="app-container">
-            <Header setShowDashboard={setShowDashboard} />
+            <Header
+              setShowDashboard={(v) => { setShowDashboard(v); setShowAdmin(false); }}
+              setShowAdmin={(v) => { setShowAdmin(v); setShowDashboard(false); }}
+            />
             <div className="main-layout">
               <Sidebar 
                 activeSheet={activeSheet} 
@@ -29,7 +34,9 @@ function App() {
               />
               <main className="main-content" style={{ display: 'flex', flexDirection: 'column' }}>
                 <div style={{ flex: 1 }}>
-                  {showDashboard ? (
+                  {showAdmin ? (
+                    <AdminDashboard />
+                  ) : showDashboard ? (
                     <Dashboard setActiveSheet={setActiveSheet} setShowDashboard={setShowDashboard} />
                   ) : (
                     <SheetView activeSheet={activeSheet} />

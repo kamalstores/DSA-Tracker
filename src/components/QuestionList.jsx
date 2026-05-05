@@ -69,7 +69,7 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired }) => {
   const { progress, updateQuestionStatus } = useContext(ProgressContext);
   const { user } = useContext(AuthContext);
 
-  const showBlog = sheetId === 'a2z_flawless';
+  const showBlog = sheetId === 'a2z_flawless' || sheetId === 'SDE';
   const showYt   = sheetId === 'a2z_flawless' || sheetId === 'SDE';
   const showGfg  = sheetId === 'a2z_flawless';
   const showCn   = sheetId === 'a2z_flawless';

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase-config';
+import { auth, googleProvider, analytics } from '../firebase-config';
+import { logEvent } from 'firebase/analytics';
 
 export const AuthContext = createContext();
 
@@ -20,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   const login = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
+      logEvent(analytics, "sign_up", { method: "google" });
     } catch (error) {
       console.error("Error signing in with Google", error);
     }

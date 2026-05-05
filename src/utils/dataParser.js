@@ -112,15 +112,23 @@ export const fetchAndParseSheet = async (sheetId) => {
             id: q.id,
             title: q.Question,
             url: q.Question_link,
-            links: { lc: q.Question_link?.includes('leetcode') ? q.Question_link : null, yt: q.Solution_link },
+            links: {
+              blog: q.Blog_link || null,
+              yt: q.Solution_link || null,
+              lc: q.Question_link?.includes('leetcode') ? q.Question_link : null
+            },
             difficulty: 1
           };
         });
-        let formattedTitle = category.toUpperCase();
-        if (formattedTitle.endsWith('III')) formattedTitle = formattedTitle.slice(0, -3) + ' - III';
-        else if (formattedTitle.endsWith('II')) formattedTitle = formattedTitle.slice(0, -2) + ' - II';
-        else if (formattedTitle.endsWith('IV')) formattedTitle = formattedTitle.slice(0, -2) + ' - IV';
-        else if (formattedTitle.endsWith('I')) formattedTitle = formattedTitle.slice(0, -1) + ' - I';
+
+        // The category key already contains a readable name like 'arrays6/6'
+        // Format it: remove the count suffix (e.g. '6/6'), capitalize nicely
+        const titleRaw = category.replace(/\d+\/\d+$/, '').trim();
+        const formattedTitle = titleRaw
+          .replace(/([a-z])([A-Z])/g, '$1 $2')   // camelCase → words
+          .replace(/-/g, ' - ')                   // hyphens → spaced hyphens
+          .replace(/\b\w/g, c => c.toUpperCase()) // Title Case
+          .trim();
 
         return {
           title: formattedTitle,
