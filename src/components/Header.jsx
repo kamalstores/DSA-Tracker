@@ -1,7 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 import { AuthContext } from '../context/AuthContext';
-import { Sun, Moon, LogIn, LogOut, LayoutDashboard, ShieldCheck, X } from 'lucide-react';
+import { Sun, Moon, LogIn, LogOut, LayoutDashboard, ShieldCheck, X, Menu } from 'lucide-react';
+
+// Track real viewport width — reliable across all mobile browsers
+const useIsMobile = (breakpoint = 768) => {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, [breakpoint]);
+  return isMobile;
+};
 
 // Must match the ADMIN_UID in AdminDashboard.jsx
 const ADMIN_UID = 'JROhXIAevXfsMos9qTTXcpf92vD2';
@@ -118,22 +129,39 @@ const SupportModal = ({ onClose }) => {
 };
 
 /* ─── Header ─────────────────────────────────────────────────── */
-const Header = ({ setShowDashboard, setShowAdmin }) => {
+const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSidebarOpen }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { user, login, logout } = useContext(AuthContext);
   const isAdmin = user && user.uid === ADMIN_UID;
   const [showSupport, setShowSupport] = useState(false);
+  const isMobile = useIsMobile();
 
   return (
     <>
       <header className="header">
         <div className="header-left">
+          {/* Hamburger — shown only on mobile (React-controlled, not CSS-only) */}
+          {isMobile && (
+            <button
+              className="icon-btn"
+              onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+              aria-label="Toggle menu"
+              style={{ marginRight: '0.25rem' }}
+            >
+              <Menu size={22} />
+            </button>
+          )}
+
           <div className="logo" onClick={() => setShowDashboard(false)}>Master DSA</div>
         </div>
+
         <div className="header-right">
-          <button className="btn-secondary" onClick={() => setShowSupport(true)}>
-            Support Developer
-          </button>
+          {/* Support button — hide on mobile to save space */}
+          {!isMobile && (
+            <button className="btn-secondary" onClick={() => setShowSupport(true)}>
+              Support Developer
+            </button>
+          )}
 
           <button className="icon-btn" onClick={toggleTheme}>
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -141,12 +169,16 @@ const Header = ({ setShowDashboard, setShowAdmin }) => {
 
           {user ? (
             <>
-              <button className="btn-secondary" onClick={() => setShowDashboard(true)}>
-                <LayoutDashboard size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                Dashboard
+              {/* Dashboard button: icon-only on mobile */}
+              <button
+                className={isMobile ? 'icon-btn' : 'btn-secondary'}
+                onClick={() => setShowDashboard(true)}
+                title="Dashboard"
+              >
+                <LayoutDashboard size={18} />
+                {!isMobile && <span style={{ marginLeft: '6px' }}>Dashboard</span>}
               </button>
 
-              {/* Only visible to the admin */}
               {isAdmin && (
                 <button
                   className="icon-btn"
@@ -158,13 +190,25 @@ const Header = ({ setShowDashboard, setShowAdmin }) => {
                 </button>
               )}
 
-              <button className="btn-primary" onClick={logout} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <LogOut size={16} /> Logout
+              {/* Logout: icon-only on mobile */}
+              <button
+                className="btn-primary"
+                onClick={logout}
+                style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: isMobile ? '0.5rem' : undefined }}
+                title="Logout"
+              >
+                <LogOut size={16} />
+                {!isMobile && <span>Logout</span>}
               </button>
             </>
           ) : (
-            <button className="btn-primary" onClick={login} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <LogIn size={16} /> Sign In
+            <button
+              className="btn-primary"
+              onClick={login}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: isMobile ? '0.5rem' : undefined }}
+            >
+              <LogIn size={16} />
+              {!isMobile && <span>Sign In</span>}
             </button>
           )}
         </div>

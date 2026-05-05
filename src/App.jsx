@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider } from './context/AuthContext'
 import { ProgressProvider } from './context/ProgressContext'
@@ -8,11 +8,36 @@ import SheetView from './components/SheetView'
 import Dashboard from './components/Dashboard'
 import AdminDashboard from './components/AdminDashboard'
 
+const useIsMobile = (breakpoint = 768) => {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, [breakpoint]);
+  return isMobile;
+};
+
 function App() {
+  const isMobile = useIsMobile();
   const [activeSheet, setActiveSheet] = useState('a2z_flawless')
   const [showDashboard, setShowDashboard] = useState(false)
   const [showAdmin, setShowAdmin] = useState(false)
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  // Desktop: sidebar open by default; Mobile: always use overlay
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 768)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+
+  // Close mobile sidebar when a sheet is selected
+  const handleSetActiveSheet = (id) => {
+    setActiveSheet(id)
+    setMobileSidebarOpen(false)
+  }
+
+  const handleSetShowDashboard = (v) => {
+    setShowDashboard(v)
+    setShowAdmin(false)
+    setMobileSidebarOpen(false)
+  }
 
   return (
     <ThemeProvider>
@@ -20,24 +45,44 @@ function App() {
         <ProgressProvider>
           <div className="app-container">
             <Header
-              setShowDashboard={(v) => { setShowDashboard(v); setShowAdmin(false); }}
+              setShowDashboard={handleSetShowDashboard}
               setShowAdmin={(v) => { setShowAdmin(v); setShowDashboard(false); }}
+              mobileSidebarOpen={mobileSidebarOpen}
+              setMobileSidebarOpen={setMobileSidebarOpen}
             />
             <div className="main-layout">
-              <Sidebar 
-                activeSheet={activeSheet} 
-                setActiveSheet={setActiveSheet} 
+              {/* Mobile sidebar overlay backdrop */}
+              {mobileSidebarOpen && (
+                <div
+                  onClick={() => setMobileSidebarOpen(false)}
+                  style={{
+                    position: 'fixed',
+                    inset: 0,
+                    zIndex: 199,
+                    background: 'rgba(0,0,0,0.55)',
+                    backdropFilter: 'blur(2px)',
+                    WebkitBackdropFilter: 'blur(2px)',
+                  }}
+                />
+              )}
+
+              <Sidebar
+                activeSheet={activeSheet}
+                setActiveSheet={handleSetActiveSheet}
                 showDashboard={showDashboard}
-                setShowDashboard={setShowDashboard}
+                setShowDashboard={handleSetShowDashboard}
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
+                mobileSidebarOpen={mobileSidebarOpen}
+                setMobileSidebarOpen={setMobileSidebarOpen}
               />
+
               <main className="main-content" style={{ display: 'flex', flexDirection: 'column' }}>
                 <div style={{ flex: 1 }}>
                   {showAdmin ? (
                     <AdminDashboard />
                   ) : showDashboard ? (
-                    <Dashboard setActiveSheet={setActiveSheet} setShowDashboard={setShowDashboard} />
+                    <Dashboard setActiveSheet={handleSetActiveSheet} setShowDashboard={handleSetShowDashboard} />
                   ) : (
                     <SheetView activeSheet={activeSheet} />
                   )}

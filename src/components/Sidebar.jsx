@@ -1,6 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { SHEETS } from '../utils/dataParser';
-import { Book, Layout, GripVertical, ChevronDown, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Book, Layout, GripVertical, ChevronDown, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
+
+const useIsMobile = (breakpoint = 768) => {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, [breakpoint]);
+  return isMobile;
+};
 
 const STORAGE_KEY = 'dsa_sheet_order';
 
@@ -23,7 +33,9 @@ const Sidebar = ({
   showDashboard,
   setShowDashboard,
   sidebarOpen,
-  setSidebarOpen
+  setSidebarOpen,
+  mobileSidebarOpen,
+  setMobileSidebarOpen,
 }) => {
   const [sheets, setSheets] = useState(getSavedOrder);
   const [sheetsOpen, setSheetsOpen] = useState(true);
@@ -47,24 +59,36 @@ const Sidebar = ({
     setDragOverIndex(null);
   };
 
-  return (
-    <aside className={`sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
+  const isMobile = useIsMobile();
+
+  const sidebarContent = (
+    <>
+      {/* Top bar with title + close/toggle */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: sidebarOpen ? 'space-between' : 'center',
         padding: '0 1rem 1rem',
-        borderBottom: sidebarOpen ? '1px solid var(--border-color)' : 'none',
+        borderBottom: '1px solid var(--border-color)',
         marginBottom: '1rem'
       }}>
         {sidebarOpen && <div className="sidebar-title" style={{ padding: 0, margin: 0 }}>Menu</div>}
+        {/* Desktop collapse toggle — hidden on mobile */}
         <button
-          className="sidebar-toggle-btn"
+          className="sidebar-toggle-btn desktop-only"
           onClick={() => setSidebarOpen(!sidebarOpen)}
           style={{ position: 'static', transform: 'none' }}
           title={sidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
         >
           {sidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
+        </button>
+        {/* Mobile close button — hidden on desktop */}
+        <button
+          className="sidebar-toggle-btn mobile-only"
+          onClick={() => setMobileSidebarOpen(false)}
+          title="Close"
+        >
+          <X size={20} />
         </button>
       </div>
 
@@ -141,6 +165,44 @@ const Sidebar = ({
           </li>
         ))}
       </ul>
+    </>
+  );
+
+  // On mobile: render a slide-in overlay sidebar
+  // On desktop: render the collapsible aside sidebar
+  if (isMobile) {
+    return (
+      <>
+        {/* Mobile slide-in overlay */}
+        <aside
+          style={{
+            position: 'fixed',
+            top: '60px',
+            left: 0,
+            bottom: 0,
+            width: '280px',
+            zIndex: 200,
+            background: 'var(--surface-color)',
+            borderRight: '1px solid var(--border-color)',
+            overflowY: 'auto',
+            padding: '1.5rem 0',
+            boxShadow: '4px 0 24px rgba(0,0,0,0.3)',
+            transform: mobileSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+            transition: 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {sidebarContent}
+        </aside>
+      </>
+    );
+  }
+
+  // Desktop sidebar
+  return (
+    <aside className={`sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
+      {sidebarContent}
     </aside>
   );
 };

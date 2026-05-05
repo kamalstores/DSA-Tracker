@@ -1090,3 +1090,263 @@ body {
   0%   { box-shadow: 0 0 0 3px rgba(61, 220, 132, 0.5); }
   100% { box-shadow: 0 0 0 1px rgba(61, 220, 132, 0.15); }
 }
+
+/* ════════════════════════════════════════════
+   Mobile / Responsive
+════════════════════════════════════════════ */
+
+/* Utility: desktop-only hides on mobile, mobile-only hides on desktop */
+.desktop-only { display: flex; }
+.mobile-only  { display: none; }
+.mobile-menu-btn { display: none; }
+
+/* Desktop sidebar always visible; mobile sidebar hidden off-screen */
+.desktop-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-sidebar {
+  display: none;
+}
+
+/* Sidebar backdrop (mobile overlay) */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  animation: backdrop-in 0.2s ease;
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Breakpoint: tablet & below (< 768px) ── */
+@media (max-width: 768px) {
+  /* Header */
+  .header {
+    padding: 0 1rem;
+    height: 60px;
+  }
+
+  --header-height: 60px;
+
+  .mobile-menu-btn {
+    display: flex;
+    margin-right: 0.25rem;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .header-left .logo {
+    font-size: 1.2rem;
+  }
+
+  /* Hide text labels on small screens to save space */
+  .btn-label {
+    display: none;
+  }
+
+  /* Hide support button text, show as icon only */
+  .support-btn {
+    display: none;
+  }
+
+  .dashboard-btn {
+    padding: 0.5rem;
+    min-width: unset;
+  }
+
+  .header-right {
+    gap: 0.5rem;
+  }
+
+  /* Layout */
+  .main-layout {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Desktop sidebar hidden on mobile */
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  /* Mobile sidebar — slide in from left */
+  .mobile-sidebar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--surface-color);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    padding: 1.5rem 0;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+  }
+
+  .mobile-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+  }
+
+  /* Utility toggle */
+  .desktop-only { display: none !important; }
+  .mobile-only  { display: flex !important; }
+
+  /* Main content */
+  .main-content {
+    padding: 1rem 1rem;
+    width: 100%;
+  }
+
+  /* Sheet header */
+  .sheet-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .sheet-header p {
+    font-size: 0.95rem;
+  }
+
+  /* Stats grid — 2 columns on mobile */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .stat-card {
+    padding: 1rem 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.4rem;
+  }
+
+  /* Filter tabs — scrollable row */
+  .filter-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+
+  /* Accordion header */
+  .accordion-header {
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  /* Questions table — horizontal scroll */
+  .accordion-body {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .questions-table th,
+  .questions-table td {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  /* Admin dashboard */
+  .admin-dashboard {
+    padding: 0;
+  }
+
+  .admin-title {
+    font-size: 1.4rem;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .admin-stat-value {
+    font-size: 1.5rem;
+  }
+
+  .admin-section {
+    padding: 1rem;
+  }
+
+  .admin-topic-name {
+    width: 90px;
+    font-size: 0.75rem;
+  }
+
+  .admin-controls {
+    flex-direction: column;
+  }
+
+  .admin-search,
+  .admin-select {
+    width: 100%;
+  }
+
+  /* Dashboard profile */
+  .dashboard-profile {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+
+  .profile-img {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* ── Breakpoint: very small phones (< 480px) ── */
+@media (max-width: 480px) {
+  .header-left .logo {
+    font-size: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .main-content {
+    padding: 0.75rem;
+  }
+
+  .sheet-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .admin-topic-name {
+    width: 70px;
+    font-size: 0.7rem;
+  }
+}
