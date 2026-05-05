@@ -54,7 +54,7 @@ const SupportModal = ({ onClose }) => {
         </h2>
 
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-          This tracker is free forever. If it helped you prep, consider supporting! First — where are you from?
+          This tracker is free forever. If it helped you prep, consider supporting!
         </p>
 
         {/* Location choice */}
