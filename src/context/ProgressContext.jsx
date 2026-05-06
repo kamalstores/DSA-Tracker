@@ -7,13 +7,16 @@ import { SHEETS, fetchAndParseSheet } from '../utils/dataParser';
 export const ProgressContext = createContext();
 
 // ─────────────────────────────────────────────────────────────
-// Detects old flat format: { questionId: boolean }
-// vs new nested format:  { sheetId: { questionId: { status } } }
+// Detects whether `progress` contains ANY flat boolean values,
+// meaning it needs migration (handles pure old format AND the
+// mixed state where a previous partial migration left both flat
+// booleans and a nested a2z_flawless map side by side).
 // ─────────────────────────────────────────────────────────────
 const isOldFormat = (prog) => {
   const vals = Object.values(prog || {});
   if (vals.length === 0) return false;
-  return typeof vals[0] === 'boolean';
+  // Any boolean value at the top level = needs migration
+  return vals.some(v => typeof v === 'boolean');
 };
 
 // Build the full set of question IDs that belong to the A2Z sheet specifically.
@@ -32,25 +35,39 @@ const buildA2ZQuestionIds = async () => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// FIX (Bug 2): Removed the `if (!a2zIds.has(qId)) return` filter.
-// That filter was silently dropping all progress when old project
-// question IDs didn't exactly match the new project's JSON IDs,
-// which caused the migration to produce empty data and then
-// re-trigger on every login — wiping new ticks each time.
-// All old progress belongs to a2z_flawless, so we keep everything.
+// Handles three states of `cloudProgress`:
+//   1. Pure old flat:  { qId: boolean, ... }
+//   2. Pure new:       { a2z_flawless: { qId: { status, revision } } }
+//   3. Mixed (the real case): both flat booleans AND a2z_flawless
+//      map exist at the top level because a prior migration ran
+//      partially. We must preserve the already-nested data and
+//      migrate only the remaining flat booleans.
 // ─────────────────────────────────────────────────────────────
-const migrateToNewFormat = (flatProgress, flatRevision) => {
+const migrateToNewFormat = (cloudProgress, flatRevision) => {
   const newProgress = { a2z_flawless: {} };
 
-  const allIds = new Set([
-    ...Object.keys(flatProgress || {}),
-    ...Object.keys(flatRevision || {}),
-  ]);
+  // Step 1: Preserve any data already correctly nested under a2z_flawless
+  const existingA2Z = cloudProgress?.a2z_flawless;
+  if (existingA2Z && typeof existingA2Z === 'object') {
+    Object.assign(newProgress.a2z_flawless, existingA2Z);
+  }
 
-  allIds.forEach(qId => {
+  // Step 2: Migrate flat boolean entries — skip nested maps like a2z_flawless itself
+  Object.entries(cloudProgress || {}).forEach(([qId, val]) => {
+    if (typeof val !== 'boolean') return;
+    const existing = newProgress.a2z_flawless[qId] || { status: false, revision: false };
     newProgress.a2z_flawless[qId] = {
-      status: flatProgress?.[qId] === true,
-      revision: flatRevision?.[qId] === true,
+      status: existing.status || val === true,
+      revision: existing.revision || false,
+    };
+  });
+
+  // Step 3: Merge the flat revision map
+  Object.entries(flatRevision || {}).forEach(([qId, val]) => {
+    const existing = newProgress.a2z_flawless[qId] || { status: false, revision: false };
+    newProgress.a2z_flawless[qId] = {
+      status: existing.status,
+      revision: existing.revision || val === true,
     };
   });
 
@@ -140,17 +157,132 @@ export const ProgressProvider = ({ children }) => {
 
   // 2. Fetch from Firestore on login — migrate or consolidate if needed
   useEffect(() => {
+    // When user logs out, reset the guard so the next login fetches fresh.
     if (!user) {
-      sessionStorage.removeItem('pg_fetched_uid');
+      fetchedForUid.current = null;
       return;
     }
 
-    // Survive component remounts from OAuth popup — use sessionStorage not useRef
-    if (sessionStorage.getItem('pg_fetched_uid') === user.uid) return;
-    sessionStorage.setItem('pg_fetched_uid', user.uid);
+    // ── BUG 1 FIX: Only fetch once per uid, not on every re-render ──
+    // Firebase frequently re-emits the same user (token refresh, etc.).
+    // Without this check those re-emissions re-run the fetch, reading
+    // stale Firestore data that then stomps on any ticks the user just made.
+    if (fetchedForUid.current === user.uid) return;
+    fetchedForUid.current = user.uid;
 
     const fetchCloudProgress = async () => {
-      // ... rest of your fetch logic unchanged ...
+      setLoadingCloud(true);
+      try {
+        const docRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const docData = docSnap.data();
+          const cloudProgress = docData.progress || {};
+          const cloudRevision = docData.revision || {};
+
+          let dataToLoad = cloudProgress;
+          let needsWrite = false;
+          let shouldDeleteOldRevision = false;
+
+          // ── Case 1: Old flat format { questionId: boolean } ──
+          if (
+            isOldFormat(cloudProgress) ||
+            (Object.keys(cloudProgress).length === 0 && Object.keys(cloudRevision).length > 0)
+          ) {
+            console.log('⚙️ Old flat format detected, migrating to nested…');
+            // BUG 2 FIX: No ID filtering — pass only flat maps, keep all questions.
+            dataToLoad = migrateToNewFormat(cloudProgress, cloudRevision);
+            console.log('📦 Migration result:', Object.entries(dataToLoad).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
+            needsWrite = true;
+            // After migration, wipe the old `revision` field so this branch
+            // never triggers again for this user on future logins.
+            shouldDeleteOldRevision = Object.keys(cloudRevision).length > 0;
+          }
+          // ── Case 2: New nested format but A2Z questions in wrong buckets ──
+          else if (Object.keys(cloudProgress).length > 0) {
+            const a2zIds = await buildA2ZQuestionIds();
+            if (hasScatteredA2ZProgress(cloudProgress, a2zIds)) {
+              console.log('🔧 A2Z questions found in wrong sheet buckets — consolidating…');
+              dataToLoad = consolidateA2ZProgress(cloudProgress, a2zIds);
+              console.log('📦 Consolidation result:', Object.entries(dataToLoad).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
+              needsWrite = true;
+            }
+          }
+
+          // Count real entries to decide if cloud has data
+          const cloudCount = Object.values(dataToLoad).reduce(
+            (sum, sheet) => sum + Object.keys(sheet || {}).length, 0
+          );
+
+          if (cloudCount > 0) {
+            setProgress(dataToLoad);
+            localStorage.setItem('dsaTrackerProgress', JSON.stringify(dataToLoad));
+
+            if (needsWrite) {
+              let totalSolved = 0;
+              Object.values(dataToLoad).forEach(sheet => {
+                Object.values(sheet).forEach(q => { if (q.status) totalSolved++; });
+              });
+
+              await setDoc(docRef, {
+                progress: dataToLoad,
+                totalSolved,
+                displayName: user.displayName || '',
+                email: user.email || '',
+                photoURL: user.photoURL || '',
+                updatedAt: serverTimestamp(),
+                // Remove the stale flat `revision` field so migration never re-fires.
+                ...(shouldDeleteOldRevision ? { revision: deleteField() } : {}),
+              }, { merge: true });
+              console.log('✅ Fixed progress saved to Firestore.');
+            }
+          } else {
+            // Cloud has no data → sync local to cloud
+            console.log('Cloud empty, syncing local progress to cloud.');
+            const localStored = localStorage.getItem('dsaTrackerProgress');
+            if (localStored) {
+              try {
+                const localData = JSON.parse(localStored);
+                if (!isOldFormat(localData) && Object.keys(localData).length > 0) {
+                  await setDoc(docRef, { progress: localData }, { merge: true });
+                  setProgress(localData);
+                }
+              } catch (_) { }
+            }
+          }
+        } else {
+          // No cloud doc at all → sync local to cloud or create new doc
+          console.log('No cloud doc. Creating one and syncing local data...');
+          const localStored = localStorage.getItem('dsaTrackerProgress');
+          let localData = {};
+          if (localStored) {
+            try {
+              const parsed = JSON.parse(localStored);
+              if (!isOldFormat(parsed)) localData = parsed;
+            } catch (_) { }
+          }
+
+          let totalSolved = 0;
+          Object.values(localData).forEach(sheet => {
+            Object.values(sheet).forEach(q => { if (q.status) totalSolved++; });
+          });
+
+          await setDoc(docRef, {
+            progress: localData,
+            totalSolved,
+            displayName: user.displayName || '',
+            email: user.email || '',
+            photoURL: user.photoURL || '',
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          }, { merge: true });
+        }
+      } catch (error) {
+        console.error('Error fetching cloud progress:', error);
+      } finally {
+        setLoadingCloud(false);
+      }
     };
 
     fetchCloudProgress();
