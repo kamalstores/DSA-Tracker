@@ -173,10 +173,11 @@ const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSi
               <button
                 className={isMobile ? 'icon-btn' : 'btn-secondary'}
                 onClick={() => setShowDashboard(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                 title="Dashboard"
               >
                 <LayoutDashboard size={18} />
-                {!isMobile && <span style={{ marginLeft: '6px' }}>Dashboard</span>}
+                {!isMobile && <span>Dashboard</span>}
               </button>
 
               {isAdmin && (

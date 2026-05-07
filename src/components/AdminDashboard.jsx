@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import { db } from '../firebase-config';
 import { collection, getDocs } from 'firebase/firestore';
 import { SHEETS, fetchAndParseSheet } from '../utils/dataParser';
+import AdminUsers from './AdminUsers';
 
 // ─────────────────────────────────────────────
 // 🔐 Replace this with YOUR Firebase UID
@@ -23,6 +24,25 @@ function timeAgo(ts) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
+function getActivityLevel(ts) {
+  if (!ts) return { className: 'activity-never', text: 'Never' };
+  const date = ts.toDate ? ts.toDate() : new Date(ts);
+  const diffHours = (Date.now() - date.getTime()) / 3600000;
+  
+  if (diffHours < 1) return { className: 'activity-high', text: timeAgo(ts) };
+  if (diffHours < 24) return { className: 'activity-medium', text: timeAgo(ts) };
+  if (diffHours > 72) return { className: 'activity-low', text: timeAgo(ts) };
+  return { className: 'activity-normal', text: timeAgo(ts) };
+}
+
+const SHEET_TOTALS = {
+  a2z_flawless: 455,
+  SDE: 191,
+  blind75: 75,
+  neetcode150: 150,
+  neetcode250: 250
+};
+
 function isSolvedToday(ts) {
   if (!ts) return false;
   const date = ts.toDate ? ts.toDate() : new Date(ts);
@@ -34,9 +54,15 @@ function isSolvedToday(ts) {
   );
 }
 
-const StatCard = ({ icon, value, label, color }) => (
-  <div className="admin-stat-card">
-    <div className="admin-stat-icon" style={{ background: color + '22', color }}>{icon}</div>
+function isOnlineRecently(ts) {
+  if (!ts) return false;
+  const date = ts.toDate ? ts.toDate() : new Date(ts);
+  const diffMinutes = (Date.now() - date.getTime()) / 60000;
+  return diffMinutes <= 15; // Online if active in the last 15 minutes
+}
+
+const StatCard = ({ value, label, color }) => (
+  <div className="admin-stat-card" style={{ borderTopColor: color }}>
     <div className="admin-stat-value" style={{ color }}>{value}</div>
     <div className="admin-stat-label">{label}</div>
   </div>
@@ -49,6 +75,7 @@ const AdminDashboard = () => {
   const [error, setError] = useState('');
   const [sortBy, setSortBy] = useState('totalSolved');
   const [search, setSearch] = useState('');
+  const [activeTab, setActiveTab] = useState('overview');
   // Set of question IDs that belong to A2Z sheet — used for consolidation
   const [a2zQuestionIds, setA2ZQuestionIds] = useState(new Set());
 
@@ -124,33 +151,30 @@ const AdminDashboard = () => {
   }
 
   // ── Aggregate stats ──
-  // Handles two Firestore formats:
-  //   OLD: progress = { questionId: true/false }  (flat booleans)
-  //   NEW: progress = { sheetId: { questionId: { status: bool } } }  (nested objects)
-  //   CORRUPTED NEW: A2Z questions scattered into wrong sheet buckets (fixed below)
-  const isOldFormat = (prog) => {
-    const firstVal = Object.values(prog || {})[0];
-    return typeof firstVal === 'boolean';
-  };
-
-  // Consolidate nested progress: move any A2Z question found in a wrong bucket
-  // back to a2z_flawless. This fixes data from a bad prior migration.
+  // Consolidate handles flat, nested, and mixed format progress
   const consolidate = (prog) => {
-    if (!prog || isOldFormat(prog) || a2zQuestionIds.size === 0) return prog;
+    if (!prog) return {};
     const fixed = {};
-    for (const [sheetKey, questions] of Object.entries(prog)) {
-      if (!questions || typeof questions !== 'object') continue;
-      for (const [qId, qData] of Object.entries(questions)) {
-        const realSheet = a2zQuestionIds.has(qId) ? 'a2z_flawless' : sheetKey;
+    for (const [key, value] of Object.entries(prog)) {
+      if (typeof value === 'boolean') {
+        // Flat format (usually A2Z)
+        const realSheet = a2zQuestionIds.has(key) ? 'a2z_flawless' : 'a2z_flawless';
         if (!fixed[realSheet]) fixed[realSheet] = {};
-        const existing = fixed[realSheet][qId];
-        if (!existing) {
-          fixed[realSheet][qId] = qData;
-        } else {
-          fixed[realSheet][qId] = {
-            status: existing.status || qData.status,
-            revision: existing.revision || qData.revision,
-          };
+        fixed[realSheet][key] = { status: value, revision: false };
+      } else if (value && typeof value === 'object') {
+        // Nested format
+        for (const [qId, qData] of Object.entries(value)) {
+          const realSheet = a2zQuestionIds.has(qId) ? 'a2z_flawless' : key;
+          if (!fixed[realSheet]) fixed[realSheet] = {};
+          const existing = fixed[realSheet][qId];
+          if (!existing) {
+            fixed[realSheet][qId] = qData;
+          } else {
+            fixed[realSheet][qId] = {
+              status: existing.status || qData.status,
+              revision: existing.revision || qData.revision,
+            };
+          }
         }
       }
     }
@@ -158,14 +182,20 @@ const AdminDashboard = () => {
   };
 
   const getSolved = (u) => {
+    if (u.totalSolved !== undefined && u.totalSolved > 0) {
+      // Use precalculated totalSolved if available and valid
+      // But verify if mixed migration is still needed
+      const prog = u.progress || {};
+      const fixed = consolidate(prog);
+      const calculated = Object.values(fixed).reduce(
+        (sum, sheet) => sum + Object.values(sheet || {}).filter(q => q && q.status).length, 0
+      );
+      return Math.max(u.totalSolved, calculated);
+    }
+    
     const prog = u.progress || {};
     if (Object.keys(prog).length === 0) return 0;
 
-    if (isOldFormat(prog)) {
-      // Old format: values are booleans — count the trues
-      return Object.values(prog).filter(v => v === true).length;
-    }
-    // New format: consolidate first, then count all solved
     const fixed = consolidate(prog);
     return Object.values(fixed).reduce(
       (sum, sheet) => sum + Object.values(sheet || {}).filter(q => q && q.status).length, 0
@@ -175,12 +205,6 @@ const AdminDashboard = () => {
   // Count solved for a specific sheet column
   const getSheetSolved = (u, sheetId) => {
     const prog = u.progress || {};
-    if (isOldFormat(prog)) {
-      // Old flat format: A2Z only — attribute all to a2z_flawless
-      if (sheetId !== 'a2z_flawless') return 0;
-      return Object.values(prog).filter(v => v === true).length;
-    }
-    // New format: consolidate first, then read the specific sheet bucket
     const fixed = consolidate(prog);
     const sheetProg = fixed[sheetId] || {};
     return Object.values(sheetProg).filter(q => q && q.status).length;
@@ -188,18 +212,40 @@ const AdminDashboard = () => {
 
   const totalUsers = users.length;
   const solvedTodayCount = users.filter(u => isSolvedToday(u.lastSolvedAt)).length;
+  const onlineNowCount = users.filter(u => isOnlineRecently(u.updatedAt)).length;
   const totalProblemsAllTime = users.reduce((acc, u) => acc + getSolved(u), 0);
   const mostActive = users.reduce((max, u) => (!max || getSolved(u) > getSolved(max)) ? u : max, null);
 
-  // ── Topic breakdown (per sheet) ──
-  const sheetSolveCounts = {};
-  users.forEach(u => {
-    SHEETS.forEach(s => {
-      const solved = getSheetSolved(u, s.id) ?? 0;
-      sheetSolveCounts[s.id] = (sheetSolveCounts[s.id] || 0) + solved;
+  // ── Engagement Health ──
+  const activeUsersCount = users.filter(u => getSolved(u) > 0).length;
+  const zeroSolversCount = totalUsers - activeUsersCount;
+  const activeUsersPct = totalUsers > 0 ? Math.round((activeUsersCount / totalUsers) * 100) : 0;
+  const dropOffPct = totalUsers > 0 ? Math.round((zeroSolversCount / totalUsers) * 100) : 0;
+  const avgSolves = activeUsersCount > 0 ? Math.round(totalProblemsAllTime / activeUsersCount) : 0;
+
+  // ── User Segmentation ──
+  const powerUsers = users.filter(u => getSolved(u) >= 100).length;
+  const activeUsersSeg = users.filter(u => getSolved(u) >= 10 && getSolved(u) < 100).length;
+  const starterUsers = users.filter(u => getSolved(u) >= 1 && getSolved(u) < 10).length;
+
+  // ── Sheet Adoption (per sheet) ──
+  const sheetStats = {};
+  let maxCompletionPct = 1;
+  SHEETS.forEach(s => {
+    let totalSolvesInSheet = 0;
+    let uniqueUsersInSheet = 0;
+    users.forEach(u => {
+      const solved = getSheetSolved(u, s.id);
+      if (solved > 0) {
+        uniqueUsersInSheet++;
+        totalSolvesInSheet += solved;
+      }
     });
+    const totalPossible = activeUsersCount * (SHEET_TOTALS[s.id] || 1);
+    const completionPct = activeUsersCount > 0 ? ((totalSolvesInSheet / totalPossible) * 100) : 0;
+    if (completionPct > maxCompletionPct) maxCompletionPct = completionPct;
+    sheetStats[s.id] = { completionPct, uniqueUsersInSheet };
   });
-  const maxSheetCount = Math.max(1, ...Object.values(sheetSolveCounts));
 
   // ── Sorted + filtered user list ──
   const filteredUsers = users
@@ -212,9 +258,9 @@ const AdminDashboard = () => {
     })
     .sort((a, b) => {
       if (sortBy === 'totalSolved') return getSolved(b) - getSolved(a);
-      if (sortBy === 'lastSolvedAt') {
-        const da = a.lastSolvedAt?.toDate?.() || new Date(0);
-        const db2 = b.lastSolvedAt?.toDate?.() || new Date(0);
+      if (sortBy === 'lastActiveAt') {
+        const da = a.updatedAt?.toDate?.() || new Date(0);
+        const db2 = b.updatedAt?.toDate?.() || new Date(0);
         return db2 - da;
       }
       return (a.displayName || '').localeCompare(b.displayName || '');
@@ -231,120 +277,94 @@ const AdminDashboard = () => {
         <span className="admin-badge">🛡️ Admin</span>
       </div>
 
-      {/* Stat Cards */}
-      <div className="admin-stats-grid">
-        <StatCard icon="👥" value={totalUsers} label="Total Users" color="#8ab4f8" />
-        <StatCard icon="✅" value={solvedTodayCount} label="Active Today" color="#3ddc84" />
-        <StatCard icon="🧩" value={totalProblemsAllTime} label="Total Solves (all users)" color="#fdd663" />
-        <StatCard
-          icon="🔥"
-          value={mostActive ? (mostActive.totalSolved || 0) : 0}
-          label={`Top Solver: ${mostActive?.displayName?.split(' ')[0] || '—'}`}
-          color="#f28b82"
-        />
+      {/* Admin Navigation Tabs */}
+      <div className="admin-tabs">
+        <button 
+          className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`}
+          onClick={() => setActiveTab('overview')}
+        >
+          📊 Overview
+        </button>
+        <button 
+          className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
+          onClick={() => setActiveTab('users')}
+        >
+          👥 Users
+        </button>
       </div>
 
-      {/* Sheet Activity Chart */}
-      <div className="admin-section">
-        <h2 className="admin-section-title">📊 Solves by Sheet</h2>
-        <div className="admin-topic-chart">
-          {SHEETS.map(s => {
-            const count = sheetSolveCounts[s.id] || 0;
-            const pct = Math.round((count / maxSheetCount) * 100);
-            return (
-              <div key={s.id} className="admin-topic-row">
-                <span className="admin-topic-name">{s.name}</span>
-                <div className="admin-topic-bar-track">
-                  <div
-                    className="admin-topic-bar-fill"
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-                <span className="admin-topic-count">{count}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* User Table */}
-      <div className="admin-section">
-        <div className="admin-section-header">
-          <h2 className="admin-section-title">👤 All Users</h2>
-          <div className="admin-controls">
-            <input
-              type="text"
-              placeholder="Search by name or email…"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="admin-search"
-              id="admin-user-search"
-            />
-            <select
-              value={sortBy}
-              onChange={e => setSortBy(e.target.value)}
-              className="admin-select"
-              id="admin-sort-select"
-            >
-              <option value="totalSolved">Sort: Most Solved</option>
-              <option value="lastSolvedAt">Sort: Recent Activity</option>
-              <option value="name">Sort: Name A–Z</option>
-            </select>
+      {activeTab === 'overview' ? (
+        <>
+          {/* Platform Stats */}
+          <div className="admin-section">
+            <h2 className="admin-section-title">Platform Stats</h2>
+            <div className="admin-stats-grid">
+              <StatCard value={totalUsers} label="Total Users" color="#8ab4f8" />
+              <StatCard value={totalProblemsAllTime} label="Total Solves" color="#fdd663" />
+              <StatCard value={solvedTodayCount} label="Active Today" color="#3ddc84" />
+              <StatCard value={onlineNowCount} label="Online Now" color="#34d399" />
+            </div>
           </div>
-        </div>
 
-        <div className="admin-table-wrapper">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>User</th>
-                {SHEETS.map(s => <th key={s.id}>{s.name}</th>)}
-                <th>Total Solved</th>
-                <th>Last Active</th>
-                <th>Today</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map(u => {
-                const prog = u.progress || {};
-                const activeToday = isSolvedToday(u.lastSolvedAt);
+          {/* Engagement Health */}
+          <div className="admin-section">
+            <h2 className="admin-section-title">Engagement Health</h2>
+            <div className="admin-stats-grid">
+              <StatCard value={`${activeUsersPct}%`} label={`Active Users (${activeUsersCount})`} color="#8ab4f8" />
+              <StatCard value={avgSolves} label="Avg Solves / Active User" color="#3ddc84" />
+              <StatCard value={`${dropOffPct}%`} label={`Drop-off Rate (${zeroSolversCount} users)`} color="#f28b82" />
+              <StatCard
+                value={mostActive ? getSolved(mostActive) : 0}
+                label={`Top Solver: ${mostActive?.displayName?.split(' ')[0] || '—'}`}
+                color="#fdd663"
+              />
+            </div>
+          </div>
+
+          {/* User Segmentation */}
+          <div className="admin-section">
+            <h2 className="admin-section-title">User Segmentation</h2>
+            <div className="admin-stats-grid">
+              <StatCard value={powerUsers} label="Power (100+)" color="#a855f7" />
+              <StatCard value={activeUsersSeg} label="Active (10-99)" color="#3b82f6" />
+              <StatCard value={starterUsers} label="Starters (1-9)" color="#10b981" />
+              <StatCard value={zeroSolversCount} label="Ghosts (0)" color="#64748b" />
+            </div>
+          </div>
+
+          {/* Sheet Activity Chart */}
+          <div className="admin-section">
+            <h2 className="admin-section-title">Solves by Sheet</h2>
+            <div className="admin-topic-chart">
+              {SHEETS.map(s => {
+                const stats = sheetStats[s.id] || { completionPct: 0, uniqueUsersInSheet: 0 };
+                const relativePct = maxCompletionPct > 0 ? (stats.completionPct / maxCompletionPct) * 100 : 0;
                 return (
-                  <tr key={u.uid} className={activeToday ? 'admin-row-active' : ''}>
-                    <td>
-                      <div className="admin-user-cell">
-                        {u.photoURL
-                          ? <img src={u.photoURL} alt="" className="admin-avatar" />
-                          : <div className="admin-avatar-placeholder">{(u.displayName || u.email || '?')[0].toUpperCase()}</div>
-                        }
-                        <div>
-                          <div className="admin-user-name">{u.displayName || 'Anonymous'}</div>
-                          <div className="admin-user-email">{u.email}</div>
-                        </div>
-                      </div>
-                    </td>
-                    {SHEETS.map(s => {
-                      const solved = getSheetSolved(u, s.id);
-                      return (
-                        <td key={s.id} className="admin-sheet-cell">
-                          {solved > 0
-                            ? <span className="admin-solved-badge">{solved}</span>
-                            : <span className="admin-zero">—</span>}
-                        </td>
-                      );
-                    })}
-                    <td className="admin-total-cell">{getSolved(u)}</td>
-                    <td className="admin-time-cell">{timeAgo(u.lastSolvedAt)}</td>
-                    <td>{activeToday ? <span className="admin-dot-green" title="Active today" /> : <span className="admin-dot-gray" />}</td>
-                  </tr>
+                  <div key={s.id} className="admin-topic-row">
+                    <div className="admin-topic-name-wrap">
+                      <span className="admin-topic-name">{s.name}</span>
+                      <span className="admin-topic-subtext">{stats.uniqueUsersInSheet} users</span>
+                    </div>
+                    <div className="admin-topic-bar-track">
+                      <div
+                        className="admin-topic-bar-fill"
+                        style={{ width: `${relativePct}%` }}
+                      />
+                    </div>
+                    <span className="admin-topic-count">{stats.completionPct.toFixed(1)}%</span>
+                  </div>
                 );
               })}
-              {filteredUsers.length === 0 && (
-                <tr><td colSpan={SHEETS.length + 4} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>No users found</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <AdminUsers 
+          users={users} 
+          getSolved={getSolved} 
+          getSheetSolved={getSheetSolved} 
+        />
+      )}
     </div>
   );
 };

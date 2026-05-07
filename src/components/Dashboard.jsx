@@ -79,6 +79,10 @@ const Dashboard = ({ setActiveSheet, setShowDashboard }) => {
             <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#3b82f6' }}>{progressPercentage}%</div>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Progress</div>
           </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#10b981' }}>{SHEETS.filter(s => Object.values(progress[s.id] || {}).some(q => q.status)).length}</div>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sheets Started</div>
+          </div>
         </div>
       </div>
 
