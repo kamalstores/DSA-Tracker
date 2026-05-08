@@ -15,7 +15,7 @@ const useIsMobile = (breakpoint = 768) => {
 };
 
 // Must match the ADMIN_UID in AdminDashboard.jsx
-const ADMIN_UID = 'JROhXIAevXfsMos9qTTXcpf92vD2';
+const ADMIN_UIDS = ['JROhXIAevXfsMos9qTTXcpf92vD2', 'kcFyQ6WdW9VBxUnCMt1NIBzJRyL2'];
 
 /* ─── Support Modal ──────────────────────────────────────────── */
 const SupportModal = ({ onClose }) => {
@@ -132,7 +132,7 @@ const SupportModal = ({ onClose }) => {
 const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSidebarOpen }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { user, login, logout } = useContext(AuthContext);
-  const isAdmin = user && user.uid === ADMIN_UID;
+  const isAdmin = user && ADMIN_UIDS.includes(user.uid);
   const [showSupport, setShowSupport] = useState(false);
   const isMobile = useIsMobile();
 
