@@ -33,12 +33,13 @@ const ensureUserDocument = async (firebaseUser) => {
       try {
         await fetch("https://formsubmit.co/ajax/kamalsnitkkr@gmail.com", {
           method: "POST",
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
           body: JSON.stringify({
             _subject: "New User Signup - DSA Tracker",
+            _replyto: "kamalsnitkkr@gmail.com",
             name: "DSA Tracker System",
             email: "noreply@dsatracker.com",
             message: `A new user has just signed up!\n\nName: ${firebaseUser.displayName || 'N/A'}\nEmail: ${firebaseUser.email || 'N/A'}\nUID: ${firebaseUser.uid}`
