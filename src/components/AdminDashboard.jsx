@@ -9,7 +9,7 @@ import AdminUsers from './AdminUsers';
 // 🔐 Replace this with YOUR Firebase UID
 //    Firebase Console → Authentication → Users → UID column
 // ─────────────────────────────────────────────
-const ADMIN_UID = 'JROhXIAevXfsMos9qTTXcpf92vD2';
+const ADMIN_UIDS = ['JROhXIAevXfsMos9qTTXcpf92vD2', 'kcFyQ6WdW9VBxUnCMt1NIBzJRyL2'];
 
 // Map sheet IDs to display labels for the topic chart
 const SHEET_LABELS = Object.fromEntries(SHEETS.map(s => [s.id, s.name]));
@@ -79,7 +79,7 @@ const AdminDashboard = () => {
   // Set of question IDs that belong to A2Z sheet — used for consolidation
   const [a2zQuestionIds, setA2ZQuestionIds] = useState(new Set());
 
-  const isAdmin = user && user.uid === ADMIN_UID;
+  const isAdmin = user && ADMIN_UIDS.includes(user.uid);
 
   // Load A2Z question IDs once — used to detect and fix scattered progress
   useEffect(() => {
