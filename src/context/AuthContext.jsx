@@ -28,6 +28,26 @@ const ensureUserDocument = async (firebaseUser) => {
         totalSolved: 0,
       });
       console.log('✅ New user document created in Firestore:', firebaseUser.uid);
+
+      // Send email notification to admin via FormSubmit
+      try {
+        await fetch("https://formsubmit.co/ajax/kamalsnitkkr@gmail.com", {
+          method: "POST",
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            _subject: "New User Signup - DSA Tracker",
+            name: "DSA Tracker System",
+            email: "noreply@dsatracker.com",
+            message: `A new user has just signed up!\n\nName: ${firebaseUser.displayName || 'N/A'}\nEmail: ${firebaseUser.email || 'N/A'}\nUID: ${firebaseUser.uid}`
+          })
+        });
+        console.log('📧 Signup notification sent to admin.');
+      } catch (emailErr) {
+        console.error('Failed to send admin notification email:', emailErr);
+      }
     }
   } catch (err) {
     console.error('Error ensuring user document:', err);
