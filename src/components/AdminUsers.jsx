@@ -191,6 +191,11 @@ const AdminUsers = ({ users, getSolved, getSheetSolved }) => {
                       <div>
                         <div className="admin-user-name">{u.displayName || 'Anonymous'}</div>
                         <div className="admin-user-email">{u.email}</div>
+                        {u.location && u.location !== 'Unknown' && (
+                          <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                            <span style={{ fontSize: '0.8rem' }}>🌍</span> {u.location}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </td>

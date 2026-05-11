@@ -16,12 +16,43 @@ const ensureUserDocument = async (firebaseUser) => {
     const userRef = doc(db, 'users', firebaseUser.uid);
     const docSnap = await getDoc(userRef);
 
+    let isNewUser = false;
+    let needsLocation = false;
+
     if (!docSnap.exists()) {
+      isNewUser = true;
+      needsLocation = true;
+    } else {
+      const data = docSnap.data();
+      if (!data.location || data.location === 'Unknown') {
+        needsLocation = true;
+      }
+    }
+
+    let locationString = 'Unknown';
+    if (needsLocation) {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        if (data.city && data.region && data.country_name) {
+          locationString = `${data.city}, ${data.region}, ${data.country_name}`;
+        } else if (data.city && data.country_name) {
+          locationString = `${data.city}, ${data.country_name}`;
+        } else if (data.country_name) {
+          locationString = data.country_name;
+        }
+      } catch (locErr) {
+        console.error('Failed to fetch location:', locErr);
+      }
+    }
+
+    if (isNewUser) {
       // Brand new user — create their document immediately
       await setDoc(userRef, {
         displayName: firebaseUser.displayName || '',
         email: firebaseUser.email || '',
         photoURL: firebaseUser.photoURL || '',
+        location: locationString,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         progress: {},
@@ -29,26 +60,29 @@ const ensureUserDocument = async (firebaseUser) => {
       });
       console.log('✅ New user document created in Firestore:', firebaseUser.uid);
 
-      // Send email notification to admin via FormSubmit
+      // Send email notification to admin via Web3Forms
       try {
-        await fetch("https://formsubmit.co/ajax/kamalsnitkkr@gmail.com", {
+        await fetch("https://api.web3forms.com/submit", {
           method: "POST",
-          headers: {
+          headers: { 
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
           body: JSON.stringify({
-            _subject: "New User Signup - DSA Tracker",
-            _replyto: "kamalsnitkkr@gmail.com",
-            name: "DSA Tracker System",
-            email: "noreply@dsatracker.com",
-            message: `A new user has just signed up!\n\nName: ${firebaseUser.displayName || 'N/A'}\nEmail: ${firebaseUser.email || 'N/A'}\nUID: ${firebaseUser.uid}`
+            access_key: "YOUR_WEB3FORMS_ACCESS_KEY", // Get this from web3forms.com
+            subject: "New User Signup - DSA Tracker",
+            from_name: "DSA Tracker System",
+            message: `A new user has just signed up!\n\nName: ${firebaseUser.displayName || 'N/A'}\nEmail: ${firebaseUser.email || 'N/A'}\nLocation: ${locationString}\nUID: ${firebaseUser.uid}`
           })
         });
         console.log('📧 Signup notification sent to admin.');
       } catch (emailErr) {
         console.error('Failed to send admin notification email:', emailErr);
       }
+    } else if (needsLocation && locationString !== 'Unknown') {
+      // Silently update existing user with their newly fetched location
+      await setDoc(userRef, { location: locationString }, { merge: true });
+      console.log(`✅ Silently saved location for existing user ${firebaseUser.uid}: ${locationString}`);
     }
   } catch (err) {
     console.error('Error ensuring user document:', err);

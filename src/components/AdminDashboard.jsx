@@ -228,6 +228,11 @@ const AdminDashboard = () => {
   const activeUsersSeg = users.filter(u => getSolved(u) >= 10 && getSolved(u) < 100).length;
   const starterUsers = users.filter(u => getSolved(u) >= 1 && getSolved(u) < 10).length;
 
+  // ── Demographics ──
+  const usersWithLocation = users.filter(u => u.location && u.location !== 'Unknown');
+  const indianUsers = usersWithLocation.filter(u => u.location.toLowerCase().includes('india')).length;
+  const overseasUsers = usersWithLocation.length - indianUsers;
+
   // ── Sheet Adoption (per sheet) ──
   const sheetStats = {};
   let maxCompletionPct = 1;
@@ -329,6 +334,16 @@ const AdminDashboard = () => {
               <StatCard value={activeUsersSeg} label="Active (10-99)" color="#3b82f6" />
               <StatCard value={starterUsers} label="Starters (1-9)" color="#10b981" />
               <StatCard value={zeroSolversCount} label="Ghosts (0)" color="#64748b" />
+            </div>
+          </div>
+
+          {/* Demographics */}
+          <div className="admin-section">
+            <h2 className="admin-section-title">Demographics</h2>
+            <div className="admin-stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
+              <StatCard value={indianUsers} label="Indian Users" color="#ff9933" />
+              <StatCard value={overseasUsers} label="Overseas Users" color="#3b82f6" />
+              <StatCard value={totalUsers - usersWithLocation.length} label="Unknown Location" color="#64748b" />
             </div>
           </div>
 
