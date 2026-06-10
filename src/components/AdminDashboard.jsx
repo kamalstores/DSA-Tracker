@@ -43,6 +43,29 @@ const SHEET_TOTALS = {
   neetcode250: 250
 };
 
+const VALID_SHEET_IDS = new Set(SHEETS.map(s => s.id));
+
+const normalizeQuestionProgress = (value) => {
+  if (typeof value === 'boolean') {
+    return { status: value, revision: false, note: '' };
+  }
+
+  if (!value || typeof value !== 'object') {
+    return { status: false, revision: false, note: '' };
+  }
+
+  return {
+    status: Boolean(value.status),
+    revision: Boolean(value.revision),
+    note: value.note || '',
+  };
+};
+
+const countSolved = (progressBySheet) => Object.values(progressBySheet).reduce(
+  (sum, sheet) => sum + Object.values(sheet || {}).filter(q => q?.status).length,
+  0
+);
+
 function isSolvedToday(ts) {
   if (!ts) return false;
   const date = ts.toDate ? ts.toDate() : new Date(ts);
@@ -155,26 +178,30 @@ const AdminDashboard = () => {
   const consolidate = (prog) => {
     if (!prog) return {};
     const fixed = {};
+    const putQuestion = (sheetId, qId, qData) => {
+      const normalized = normalizeQuestionProgress(qData);
+      if (!fixed[sheetId]) fixed[sheetId] = {};
+      const existing = fixed[sheetId][qId];
+      fixed[sheetId][qId] = existing
+        ? {
+            status: existing.status || normalized.status,
+            revision: existing.revision || normalized.revision,
+            note: existing.note || normalized.note,
+          }
+        : normalized;
+    };
+
     for (const [key, value] of Object.entries(prog)) {
       if (typeof value === 'boolean') {
-        // Flat format (usually A2Z)
-        const realSheet = a2zQuestionIds.has(key) ? 'a2z_flawless' : 'a2z_flawless';
-        if (!fixed[realSheet]) fixed[realSheet] = {};
-        fixed[realSheet][key] = { status: value, revision: false };
+        putQuestion('a2z_flawless', key, value);
       } else if (value && typeof value === 'object') {
-        // Nested format
-        for (const [qId, qData] of Object.entries(value)) {
-          const realSheet = a2zQuestionIds.has(qId) ? 'a2z_flawless' : key;
-          if (!fixed[realSheet]) fixed[realSheet] = {};
-          const existing = fixed[realSheet][qId];
-          if (!existing) {
-            fixed[realSheet][qId] = qData;
-          } else {
-            fixed[realSheet][qId] = {
-              status: existing.status || qData.status,
-              revision: existing.revision || qData.revision,
-            };
+        if (VALID_SHEET_IDS.has(key)) {
+          for (const [qId, qData] of Object.entries(value)) {
+            const realSheet = a2zQuestionIds.has(qId) ? 'a2z_flawless' : key;
+            putQuestion(realSheet, qId, qData);
           }
+        } else if ('status' in value || 'revision' in value || 'note' in value) {
+          putQuestion('a2z_flawless', key, value);
         }
       }
     }
@@ -182,24 +209,12 @@ const AdminDashboard = () => {
   };
 
   const getSolved = (u) => {
-    if (u.totalSolved !== undefined && u.totalSolved > 0) {
-      // Use precalculated totalSolved if available and valid
-      // But verify if mixed migration is still needed
-      const prog = u.progress || {};
-      const fixed = consolidate(prog);
-      const calculated = Object.values(fixed).reduce(
-        (sum, sheet) => sum + Object.values(sheet || {}).filter(q => q && q.status).length, 0
-      );
-      return Math.max(u.totalSolved, calculated);
-    }
-    
     const prog = u.progress || {};
-    if (Object.keys(prog).length === 0) return 0;
-
     const fixed = consolidate(prog);
-    return Object.values(fixed).reduce(
-      (sum, sheet) => sum + Object.values(sheet || {}).filter(q => q && q.status).length, 0
-    );
+    const calculated = countSolved(fixed);
+
+    if (Object.keys(prog).length > 0) return calculated;
+    return Number(u.totalSolved) || 0;
   };
 
   // Count solved for a specific sheet column
@@ -207,7 +222,7 @@ const AdminDashboard = () => {
     const prog = u.progress || {};
     const fixed = consolidate(prog);
     const sheetProg = fixed[sheetId] || {};
-    return Object.values(sheetProg).filter(q => q && q.status).length;
+    return countSolved({ [sheetId]: sheetProg });
   };
 
   const totalUsers = users.length;

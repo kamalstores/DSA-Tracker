@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from 'react';
-import { ChevronDown, ChevronRight, Star, Lock } from 'lucide-react';
+import { ChevronDown, ChevronRight, Star, Lock, PlusCircle, CheckCircle, X } from 'lucide-react';
 import { ProgressContext } from '../context/ProgressContext';
 import { AuthContext } from '../context/AuthContext';
 
@@ -275,6 +275,83 @@ const LinkIcon = ({ url, type }) => {
   );
 };
 
+const NotesModal = ({ questionTitle, initialValue, onClose, onSave }) => {
+  const [draft, setDraft] = useState(initialValue || '');
+  const [closing, setClosing] = useState(false);
+
+  useEffect(() => {
+    setDraft(initialValue || '');
+  }, [initialValue]);
+
+  const handleSave = () => {
+    const next = draft.trim();
+    onSave(next);
+  };
+
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(onClose, 220);
+  };
+
+  const handleKeyDown = (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      handleSave();
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      handleClose();
+    }
+  };
+
+  return (
+    <div className={`notes-modal-backdrop ${closing ? 'closing' : ''}`} role="presentation" onMouseDown={handleClose}>
+      <div className={`notes-modal ${closing ? 'closing' : ''}`} role="dialog" aria-modal="true" aria-labelledby="notes-modal-title" onMouseDown={e => e.stopPropagation()}>
+
+        {/* Floating icon */}
+        <div className="notes-modal-icon">📝</div>
+
+        {/* Close button */}
+        <button className="notes-modal-close" onClick={handleClose} aria-label="Close notes">
+          <X size={20} />
+        </button>
+
+        {/* Header */}
+        <h2 id="notes-modal-title">Save Notes</h2>
+        <p className="notes-modal-subtitle">
+          <span className="notes-modal-dot"></span>
+          {questionTitle}
+        </p>
+
+        {/* Textarea */}
+        <div className="notes-modal-textarea-wrap">
+          <textarea
+            className="notes-modal-textarea"
+            value={draft}
+            autoFocus
+            placeholder="Write your thoughts, patterns, or reminders..."
+            onChange={e => setDraft(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <span className="notes-modal-charcount">{draft.length} chars</span>
+        </div>
+
+        {/* Actions */}
+        <div className="notes-modal-actions">
+          <button className="notes-cancel-btn" onClick={handleClose}>
+            Cancel
+          </button>
+          <button className="notes-save-btn" onClick={handleSave}>
+            <span className="notes-save-icon">✓</span>
+            Save Note
+            <span className="notes-shortcut-hint">⌘↵</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* ─── Progress helper ────────────────────────────────────────── */
 const getProgress = (node, sheetProgress) => {
   let total     = node.questions?.length || 0;
@@ -289,8 +366,9 @@ const getProgress = (node, sheetProgress) => {
 
 /* ─── Question Table ─────────────────────────────────────────── */
 const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle }) => {
-  const { progress, updateQuestionStatus } = useContext(ProgressContext);
+  const { progress, updateQuestionStatus, updateQuestionNote } = useContext(ProgressContext);
   const { user } = useContext(AuthContext);
+  const [activeNote, setActiveNote] = useState(null);
 
   const showBlog = sheetId === 'a2z_flawless' || sheetId === 'SDE';
   const showYt   = sheetId === 'a2z_flawless' || sheetId === 'SDE';
@@ -299,7 +377,22 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
   const showTuf  = sheetId === 'a2z_flawless';
 
 
+  const openNote = (q, note) => {
+    if (!user) {
+      onAuthRequired();
+      return;
+    }
+    setActiveNote({ id: q.id, title: q.title, note: note || '' });
+  };
+
+  const saveNote = (note) => {
+    if (!activeNote) return;
+    updateQuestionNote(sheetId, activeNote.id, note);
+    setActiveNote(null);
+  };
+
   return (
+    <>
     <div style={{ overflowX: 'auto' }}>
       <table className="questions-table">
         <thead>
@@ -312,13 +405,15 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
             {showCn   && <th style={{ textAlign: 'center' }}>CN</th>}
             {showTuf  && <th style={{ textAlign: 'center' }}>TUF</th>}
             <th style={{ textAlign: 'center' }}>Done</th>
+            <th style={{ textAlign: 'center' }}>Note</th>
             <th style={{ textAlign: 'center' }}>Rev</th>
           </tr>
         </thead>
         <tbody>
           {questions.map(q => {
-            const qProgress = progress[sheetId]?.[q.id] || { status: false, revision: false };
+            const qProgress = progress[sheetId]?.[q.id] || { status: false, revision: false, note: '' };
             const done = qProgress.status;
+            const hasNote = Boolean(qProgress.note);
             return (
               <tr key={q.id} className={done ? 'q-row-done' : ''}>
                 <td style={{ position: 'relative' }}>
@@ -365,6 +460,18 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
                   </button>
                 </td>
 
+                {/* Notes */}
+                <td className="question-note-cell">
+                  <button
+                    className={`note-open-btn ${hasNote ? 'has-note' : ''}`}
+                    onClick={() => openNote(q, qProgress.note)}
+                    title={hasNote ? 'Edit note' : 'Add note'}
+                    aria-label={hasNote ? `Edit note for ${q.title}` : `Add note for ${q.title}`}
+                  >
+                    {hasNote ? <CheckCircle size={22} strokeWidth={2.4} /> : <PlusCircle size={22} strokeWidth={2.4} />}
+                  </button>
+                </td>
+
                 {/* Revision */}
                 <td style={{ textAlign: 'center' }}>
                   <Star
@@ -381,6 +488,15 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
         </tbody>
       </table>
     </div>
+    {activeNote && (
+      <NotesModal
+        questionTitle={activeNote.title}
+        initialValue={activeNote.note}
+        onClose={() => setActiveNote(null)}
+        onSave={saveNote}
+      />
+    )}
+    </>
   );
 };
 

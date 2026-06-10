@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { SHEETS } from '../utils/dataParser';
-import { Book, Layout, GripVertical, ChevronDown, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
+import { Book, Layout, GripVertical, ChevronDown, PanelLeftClose, PanelLeftOpen, X, HelpCircle } from 'lucide-react';
 
 const useIsMobile = (breakpoint = 768) => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint);
@@ -60,6 +60,7 @@ const Sidebar = ({
   };
 
   const isMobile = useIsMobile();
+  const showSidebarLabels = sidebarOpen || isMobile;
 
   const sidebarContent = (
     <>
@@ -165,6 +166,18 @@ const Sidebar = ({
           </li>
         ))}
       </ul>
+
+      <div className="sidebar-spacer" />
+      <a
+        className="sheet-item sidebar-help-link"
+        href="https://www.reddit.com/user/a_shutterbug/"
+        target="_blank"
+        rel="noreferrer"
+        title="Contact Developer"
+      >
+        <HelpCircle size={18} style={{ flexShrink: 0 }} />
+        {showSidebarLabels && <span>Help / Contact</span>}
+      </a>
     </>
   );
 

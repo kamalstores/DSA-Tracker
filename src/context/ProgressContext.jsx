@@ -6,6 +6,24 @@ import { SHEETS, fetchAndParseSheet } from '../utils/dataParser';
 
 export const ProgressContext = createContext();
 
+const emptyQuestionProgress = { status: false, revision: false, note: '' };
+
+const mergeQuestionProgress = (existing = emptyQuestionProgress, incoming = emptyQuestionProgress) => ({
+  status: Boolean(existing.status) || Boolean(incoming.status),
+  revision: Boolean(existing.revision) || Boolean(incoming.revision),
+  note: existing.note || incoming.note || '',
+});
+
+const countSolvedQuestions = (progressData) => {
+  let totalSolved = 0;
+  Object.values(progressData || {}).forEach(sheet => {
+    Object.values(sheet || {}).forEach(q => {
+      if (q?.status) totalSolved++;
+    });
+  });
+  return totalSolved;
+};
+
 // ─────────────────────────────────────────────────────────────
 // Detects whether `progress` contains ANY flat boolean values,
 // meaning it needs migration (handles pure old format AND the
@@ -55,20 +73,14 @@ const migrateToNewFormat = (cloudProgress, flatRevision) => {
   // Step 2: Migrate flat boolean entries — skip nested maps like a2z_flawless itself
   Object.entries(cloudProgress || {}).forEach(([qId, val]) => {
     if (typeof val !== 'boolean') return;
-    const existing = newProgress.a2z_flawless[qId] || { status: false, revision: false };
-    newProgress.a2z_flawless[qId] = {
-      status: existing.status || val === true,
-      revision: existing.revision || false,
-    };
+    const existing = newProgress.a2z_flawless[qId] || emptyQuestionProgress;
+    newProgress.a2z_flawless[qId] = mergeQuestionProgress(existing, { status: val === true });
   });
 
   // Step 3: Merge the flat revision map
   Object.entries(flatRevision || {}).forEach(([qId, val]) => {
-    const existing = newProgress.a2z_flawless[qId] || { status: false, revision: false };
-    newProgress.a2z_flawless[qId] = {
-      status: existing.status,
-      revision: existing.revision || val === true,
-    };
+    const existing = newProgress.a2z_flawless[qId] || emptyQuestionProgress;
+    newProgress.a2z_flawless[qId] = mergeQuestionProgress(existing, { revision: val === true });
   });
 
   return newProgress;
@@ -102,12 +114,9 @@ const consolidateA2ZProgress = (nestedProgress, a2zIds) => {
 
       const existing = fixed[realSheet][qId];
       if (!existing) {
-        fixed[realSheet][qId] = qData;
+        fixed[realSheet][qId] = { ...emptyQuestionProgress, ...qData };
       } else {
-        fixed[realSheet][qId] = {
-          status: existing.status || qData.status,
-          revision: existing.revision || qData.revision,
-        };
+        fixed[realSheet][qId] = mergeQuestionProgress(existing, qData);
       }
     }
   }
@@ -119,6 +128,11 @@ export const ProgressProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [progress, setProgress] = useState({});
   const [loadingCloud, setLoadingCloud] = useState(false);
+  const progressRef = useRef(progress);
+
+  useEffect(() => {
+    progressRef.current = progress;
+  }, [progress]);
 
   // ─────────────────────────────────────────────────────────────
   // FIX (Bug 1): Track which uid we've already fetched for.
@@ -220,10 +234,7 @@ export const ProgressProvider = ({ children }) => {
             localStorage.setItem('dsaTrackerProgress', JSON.stringify(dataToLoad));
 
             if (needsWrite) {
-              let totalSolved = 0;
-              Object.values(dataToLoad).forEach(sheet => {
-                Object.values(sheet).forEach(q => { if (q.status) totalSolved++; });
-              });
+              const totalSolved = countSolvedQuestions(dataToLoad);
 
               await setDoc(docRef, {
                 progress: dataToLoad,
@@ -263,10 +274,7 @@ export const ProgressProvider = ({ children }) => {
             } catch (_) { }
           }
 
-          let totalSolved = 0;
-          Object.values(localData).forEach(sheet => {
-            Object.values(sheet).forEach(q => { if (q.status) totalSolved++; });
-          });
+          const totalSolved = countSolvedQuestions(localData);
 
           await setDoc(docRef, {
             progress: localData,
@@ -298,17 +306,19 @@ export const ProgressProvider = ({ children }) => {
   // update/batching bugs.
   // ─────────────────────────────────────────────────────────────
   const updateQuestionStatus = async (sheetId, questionId, status, isRevision = false) => {
+    const currentProgress = progressRef.current;
     const newProgress = {
-      ...progress,
+      ...currentProgress,
       [sheetId]: {
-        ...(progress[sheetId] || {}),
+        ...(currentProgress[sheetId] || {}),
         [questionId]: {
-          ...(progress[sheetId]?.[questionId] || { status: false, revision: false }),
+          ...(currentProgress[sheetId]?.[questionId] || emptyQuestionProgress),
           [isRevision ? 'revision' : 'status']: status,
         },
       },
     };
 
+    progressRef.current = newProgress;
     setProgress(newProgress);
     localStorage.setItem('dsaTrackerProgress', JSON.stringify(newProgress));
 
@@ -316,10 +326,7 @@ export const ProgressProvider = ({ children }) => {
       try {
         const docRef = doc(db, 'users', user.uid);
 
-        let totalSolved = 0;
-        Object.values(newProgress).forEach(sheet => {
-          Object.values(sheet).forEach(q => { if (q.status) totalSolved++; });
-        });
+        const totalSolved = countSolvedQuestions(newProgress);
 
         await setDoc(docRef, {
           progress: newProgress,
@@ -332,6 +339,44 @@ export const ProgressProvider = ({ children }) => {
         }, { merge: true });
       } catch (error) {
         console.error('Error syncing to Firestore:', error);
+      }
+    }
+  };
+
+  const updateQuestionNote = async (sheetId, questionId, note) => {
+    const currentProgress = progressRef.current;
+    const currentNote = currentProgress[sheetId]?.[questionId]?.note || '';
+    if (currentNote === note) return;
+
+    const newProgress = {
+      ...currentProgress,
+      [sheetId]: {
+        ...(currentProgress[sheetId] || {}),
+        [questionId]: {
+          ...(currentProgress[sheetId]?.[questionId] || emptyQuestionProgress),
+          note,
+        },
+      },
+    };
+
+    progressRef.current = newProgress;
+    setProgress(newProgress);
+    localStorage.setItem('dsaTrackerProgress', JSON.stringify(newProgress));
+
+    if (user) {
+      try {
+        const docRef = doc(db, 'users', user.uid);
+
+        await setDoc(docRef, {
+          progress: newProgress,
+          totalSolved: countSolvedQuestions(newProgress),
+          displayName: user.displayName || '',
+          email: user.email || '',
+          photoURL: user.photoURL || '',
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+      } catch (error) {
+        console.error('Error syncing note to Firestore:', error);
       }
     }
   };
@@ -355,7 +400,7 @@ export const ProgressProvider = ({ children }) => {
   };
 
   return (
-    <ProgressContext.Provider value={{ progress, updateQuestionStatus, getSheetStats, loadingCloud }}>
+    <ProgressContext.Provider value={{ progress, updateQuestionStatus, updateQuestionNote, getSheetStats, loadingCloud }}>
       {children}
     </ProgressContext.Provider>
   );
