@@ -1,0 +1,2176 @@
+[
+    {
+        "heading": "Implementation / Constructive",
+        "problems": [
+            {
+                "id": "strivercp_bit_1",
+                "title": "Bit++",
+                "link": "https://codeforces.com/problemset/problem/282/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_chewbacaandnumb_2",
+                "title": "Chewbaсca and Number",
+                "link": "https://codeforces.com/contest/514/problem/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_beautifulmatrix_3",
+                "title": "Beautiful Matrix",
+                "link": "https://codeforces.com/problemset/problem/263/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_softdrinking_4",
+                "title": "Soft Drinking",
+                "link": "https://codeforces.com/problemset/problem/151/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_thenewyearmeeti_5",
+                "title": "The New Year: Meeting Friends",
+                "link": "https://codeforces.com/problemset/problem/723/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_sumofroundnumbe_6",
+                "title": "Sum of Round Numbers",
+                "link": "https://codeforces.com/problemset/problem/1352/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_foxandsnake_7",
+                "title": "Fox And Snake",
+                "link": "https://codeforces.com/problemset/problem/510/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_antonandpolyhed_8",
+                "title": "Anton and Polyhedrons",
+                "link": "https://codeforces.com/problemset/problem/785/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_arrivalofthegen_9",
+                "title": "Arrival of the General",
+                "link": "https://codeforces.com/problemset/problem/144/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_insearchofaneas_10",
+                "title": "In Search of an Easy Problem",
+                "link": "https://codeforces.com/problemset/problem/1030/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_presents_11",
+                "title": "Presents",
+                "link": "https://codeforces.com/problemset/problem/136/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_nearlyluckynumb_12",
+                "title": "Nearly Lucky Number",
+                "link": "https://codeforces.com/problemset/problem/110/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_tram_13",
+                "title": "Tram",
+                "link": "https://codeforces.com/problemset/problem/116/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_wrongsubtractio_14",
+                "title": "Wrong Subtraction",
+                "link": "https://codeforces.com/problemset/problem/977/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_soldierandbanan_15",
+                "title": "Soldier and Bananas",
+                "link": "https://codeforces.com/problemset/problem/546/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_bearandbigbroth_16",
+                "title": "Bear and Big Brother",
+                "link": "https://codeforces.com/problemset/problem/791/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_boyorgirl_17",
+                "title": "Boy or Girl",
+                "link": "https://codeforces.com/problemset/problem/236/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_wordcapitalizat_18",
+                "title": "Word Capitalization",
+                "link": "https://codeforces.com/problemset/problem/281/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_helpfulmaths_19",
+                "title": "Helpful Maths",
+                "link": "https://codeforces.com/problemset/problem/339/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_c_20",
+                "title": "C+=",
+                "link": "https://codeforces.com/problemset/problem/1368/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_maximumincrease_21",
+                "title": "Maximum Increase",
+                "link": "https://codeforces.com/problemset/problem/702/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_gennadyandacard_22",
+                "title": "Gennady and a Card Game",
+                "link": "https://codeforces.com/problemset/problem/1097/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_vanyaandcubes_23",
+                "title": "Vanya and Cubes",
+                "link": "https://codeforces.com/problemset/problem/492/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_boringapartment_24",
+                "title": "Boring Apartments",
+                "link": "https://codeforces.com/problemset/problem/1433/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_erasingzeroes_25",
+                "title": "Erasing Zeroes",
+                "link": "https://codeforces.com/problemset/problem/1303/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_repeatingcipher_26",
+                "title": "Repeating Cipher",
+                "link": "https://codeforces.com/problemset/problem/1095/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_fixyou_27",
+                "title": "Fix You",
+                "link": "https://codeforces.com/problemset/problem/1391/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_stringtask_28",
+                "title": "String Task",
+                "link": "https://codeforces.com/problemset/problem/118/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_assigningtoclas_29",
+                "title": "Assigning to Classes",
+                "link": "https://codeforces.com/problemset/problem/1300/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_numbersonwhiteb_30",
+                "title": "Numbers on Whiteboard",
+                "link": "https://codeforces.com/problemset/problem/1430/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_petrandbook_31",
+                "title": "Petr and Book",
+                "link": "https://codeforces.com/contest/139/problem/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_kstring_32",
+                "title": "k-String",
+                "link": "https://codeforces.com/problemset/problem/219/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_game23_33",
+                "title": "Game 23",
+                "link": "https://codeforces.com/problemset/problem/1141/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_presentfromlena_34",
+                "title": "Present from Lena",
+                "link": "https://codeforces.com/problemset/problem/118/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_donutshops_35",
+                "title": "Donut Shops",
+                "link": "https://codeforces.com/problemset/problem/1373/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_buttons_36",
+                "title": "Buttons",
+                "link": "https://codeforces.com/problemset/problem/268/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_dreamoonandstai_37",
+                "title": "Dreamoon and Stairs",
+                "link": "https://codeforces.com/problemset/problem/476/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_newyeartranspor_38",
+                "title": "New Year Transportation",
+                "link": "https://codeforces.com/problemset/problem/500/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_capslock_39",
+                "title": "cAPS lOCK",
+                "link": "https://codeforces.com/problemset/problem/131/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_chocolates_40",
+                "title": "Chocolates",
+                "link": "https://codeforces.com/problemset/problem/1139/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_cityday_41",
+                "title": "City Day",
+                "link": "https://codeforces.com/problemset/problem/1199/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_diversesubstrin_42",
+                "title": "Diverse Substring",
+                "link": "https://codeforces.com/problemset/problem/1073/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_luckysumofdigit_43",
+                "title": "Lucky Sum of Digits",
+                "link": "https://codeforces.com/problemset/problem/109/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_roomsandstairca_44",
+                "title": "Rooms and Staircases",
+                "link": "https://codeforces.com/problemset/problem/1244/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_palindromictwis_45",
+                "title": "Palindromic Twist",
+                "link": "https://codeforces.com/problemset/problem/1027/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_shufflehashing_46",
+                "title": "Shuffle Hashing",
+                "link": "https://codeforces.com/problemset/problem/1278/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_middleofthecont_47",
+                "title": "Middle of the Contest",
+                "link": "https://codeforces.com/problemset/problem/1133/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_orinmatrix_48",
+                "title": "OR in Matrix",
+                "link": "https://codeforces.com/problemset/problem/486/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_balancedratingc_49",
+                "title": "Balanced Rating Changes",
+                "link": "https://codeforces.com/problemset/problem/1237/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_amrandmusic_50",
+                "title": "Amr and Music",
+                "link": "https://codeforces.com/problemset/problem/507/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Maths",
+        "problems": [
+            {
+                "id": "strivercp_ichihimeandtria_51",
+                "title": "Ichihime and Triangle",
+                "link": "https://codeforces.com/problemset/problem/1337/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_lcmproblem_52",
+                "title": "LCM Problem",
+                "link": "https://codeforces.com/problemset/problem/1389/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_mahmoudandehaba_53",
+                "title": "Mahmoud and Ehab and the even-odd game",
+                "link": "https://codeforces.com/problemset/problem/959/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_arraywithoddsum_54",
+                "title": "Array with Odd Sum",
+                "link": "https://codeforces.com/problemset/problem/1296/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_floornumber_55",
+                "title": "Floor Number",
+                "link": "https://codeforces.com/problemset/problem/1426/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_threepairwisema_56",
+                "title": "Three Pairwise Maximums",
+                "link": "https://codeforces.com/problemset/problem/1385/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_parklighting_57",
+                "title": "Park Lighting",
+                "link": "https://codeforces.com/problemset/problem/1358/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_collectingcoins_58",
+                "title": "Collecting Coins",
+                "link": "https://codeforces.com/problemset/problem/1294/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_requiredremaind_59",
+                "title": "Required Remainder",
+                "link": "https://codeforces.com/problemset/problem/1374/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_magicalsticks_60",
+                "title": "Magical Sticks",
+                "link": "https://codeforces.com/problemset/problem/1371/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_minimalsquare_61",
+                "title": "Minimal Square",
+                "link": "https://codeforces.com/problemset/problem/1360/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_evenarray_62",
+                "title": "Even Array",
+                "link": "https://codeforces.com/problemset/problem/1367/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_mostunstablearr_63",
+                "title": "Most Unstable Array",
+                "link": "https://codeforces.com/problemset/problem/1353/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_balancedarray_64",
+                "title": "Balanced Array",
+                "link": "https://codeforces.com/problemset/problem/1343/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_buyashovel_65",
+                "title": "Buy a Shovel",
+                "link": "https://codeforces.com/problemset/problem/732/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_restoringthreen_66",
+                "title": "Restoring Three Numbers",
+                "link": "https://codeforces.com/problemset/problem/1154/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_yetanothertwoin_67",
+                "title": "Yet Another Two Integers Problem",
+                "link": "https://codeforces.com/problemset/problem/1409/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_candiesandtwosi_68",
+                "title": "Candies and Two Sisters",
+                "link": "https://codeforces.com/problemset/problem/1335/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_divisibilitypro_69",
+                "title": "Divisibility Problem",
+                "link": "https://codeforces.com/problemset/problem/1328/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_elephant_70",
+                "title": "Elephant",
+                "link": "https://codeforces.com/problemset/problem/617/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_dominopiling_71",
+                "title": "Domino piling",
+                "link": "https://codeforces.com/problemset/problem/50/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_emotes_72",
+                "title": "Emotes",
+                "link": "https://codeforces.com/problemset/problem/1117/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_drinkschoosing_73",
+                "title": "Drinks Choosing",
+                "link": "https://codeforces.com/problemset/problem/1195/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_chungachanga_74",
+                "title": "Chunga-Changa",
+                "link": "https://codeforces.com/problemset/problem/1181/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_dicetower_75",
+                "title": "Dice Tower",
+                "link": "https://codeforces.com/problemset/problem/1266/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_digitalroot_76",
+                "title": "Digital root",
+                "link": "https://codeforces.com/problemset/problem/1107/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_heating_77",
+                "title": "Heating",
+                "link": "https://codeforces.com/problemset/problem/1260/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_competitiveprog_78",
+                "title": "Competitive Programmer",
+                "link": "https://codeforces.com/problemset/problem/1266/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_trianglesonarec_79",
+                "title": "Triangles on a Rectangle",
+                "link": "https://codeforces.com/problemset/problem/1620/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_pashaandstick_80",
+                "title": "Pasha and Stick",
+                "link": "https://codeforces.com/problemset/problem/610/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_youngphysicist_81",
+                "title": "Young Physicist",
+                "link": "https://codeforces.com/problemset/problem/69/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_theatresquare_82",
+                "title": "Theatre-Square",
+                "link": "https://codeforces.com/problemset/problem/1/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_waterlily_83",
+                "title": "Water Lily",
+                "link": "https://codeforces.com/problemset/problem/1199/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_magicstick_84",
+                "title": "Magic Stick",
+                "link": "https://codeforces.com/problemset/problem/1257/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_bowwowandthetim_85",
+                "title": "BowWow and the Timetable",
+                "link": "https://codeforces.com/problemset/problem/1204/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_drazilanddate_86",
+                "title": "Drazil and Date",
+                "link": "https://codeforces.com/problemset/problem/515/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_boboniulikestoc_87",
+                "title": "Boboniu Likes to Color Balls",
+                "link": "https://codeforces.com/problemset/problem/1395/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_lovelypalindrom_88",
+                "title": "Lovely Palindromes",
+                "link": "https://codeforces.com/problemset/problem/688/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_stringlcm_89",
+                "title": "String LCM",
+                "link": "https://codeforces.com/problemset/problem/1473/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_kdivisiblesum_90",
+                "title": "K-divisible Sum",
+                "link": "https://codeforces.com/problemset/problem/1476/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_berlandpoker_91",
+                "title": "Berland Poker",
+                "link": "https://codeforces.com/problemset/problem/1359/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_roadtozero_92",
+                "title": "Road To Zero",
+                "link": "https://codeforces.com/problemset/problem/1342/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_dungeon_93",
+                "title": "Dungeon",
+                "link": "https://codeforces.com/problemset/problem/1463/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_caisaandpylons_94",
+                "title": "Caisa and Pylons",
+                "link": "https://codeforces.com/problemset/problem/463/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_gcdlength_95",
+                "title": "GCD Length",
+                "link": "https://codeforces.com/problemset/problem/1511/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_luckynumbers_96",
+                "title": "Lucky Numbers",
+                "link": "https://codeforces.com/problemset/problem/630/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_numbercircle_97",
+                "title": "Number Circle",
+                "link": "https://codeforces.com/problemset/problem/1189/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_noncoprimeparti_98",
+                "title": "Non-Coprime Partition",
+                "link": "https://codeforces.com/problemset/problem/1038/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_hexagons_99",
+                "title": "Hexagons!",
+                "link": "https://codeforces.com/problemset/problem/630/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_sequencewithdig_100",
+                "title": "Sequence with Digits",
+                "link": "https://codeforces.com/problemset/problem/1355/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Binary Search",
+        "problems": [
+            {
+                "id": "strivercp_hamburgers_101",
+                "title": "Hamburgers",
+                "link": "https://codeforces.com/contest/371/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_magicpowder1_102",
+                "title": "Magic Powder - 1",
+                "link": "https://codeforces.com/contest/670/problem/D1",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_pipeline_103",
+                "title": "Pipeline",
+                "link": "https://codeforces.com/contest/287/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_poisoneddagger_104",
+                "title": "Poisoned Dagger",
+                "link": "https://codeforces.com/problemset/problem/1613/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_mikeandchocolat_105",
+                "title": "Mike and Chocolate Thieves",
+                "link": "https://codeforces.com/contest/689/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_increasingbymod_106",
+                "title": "Increasing by Modulo",
+                "link": "https://codeforces.com/contest/1169/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_vasyaandrobot_107",
+                "title": "Vasya and Robot",
+                "link": "https://codeforces.com/contest/1073/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_multiplicationt_108",
+                "title": "Multiplication Table",
+                "link": "https://codeforces.com/contest/448/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_stressfultraini_109",
+                "title": "Stressful Training",
+                "link": "https://codeforces.com/contest/1132/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_watertaps_110",
+                "title": "Water Taps",
+                "link": "https://codeforces.com/contest/954/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_minimaxproblem_111",
+                "title": "Minimax Problem",
+                "link": "https://codeforces.com/contest/1288/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_oddevensubseque_112",
+                "title": "Odd-Even Subsequence",
+                "link": "https://codeforces.com/contest/1370/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Prime, Sieve, Prime Factorisation",
+        "problems": [
+            {
+                "id": "strivercp_primegenerator_113",
+                "title": "Prime Generator",
+                "link": "https://www.spoj.com/problems/PRIME1/cstart=10",
+                "difficulty": "Medium",
+                "platform": "SPOJ"
+            },
+            {
+                "id": "strivercp_printingsomepri_114",
+                "title": "Printing some primes",
+                "link": "https://www.spoj.com/problems/TDPRIMES/",
+                "difficulty": "Medium",
+                "platform": "SPOJ"
+            },
+            {
+                "id": "strivercp_findingthekthpr_115",
+                "title": "Finding the Kth Prime",
+                "link": "https://www.spoj.com/problems/TDKPRIME/",
+                "difficulty": "Medium",
+                "platform": "SPOJ"
+            },
+            {
+                "id": "strivercp_goodsequences_116",
+                "title": "Good Sequences",
+                "link": "https://codeforces.com/contest/264/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_taxes_117",
+                "title": "Taxes",
+                "link": "https://codeforces.com/contest/735/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_soldierandnumbe_118",
+                "title": "Soldier and Number Game",
+                "link": "https://codeforces.com/contest/546/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_reducingfractio_119",
+                "title": "Reducing Fractions",
+                "link": "https://codeforces.com/contest/222/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_petyaanddivisor_120",
+                "title": "Petya and Divisors",
+                "link": "https://codeforces.com/problemset/problem/111/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_primesandmultip_121",
+                "title": "Primes and Multiplication",
+                "link": "https://codeforces.com/contest/1228/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_gcdcounting_122",
+                "title": "GCD Counting",
+                "link": "https://codeforces.com/contest/1101/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Bit Manipulation/Power Set",
+        "problems": [
+            {
+                "id": "strivercp_newyearseve_123",
+                "title": "New Year's Eve",
+                "link": "https://codeforces.com/problemset/problem/912/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_specialnumbers_124",
+                "title": "Special Numbers",
+                "link": "https://codeforces.com/problemset/problem/1594/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_petrandacombina_125",
+                "title": "Petr and a Combination Lock",
+                "link": "https://codeforces.com/problemset/problem/1097/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_arrayeliminatio_126",
+                "title": "Array Elimination",
+                "link": "https://codeforces.com/contest/1602/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_powersoftwo_127",
+                "title": "Powers Of Two",
+                "link": "https://codeforces.com/problemset/problem/1095/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_berlandcrosswor_128",
+                "title": "Berland Crossword",
+                "link": "https://codeforces.com/problemset/problem/1494/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_dimaandabadxor_129",
+                "title": "Dima and a Bad XOR",
+                "link": "https://codeforces.com/problemset/problem/1151/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_pbinary_130",
+                "title": "p-binary",
+                "link": "https://codeforces.com/problemset/problem/1225/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_ehabandtheexpec_131",
+                "title": "Ehab and the Expected XOR Problem",
+                "link": "https://codeforces.com/contest/1174/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_505_132",
+                "title": "505",
+                "link": "https://codeforces.com/problemset/problem/1391/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_zookeeperandthe_133",
+                "title": "Zookeeper and The Infinite Zoo",
+                "link": "https://codeforces.com/problemset/problem/1491/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Stack/Queues/PriorityQueues",
+        "problems": [
+            {
+                "id": "strivercp_alternatingcurr_134",
+                "title": "Alternating Current",
+                "link": "https://codeforces.com/contest/343/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_cdandpwdcommand_135",
+                "title": "Cd and pwd commands",
+                "link": "https://codeforces.com/contest/158/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_longestregularb_136",
+                "title": "Longest Regular Bracket Sequence",
+                "link": "https://codeforces.com/contest/5/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_pairofnumbers_137",
+                "title": "Pair of Numbers",
+                "link": "https://codeforces.com/contest/359/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_greatvovawallve_138",
+                "title": "Great Vova Wall (Version 1)",
+                "link": "https://codeforces.com/contest/1092/problem/D1",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_skyscrapershard_139",
+                "title": "Skyscrapers (hard version)",
+                "link": "https://codeforces.com/contest/1313/problem/C2",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_phoenixandtower_140",
+                "title": "Phoenix and Towers",
+                "link": "https://codeforces.com/contest/1515/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_psychosinaline_141",
+                "title": "Psychos in a Line",
+                "link": "https://codeforces.com/contest/319/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_strip_142",
+                "title": "Strip",
+                "link": "https://codeforces.com/contest/487/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_greatvovawallve_143",
+                "title": "Great Vova Wall (Version 2)",
+                "link": "https://codeforces.com/contest/1092/problem/D2",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_specialsegments_144",
+                "title": "Special Segments of Permutation",
+                "link": "https://codeforces.com/contest/1156/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_stacksorting_145",
+                "title": "Stack Sorting",
+                "link": "https://codeforces.com/contest/911/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_breakinggood_146",
+                "title": "Breaking Good",
+                "link": "https://codeforces.com/contest/507/problem/E?locale=en",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "String Algorithms",
+        "problems": [
+            {
+                "id": "strivercp_goodsubstrings_147",
+                "title": "Good Substrings",
+                "link": "https://codeforces.com/problemset/problem/271/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_prefixsuffixpal_148",
+                "title": "Prefix-Suffix Palindrome (Hard version)",
+                "link": "https://codeforces.com/contest/1326/problem/D2",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_wattoandmechani_149",
+                "title": "Watto and Mechanism",
+                "link": "https://codeforces.com/contest/514/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_palindromedegre_150",
+                "title": "Palindrome Degree",
+                "link": "https://codeforces.com/contest/7/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_spysyndrome2_151",
+                "title": "Spy Syndrome 2",
+                "link": "https://codeforces.com/contest/633/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_segmentoccurren_152",
+                "title": "Segment Occurrences",
+                "link": "https://codeforces.com/contest/1016/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_password_153",
+                "title": "Password",
+                "link": "https://codeforces.com/problemset/problem/126/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_muhandcubewalls_154",
+                "title": "MUH and Cube Walls",
+                "link": "https://codeforces.com/contest/471/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_campschedule_155",
+                "title": "Camp Schedule",
+                "link": "https://codeforces.com/contest/1138/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_prefixesandsuff_156",
+                "title": "Prefixes and Suffixes",
+                "link": "https://codeforces.com/contest/432/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_eraseandextendh_157",
+                "title": "Erase and Extend (Hard Version)",
+                "link": "https://codeforces.com/contest/1537/problem/E2",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_numberofpalindr_158",
+                "title": "Number of Palindromes",
+                "link": "https://www.spoj.com/problems/NUMOFPAL/",
+                "difficulty": "Medium",
+                "platform": "SPOJ"
+            },
+            {
+                "id": "strivercp_mirrorstrings_159",
+                "title": "Mirror Strings !!!",
+                "link": "https://www.spoj.com/problems/MSUBSTR/",
+                "difficulty": "Medium",
+                "platform": "SPOJ"
+            },
+            {
+                "id": "strivercp_extendtopalindr_160",
+                "title": "Extend to Palindrome",
+                "link": "https://www.spoj.com/problems/EPALIN/",
+                "difficulty": "Medium",
+                "platform": "SPOJ"
+            },
+            {
+                "id": "strivercp_sonyaandmatrixb_161",
+                "title": "Sonya and Matrix Beauty",
+                "link": "https://codeforces.com/contest/1080/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "BFS",
+        "problems": [
+            {
+                "id": "strivercp_xorpaths_162",
+                "title": "Xor-Paths",
+                "link": "https://codeforces.com/problemset/problem/1006/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Tree's",
+        "problems": [
+            {
+                "id": "strivercp_subordinates_163",
+                "title": "Subordinates",
+                "link": "https://cses.fi/problemset/task/1674",
+                "difficulty": "Medium",
+                "platform": "CSES"
+            },
+            {
+                "id": "strivercp_treematching_164",
+                "title": "Tree Matching",
+                "link": "https://cses.fi/problemset/task/1130",
+                "difficulty": "Medium",
+                "platform": "CSES"
+            },
+            {
+                "id": "strivercp_circumferenceof_165",
+                "title": "Circumference of a Tree",
+                "link": "https://codeforces.com/gym/102694/problem/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_dynamicdiameter_166",
+                "title": "Dynamic Diameter",
+                "link": "https://codeforces.com/gym/102694/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_militaryproblem_167",
+                "title": "Military Problem",
+                "link": "https://codeforces.com/contest/1006/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_treedistancesii_168",
+                "title": "Tree Distances II",
+                "link": "https://cses.fi/problemset/task/1133",
+                "difficulty": "Medium",
+                "platform": "CSES"
+            },
+            {
+                "id": "strivercp_threepathsonatr_169",
+                "title": "Three Paths on a Tree",
+                "link": "https://codeforces.com/contest/1294/problem/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "LCA",
+        "problems": [
+            {
+                "id": "strivercp_slothnaptime_170",
+                "title": "Sloth Naptime",
+                "link": "https://codeforces.com/gym/102694/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_cyclefreeflow_171",
+                "title": "Cycle Free Flow",
+                "link": "https://codeforces.com/gym/102694/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_treequeries_172",
+                "title": "Tree Queries",
+                "link": "https://codeforces.com/contest/1328/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_1treesandquerie_173",
+                "title": "1-Trees and Queries",
+                "link": "https://codeforces.com/contest/1304/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_bloodcousins_174",
+                "title": "Blood Cousins",
+                "link": "https://codeforces.com/contest/208/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_foolsandroads_175",
+                "title": "Fools and Roads",
+                "link": "https://codeforces.com/contest/191/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_aandbandlecture_176",
+                "title": "A and B and Lecture Rooms",
+                "link": "https://codeforces.com/contest/519/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_duffinthearmy_177",
+                "title": "Duff-in-the-Army",
+                "link": "https://codeforces.com/contest/587/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_minimumspanning_178",
+                "title": "Minimum spanning tree for each edge",
+                "link": "https://codeforces.com/contest/609/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_informationgrap_179",
+                "title": "Information Graph",
+                "link": "https://codeforces.com/contest/466/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_filthyrichtrees_180",
+                "title": "Filthy Rich Trees",
+                "link": "https://codeforces.com/gym/102694/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_thelorax_181",
+                "title": "The-Lorax",
+                "link": "https://codeforces.com/gym/102694/problem/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Graph Algorithms",
+        "problems": [
+            {
+                "id": "strivercp_twobuttons_182",
+                "title": "Two Buttons",
+                "link": "https://codeforces.com/problemset/problem/520/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_party_183",
+                "title": "Party",
+                "link": "https://codeforces.com/problemset/problem/115/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_kefaandpark_184",
+                "title": "Kefa and Park",
+                "link": "https://codeforces.com/problemset/problem/580/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_cycliccomponent_185",
+                "title": "Cyclic Components",
+                "link": "https://codeforces.com/problemset/problem/977/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_graphwithoutlon_186",
+                "title": "Graph Without Long Directed Paths",
+                "link": "https://codeforces.com/contest/1144/problem/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_foxandnames_187",
+                "title": "Fox And Names",
+                "link": "https://codeforces.com/contest/510/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_dijkstra_188",
+                "title": "Dijkstra?",
+                "link": "https://codeforces.com/contest/20/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_stronglyconnect_189",
+                "title": "Strongly Connected City",
+                "link": "https://codeforces.com/problemset/problem/475/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_fair_190",
+                "title": "Fair",
+                "link": "https://codeforces.com/contest/986/problem/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_kingspath_191",
+                "title": "King's Path",
+                "link": "https://codeforces.com/contest/242/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_monopolemagnets_192",
+                "title": "Monopole Magnets",
+                "link": "https://codeforces.com/contest/1345/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_planets_193",
+                "title": "Planets",
+                "link": "https://codeforces.com/contest/229/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_directingedges_194",
+                "title": "Directing Edges",
+                "link": "https://codeforces.com/contest/1385/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_gregandgraph_195",
+                "title": "Greg and Graph",
+                "link": "https://codeforces.com/contest/295/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_unstablestrings_196",
+                "title": "Unstable String Sort",
+                "link": "https://codeforces.com/contest/1213/problem/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_weightsdistribu_197",
+                "title": "Weights Distributing",
+                "link": "https://codeforces.com/contest/1343/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_stringcoloringe_198",
+                "title": "String Coloring (easy version)",
+                "link": "https://codeforces.com/contest/1296/problem/E1",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_book_199",
+                "title": "Book",
+                "link": "https://codeforces.com/contest/1573/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_howmanypaths_200",
+                "title": "How Many Paths?",
+                "link": "https://codeforces.com/contest/1547/problem/G",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_dimaandbacteria_201",
+                "title": "Dima and Bacteria",
+                "link": "https://codeforces.com/contest/400/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_greedymerchants_202",
+                "title": "Greedy Merchants",
+                "link": "https://codeforces.com/contest/178/problem/B3",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Matrix Exponentiation",
+        "problems": [
+            {
+                "id": "strivercp_plant_203",
+                "title": "Plant",
+                "link": "https://codeforces.com/problemset/problem/185/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_magicgems_204",
+                "title": "Magic Gems",
+                "link": "https://codeforces.com/contest/1117/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_onceagain_205",
+                "title": "Once Again",
+                "link": "https://codeforces.com/contest/582/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_decodinggenome_206",
+                "title": "Decoding Genome",
+                "link": "https://codeforces.com/contest/222/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_wetsharkandbloc_207",
+                "title": "Wet Shark and Blocks",
+                "link": "https://codeforces.com/contest/621/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_productoriented_208",
+                "title": "Product Oriented Recurrence",
+                "link": "https://codeforces.com/contest/1182/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Trie",
+        "problems": [
+            {
+                "id": "strivercp_vasiliysmultise_209",
+                "title": "Vasiliy's Multiset",
+                "link": "https://codeforces.com/contest/706/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_perfectsecurity_210",
+                "title": "Perfect Security",
+                "link": "https://codeforces.com/contest/948/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_beautifulsubarr_211",
+                "title": "Beautiful Subarrays",
+                "link": "https://codeforces.com/contest/665/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_drevilunderscor_212",
+                "title": "Dr. Evil Underscores",
+                "link": "https://codeforces.com/contest/1285/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_polycarpsphoneb_213",
+                "title": "Polycarp's phone book",
+                "link": "https://codeforces.com/contest/858/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_alotofgames_214",
+                "title": "A Lot of Games",
+                "link": "https://codeforces.com/contest/455/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_petr_215",
+                "title": "Petr#",
+                "link": "https://codeforces.com/contest/113/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_sausagemaximiza_216",
+                "title": "Sausage Maximization",
+                "link": "https://codeforces.com/contest/282/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Dynamic Programming",
+        "problems": [
+            {
+                "id": "strivercp_classynumbers_217",
+                "title": "Classy Numbers",
+                "link": "https://codeforces.com/contest/1036/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_qaq_218",
+                "title": "QAQ",
+                "link": "https://codeforces.com/problemset/problem/894/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_napoleoncake_219",
+                "title": "Napoleon Cake",
+                "link": "https://codeforces.com/problemset/problem/1501/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_redandblue_220",
+                "title": "Red and Blue",
+                "link": "https://codeforces.com/problemset/problem/1469/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_fence_221",
+                "title": "Fence",
+                "link": "https://codeforces.com/problemset/problem/363/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_ilyaandqueries_222",
+                "title": "Ilya and Queries",
+                "link": "https://codeforces.com/problemset/problem/313/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_flippinggame_223",
+                "title": "Flipping Game",
+                "link": "https://codeforces.com/problemset/problem/327/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_lecturesleep_224",
+                "title": "Lecture Sleep",
+                "link": "https://codeforces.com/problemset/problem/961/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_reposts_225",
+                "title": "Reposts",
+                "link": "https://codeforces.com/problemset/problem/522/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_vitamins_226",
+                "title": "Vitamins",
+                "link": "https://codeforces.com/problemset/problem/1042/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_cutribbon_227",
+                "title": "Cut Ribbon",
+                "link": "https://codeforces.com/problemset/problem/189/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_pokmonarmyeasyv_228",
+                "title": "Pokémon Army (easy version)",
+                "link": "https://codeforces.com/problemset/problem/1420/C1",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_mashmokhandacm_229",
+                "title": "Mashmokh and ACM",
+                "link": "https://codeforces.com/problemset/problem/414/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_basketballexerc_230",
+                "title": "Basketball Exercise",
+                "link": "https://codeforces.com/problemset/problem/1195/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_oracandmodels_231",
+                "title": "Orac and Models",
+                "link": "https://codeforces.com/problemset/problem/1350/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_mrkitayutathetr_232",
+                "title": "Mr. Kitayuta, the Treasure Hunter",
+                "link": "https://codeforces.com/contest/505/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_modulosum_233",
+                "title": "Modulo Sum",
+                "link": "https://codeforces.com/contest/577/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_littleelephanta_234",
+                "title": "Little Elephant and Interval",
+                "link": "https://codeforces.com/contest/204/problem/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_paintingfence_235",
+                "title": "Painting Fence",
+                "link": "https://codeforces.com/contest/448/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_ridinginalift_236",
+                "title": "Riding in a Lift",
+                "link": "https://codeforces.com/contest/479/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_romanandnumbers_237",
+                "title": "Roman and Numbers",
+                "link": "https://codeforces.com/contest/401/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_hanoifactory_238",
+                "title": "Hanoi Factory",
+                "link": "https://codeforces.com/contest/777/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_choosingcapital_239",
+                "title": "Choosing Capital for Treeland",
+                "link": "https://codeforces.com/contest/219/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_bookofevil_240",
+                "title": "Book of Evil",
+                "link": "https://codeforces.com/contest/337/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_compatiblenumbe_241",
+                "title": "Compatible Numbers",
+                "link": "https://codeforces.com/contest/165/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_thevaluesyoucan_242",
+                "title": "The Values You Can Make",
+                "link": "https://codeforces.com/contest/687/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_clearthestring_243",
+                "title": "Clear the String",
+                "link": "https://codeforces.com/contest/1132/problem/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_antennacoverage_244",
+                "title": "Antenna Coverage",
+                "link": "https://codeforces.com/contest/1253/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_wifi_245",
+                "title": "Wi-Fi",
+                "link": "https://codeforces.com/contest/1216/problem/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_applemanandtree_246",
+                "title": "Appleman and Tree",
+                "link": "https://codeforces.com/contest/461/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_kalilaanddimnai_247",
+                "title": "Kalila and Dimna in the Logging Industry",
+                "link": "https://codeforces.com/contest/319/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_thefairnutandre_248",
+                "title": "The Fair Nut and Rectangles",
+                "link": "https://codeforces.com/contest/1083/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_themathslecture_249",
+                "title": "The Maths Lecture",
+                "link": "https://codeforces.com/contest/507/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_badluckisland_250",
+                "title": "Bad Luck Island",
+                "link": "https://codeforces.com/contest/540/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Disjoint Set",
+        "problems": [
+            {
+                "id": "strivercp_littlealawnspuz_251",
+                "title": "Little Alawn's Puzzle",
+                "link": "https://codeforces.com/problemset/problem/1534/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_iceskating_252",
+                "title": "Ice Skating",
+                "link": "https://codeforces.com/problemset/problem/217/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_learninglanguag_253",
+                "title": "Learning Languages",
+                "link": "https://codeforces.com/contest/277/problem/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_bertownsubway_254",
+                "title": "Bertown Subway",
+                "link": "https://codeforces.com/contest/884/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_kcompleteword_255",
+                "title": "K-Complete Word",
+                "link": "https://codeforces.com/contest/1332/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_civilization_256",
+                "title": "Civilization",
+                "link": "https://codeforces.com/contest/455/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_01tree_257",
+                "title": "0-1-Tree",
+                "link": "https://codeforces.com/contest/1156/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_pathqueries_258",
+                "title": "Path Queries",
+                "link": "https://codeforces.com/contest/1213/problem/G",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_dogeforces_259",
+                "title": "Dogeforces",
+                "link": "https://codeforces.com/problemset/problem/1494/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Sqrt Decomposition/ MO’s algo",
+        "problems": [
+            {
+                "id": "strivercp_powerfularray_260",
+                "title": "Powerful array",
+                "link": "https://codeforces.com/contest/86/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_xorandfavoriten_261",
+                "title": "XOR and Favorite Number",
+                "link": "https://codeforces.com/contest/617/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_littleelephanta_262",
+                "title": "Little Elephant and Array",
+                "link": "https://codeforces.com/contest/220/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_cutandstick_263",
+                "title": "Cut and Stick",
+                "link": "https://codeforces.com/contest/1514/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_treeandqueries_264",
+                "title": "Tree and Queries",
+                "link": "https://codeforces.com/contest/375/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_xoronsegment_265",
+                "title": "XOR on Segment",
+                "link": "https://codeforces.com/contest/242/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Fenwick Tree",
+        "problems": [
+            {
+                "id": "strivercp_enemyisweak_266",
+                "title": "Enemy is weak",
+                "link": "https://codeforces.com/contest/61/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_movingpoints_267",
+                "title": "Moving Points",
+                "link": "https://codeforces.com/contest/1311/problem/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_cowsandsequence_268",
+                "title": "Cows and Sequence",
+                "link": "https://codeforces.com/contest/283/problem/A",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_pashmakandparmi_269",
+                "title": "Pashmak and Parmida's problem",
+                "link": "https://codeforces.com/contest/459/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_bubblesortgraph_270",
+                "title": "Bubble Sort Graph",
+                "link": "https://codeforces.com/contest/340/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_vasyaandatree_271",
+                "title": "Vasya and a Tree",
+                "link": "https://codeforces.com/contest/1076/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_multiset_272",
+                "title": "Multiset",
+                "link": "https://codeforces.com/contest/1354/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_fixedpointremov_273",
+                "title": "Fixed Point Removal",
+                "link": "https://codeforces.com/contest/1405/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_propagatingtree_274",
+                "title": "Propagating tree",
+                "link": "https://codeforces.com/contest/383/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_killanton_275",
+                "title": "Kill Anton",
+                "link": "https://codeforces.com/contest/1526/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_littlegirlandpr_276",
+                "title": "Little Girl and Problem on Trees",
+                "link": "https://codeforces.com/contest/276/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_treeandqueries_277",
+                "title": "Tree and Queries",
+                "link": "https://codeforces.com/contest/375/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Segment Tree(lazy also included)",
+        "problems": [
+            {
+                "id": "strivercp_xeniaandbitoper_278",
+                "title": "Xenia and Bit Operations",
+                "link": "https://codeforces.com/contest/339/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_bashandatoughma_279",
+                "title": "Bash and a Tough Math Puzzle",
+                "link": "https://codeforces.com/contest/914/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_pashmakandparmi_280",
+                "title": "Pashmak and Parmida's problem",
+                "link": "https://codeforces.com/contest/459/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_serejaandbracke_281",
+                "title": "Sereja and Brackets",
+                "link": "https://codeforces.com/contest/380/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_antcolony_282",
+                "title": "Ant colony",
+                "link": "https://codeforces.com/contest/474/problem/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_balancedplaylis_283",
+                "title": "Balanced Playlist",
+                "link": "https://codeforces.com/contest/1237/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_copyingdata_284",
+                "title": "Copying Data",
+                "link": "https://codeforces.com/contest/292/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_interestingarra_285",
+                "title": "Interesting Array",
+                "link": "https://codeforces.com/contest/482/problem/B",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_subarraysorting_286",
+                "title": "Subarray Sorting",
+                "link": "https://codeforces.com/contest/1187/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_sumandreplace_287",
+                "title": "SUM and REPLACE",
+                "link": "https://codeforces.com/contest/920/problem/F",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_playofftourname_288",
+                "title": "Playoff Tournament",
+                "link": "https://codeforces.com/contest/1535/problem/D?locale=en",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_thechildandsequ_289",
+                "title": "The Child and Sequence",
+                "link": "https://codeforces.com/contest/438/problem/D?locale=en",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_equilibrium_290",
+                "title": "Equilibrium",
+                "link": "https://codeforces.com/contest/1556/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_nondecreasingdi_291",
+                "title": "Non-Decreasing Dilemma",
+                "link": "https://codeforces.com/contest/1567/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    },
+    {
+        "heading": "Lazy propagation",
+        "problems": [
+            {
+                "id": "strivercp_circularrmq_292",
+                "title": "Circular RMQ",
+                "link": "https://codeforces.com/contest/52/problem/C",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_arrayrestoratio_293",
+                "title": "Array Restoration",
+                "link": "https://codeforces.com/contest/1023/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_xoronsegment_294",
+                "title": "XOR on Segment",
+                "link": "https://codeforces.com/contest/242/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_ezzatandgrid_295",
+                "title": "Ezzat and Grid",
+                "link": "https://codeforces.com/contest/1557/problem/D",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_luckyqueries_296",
+                "title": "Lucky Queries",
+                "link": "https://codeforces.com/contest/145/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            },
+            {
+                "id": "strivercp_hanoifactory_297",
+                "title": "Hanoi Factory",
+                "link": "https://codeforces.com/contest/777/problem/E",
+                "difficulty": "Medium",
+                "platform": "Codeforces"
+            }
+        ]
+    }
+]

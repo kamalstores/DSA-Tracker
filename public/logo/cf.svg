@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Codeforces logo: three vertical bars -->
+  <mask id="cf-cutout-mask">
+    <!-- Everything visible -->
+    <rect width="24" height="24" fill="white"/>
+    <!-- Codeforces bars cutout -->
+    <g transform="translate(4.5,4) scale(0.625)">
+      <rect x="2" y="7" width="5" height="17" rx="1" fill="black"/>
+      <rect x="9.5" y="0" width="5" height="24" rx="1" fill="black"/>
+      <rect x="17" y="10" width="5" height="14" rx="1" fill="black"/>
+    </g>
+  </mask>
+
+  <!-- Blue circle with cutout logo -->
+  <circle cx="12" cy="12" r="12" fill="#1a8fdb" mask="url(#cf-cutout-mask)"/>
+</svg>

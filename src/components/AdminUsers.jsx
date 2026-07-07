@@ -28,7 +28,8 @@ const SHEET_TOTALS = {
   SDE: 191,
   blind75: 75,
   neetcode150: 150,
-  neetcode250: 250
+  neetcode250: 250,
+  striver_cp: 297
 };
 
 function isSolvedToday(ts) {

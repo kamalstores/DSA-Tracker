@@ -263,7 +263,7 @@ const AuthToast = ({ message, onLogin, visible }) => (
 /* ─── Link Icon ──────────────────────────────────────────────── */
 const LinkIcon = ({ url, type }) => {
   if (!url) return <span style={{ opacity: 0.2 }}>-</span>;
-  const logos = { blog: '/logo/post.svg', yt: '/logo/yt.svg', lc: '/logo/lc.svg', gfg: '/logo/gfg.svg', cn: '/logo/cn.svg', tuf: '/logo/tuf.svg' };
+  const logos = { blog: '/logo/post.svg', yt: '/logo/yt.svg', lc: '/logo/lc.svg', cf: '/logo/cf.svg', gfg: '/logo/gfg.svg', cn: '/logo/cn.svg', tuf: '/logo/tuf.svg' };
   const src = logos[type] || '';
   return (
     <a href={url} target="_blank" rel="noreferrer"
@@ -375,6 +375,7 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
   const showGfg  = sheetId === 'a2z_flawless';
   const showCn   = sheetId === 'a2z_flawless';
   const showTuf  = sheetId === 'a2z_flawless';
+  const isCF     = sheetId === 'striver_cp';
 
 
   const openNote = (q, note) => {
@@ -400,7 +401,7 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
             <th style={{ width: '40%' }}>Topic</th>
             {showBlog && <th style={{ textAlign: 'center' }}>Blog</th>}
             {showYt   && <th style={{ textAlign: 'center' }}>YT</th>}
-            <th style={{ textAlign: 'center' }}>LC</th>
+            <th style={{ textAlign: 'center' }}>{isCF ? 'CF' : 'LC'}</th>
             {showGfg  && <th style={{ textAlign: 'center' }}>GFG</th>}
             {showCn   && <th style={{ textAlign: 'center' }}>CN</th>}
             {showTuf  && <th style={{ textAlign: 'center' }}>TUF</th>}
@@ -433,7 +434,7 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
                 </td>
                 {showBlog && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.blog} type="blog" /></td>}
                 {showYt   && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.yt}   type="yt"   /></td>}
-                <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.lc} type="lc" /></td>
+                <td style={{ textAlign: 'center' }}>{isCF ? <LinkIcon url={q.links?.cf} type="cf" /> : <LinkIcon url={q.links?.lc} type="lc" />}</td>
                 {showGfg  && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.gfg}  type="gfg"  /></td>}
                 {showCn   && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.cn}   type="cn"   /></td>}
                 {showTuf  && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.tuf}  type="tuf"  /></td>}

@@ -28,6 +28,12 @@ export const SHEETS = [
     name: 'NeetCode 250',
     file: '/data/neetcode250.json',
     description: '<a href="https://neetcode.io/practice/practice/neetcode250" target="_blank" rel="noopener noreferrer">250 hand-picked questions</a> by NeetCode.'
+  },
+  {
+    id: 'striver_cp',
+    name: 'Striver CP Sheet',
+    file: '/data/striver_cp.json',
+    description: '<a href="https://takeuforward.org/interview-experience/strivers-cp-sheet" target="_blank" rel="noopener noreferrer">CP sheet</a> by Striver.'
   }
 ];
 
@@ -87,11 +93,12 @@ export const fetchAndParseSheet = async (sheetId) => {
           if (q.difficulty?.toLowerCase() === 'easy') diff = 0;
           else if (q.difficulty?.toLowerCase() === 'hard') diff = 2;
 
+          const linkKey = q.platform ? 'cf' : 'lc';
           return {
             id: q.id,
             title: q.title,
             url: q.link || q.leetcode_link,
-            links: { lc: q.link || q.leetcode_link },
+            links: { [linkKey]: q.link || q.leetcode_link },
             difficulty: diff
           };
         });
