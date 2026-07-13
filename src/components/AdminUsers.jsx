@@ -50,6 +50,22 @@ function isOnlineRecently(ts) {
   return diffMinutes <= 15;
 }
 
+function getTimestampMillis(ts) {
+  if (!ts) return 0;
+  const date = ts.toDate ? ts.toDate() : new Date(ts);
+  const time = date.getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function getUserActivityAt(user) {
+  return [user.lastSeenAt, user.updatedAt, user.lastSolvedAt]
+    .filter(Boolean)
+    .reduce(
+      (latest, current) => getTimestampMillis(current) > getTimestampMillis(latest) ? current : latest,
+      null
+    );
+}
+
 function getInitials(name, email) {
   if (name && name.trim().length > 0) {
     const parts = name.trim().split(' ');
@@ -76,7 +92,7 @@ const AdminUsers = ({ users, getSolved, getSheetSolved }) => {
       const q = search.toLowerCase();
       const matchesSearch = (u.displayName || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q);
       
-      const isOnline = isOnlineRecently(u.updatedAt);
+      const isOnline = isOnlineRecently(getUserActivityAt(u));
       const activeToday = isSolvedToday(u.lastSolvedAt);
 
       if (filterOnline && !isOnline) return false;
@@ -86,9 +102,7 @@ const AdminUsers = ({ users, getSolved, getSheetSolved }) => {
     .sort((a, b) => {
       if (sortBy === 'totalSolved') return getSolved(b) - getSolved(a);
       if (sortBy === 'lastActiveAt') {
-        const da = a.updatedAt?.toDate?.() || new Date(0);
-        const db2 = b.updatedAt?.toDate?.() || new Date(0);
-        return db2 - da;
+        return getTimestampMillis(getUserActivityAt(b)) - getTimestampMillis(getUserActivityAt(a));
       }
       return (a.displayName || '').localeCompare(b.displayName || '');
     });
@@ -148,10 +162,11 @@ const AdminUsers = ({ users, getSolved, getSheetSolved }) => {
           </thead>
           <tbody>
             {filteredUsers.map((u, idx) => {
-              const isOnline = isOnlineRecently(u.updatedAt);
+              const activityAt = getUserActivityAt(u);
+              const isOnline = isOnlineRecently(activityAt);
               const activeToday = isSolvedToday(u.lastSolvedAt);
               const totalU = getSolved(u);
-              const activityLevel = getActivityLevel(u.updatedAt || u.lastSolvedAt);
+              const activityLevel = getActivityLevel(activityAt);
               
               // Rank medal
               let rankDisplay = `#${idx + 1}`;

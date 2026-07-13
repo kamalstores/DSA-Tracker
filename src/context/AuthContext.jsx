@@ -1,10 +1,37 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
+import {
+  browserLocalPersistence,
+  onAuthStateChanged,
+  setPersistence,
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth';
 import { auth, googleProvider, analytics, db } from '../firebase-config';
 import { logEvent } from 'firebase/analytics';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export const AuthContext = createContext();
+
+const HEARTBEAT_INTERVAL_MS = 5 * 60 * 1000;
+
+const ensureLocalAuthPersistence = async () => {
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (error) {
+    console.error('Failed to enable persistent Firebase auth', error);
+  }
+};
+
+const updateLastSeen = async (uid) => {
+  if (!uid) return;
+  try {
+    await setDoc(doc(db, 'users', uid), {
+      lastSeenAt: serverTimestamp(),
+    }, { merge: true });
+  } catch (error) {
+    console.error('Failed to update user activity heartbeat:', error);
+  }
+};
 
 // Ensures every authenticated user has a Firestore document.
 // This runs on every page load for logged-in users, so it will
@@ -54,6 +81,7 @@ const ensureUserDocument = async (firebaseUser) => {
         photoURL: firebaseUser.photoURL || '',
         location: locationString,
         createdAt: serverTimestamp(),
+        lastSeenAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         progress: {},
         totalSolved: 0,
@@ -81,8 +109,13 @@ const ensureUserDocument = async (firebaseUser) => {
       }
     } else if (needsLocation && locationString !== 'Unknown') {
       // Silently update existing user with their newly fetched location
-      await setDoc(userRef, { location: locationString }, { merge: true });
+      await setDoc(userRef, {
+        location: locationString,
+        lastSeenAt: serverTimestamp(),
+      }, { merge: true });
       console.log(`✅ Silently saved location for existing user ${firebaseUser.uid}: ${locationString}`);
+    } else {
+      await updateLastSeen(firebaseUser.uid);
     }
   } catch (err) {
     console.error('Error ensuring user document:', err);
@@ -92,21 +125,56 @@ const ensureUserDocument = async (firebaseUser) => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const userUid = user?.uid;
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      // Ensure Firestore doc exists for every authenticated user
-      // (catches both new sign-ups and existing users missing from Firestore)
-      await ensureUserDocument(currentUser);
-      setUser(currentUser);
-      setLoading(false);
-    });
+    let unsubscribe = () => {};
+    let cancelled = false;
 
-    return () => unsubscribe();
+    const initAuth = async () => {
+      await ensureLocalAuthPersistence();
+      if (cancelled) return;
+
+      unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        // Ensure Firestore doc exists for every authenticated user
+        // (catches both new sign-ups and existing users missing from Firestore)
+        await ensureUserDocument(currentUser);
+        setUser(currentUser);
+        setLoading(false);
+      });
+    };
+
+    initAuth();
+
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
   }, []);
+
+  useEffect(() => {
+    if (!userUid) return undefined;
+
+    const sendHeartbeat = () => {
+      if (document.visibilityState === 'hidden' || navigator.onLine === false) return;
+      updateLastSeen(userUid);
+    };
+
+    sendHeartbeat();
+    const intervalId = window.setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+    window.addEventListener('focus', sendHeartbeat);
+    document.addEventListener('visibilitychange', sendHeartbeat);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener('focus', sendHeartbeat);
+      document.removeEventListener('visibilitychange', sendHeartbeat);
+    };
+  }, [userUid]);
 
   const login = async () => {
     try {
+      await ensureLocalAuthPersistence();
       await signInWithPopup(auth, googleProvider);
       logEvent(analytics, 'sign_up', { method: 'google' });
     } catch (error) {

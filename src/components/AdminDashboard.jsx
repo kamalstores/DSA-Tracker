@@ -85,6 +85,22 @@ function isOnlineRecently(ts) {
   return diffMinutes <= 15; // Online if active in the last 15 minutes
 }
 
+function getTimestampMillis(ts) {
+  if (!ts) return 0;
+  const date = ts.toDate ? ts.toDate() : new Date(ts);
+  const time = date.getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function getUserActivityAt(user) {
+  return [user.lastSeenAt, user.updatedAt, user.lastSolvedAt]
+    .filter(Boolean)
+    .reduce(
+      (latest, current) => getTimestampMillis(current) > getTimestampMillis(latest) ? current : latest,
+      null
+    );
+}
+
 const StatCard = ({ value, label, color }) => (
   <div className="admin-stat-card" style={{ borderTopColor: color }}>
     <div className="admin-stat-value" style={{ color }}>{value}</div>
@@ -97,8 +113,6 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [sortBy, setSortBy] = useState('totalSolved');
-  const [search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
   // Set of question IDs that belong to A2Z sheet — used for consolidation
   const [a2zQuestionIds, setA2ZQuestionIds] = useState(new Set());
@@ -228,7 +242,7 @@ const AdminDashboard = () => {
 
   const totalUsers = users.length;
   const solvedTodayCount = users.filter(u => isSolvedToday(u.lastSolvedAt)).length;
-  const onlineNowCount = users.filter(u => isOnlineRecently(u.updatedAt)).length;
+  const onlineNowCount = users.filter(u => isOnlineRecently(getUserActivityAt(u))).length;
   const totalProblemsAllTime = users.reduce((acc, u) => acc + getSolved(u), 0);
   const mostActive = users.reduce((max, u) => (!max || getSolved(u) > getSolved(max)) ? u : max, null);
 
@@ -267,25 +281,6 @@ const AdminDashboard = () => {
     if (completionPct > maxCompletionPct) maxCompletionPct = completionPct;
     sheetStats[s.id] = { completionPct, uniqueUsersInSheet };
   });
-
-  // ── Sorted + filtered user list ──
-  const filteredUsers = users
-    .filter(u => {
-      const q = search.toLowerCase();
-      return (
-        (u.displayName || '').toLowerCase().includes(q) ||
-        (u.email || '').toLowerCase().includes(q)
-      );
-    })
-    .sort((a, b) => {
-      if (sortBy === 'totalSolved') return getSolved(b) - getSolved(a);
-      if (sortBy === 'lastActiveAt') {
-        const da = a.updatedAt?.toDate?.() || new Date(0);
-        const db2 = b.updatedAt?.toDate?.() || new Date(0);
-        return db2 - da;
-      }
-      return (a.displayName || '').localeCompare(b.displayName || '');
-    });
 
   return (
     <div className="admin-dashboard">
