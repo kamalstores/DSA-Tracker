@@ -12,7 +12,8 @@ const SheetView = ({ activeSheet }) => {
   const [filter, setFilter] = useState('all'); // all, done, not_done, revision
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { getSheetStats } = useContext(ProgressContext);
+  const { progress, getSheetStats, loadingCloud } = useContext(ProgressContext);
+  const hasLoadedProgress = Object.values(progress || {}).some(sheet => Object.keys(sheet || {}).length > 0);
 
   useEffect(() => {
     const loadData = async () => {
@@ -30,6 +31,10 @@ const SheetView = ({ activeSheet }) => {
 
   if (loading || !sheetData) {
     return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading sheet data...</div>;
+  }
+
+  if (loadingCloud && !hasLoadedProgress) {
+    return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading your saved progress...</div>;
   }
 
   const stats = getSheetStats(activeSheet, sheetData.totalQuestions);

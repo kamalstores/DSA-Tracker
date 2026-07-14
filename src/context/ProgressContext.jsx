@@ -6,13 +6,151 @@ import { SHEETS, fetchAndParseSheet } from '../utils/dataParser';
 
 export const ProgressContext = createContext();
 
-const emptyQuestionProgress = { status: false, revision: false, note: '' };
+const emptyQuestionProgress = { status: false, revision: false, note: '', updatedAt: 0 };
+const LEGACY_PROGRESS_STORAGE_KEY = 'dsaTrackerProgress';
+const PROGRESS_STORAGE_PREFIX = 'dsaTrackerProgress';
+const PENDING_PROGRESS_STORAGE_PREFIX = 'dsaTrackerPendingProgress';
 
-const mergeQuestionProgress = (existing = emptyQuestionProgress, incoming = emptyQuestionProgress) => ({
-  status: Boolean(existing.status) || Boolean(incoming.status),
-  revision: Boolean(existing.revision) || Boolean(incoming.revision),
-  note: existing.note || incoming.note || '',
-});
+const getProgressStorageKey = (uid) => uid
+  ? `${PROGRESS_STORAGE_PREFIX}:${uid}`
+  : LEGACY_PROGRESS_STORAGE_KEY;
+
+const getPendingProgressStorageKey = (uid) => `${PENDING_PROGRESS_STORAGE_PREFIX}:${uid}`;
+
+const getValidSheetIds = () => new Set(SHEETS.map(s => s.id));
+
+const normalizeQuestionProgress = (value) => {
+  if (typeof value === 'boolean') {
+    return { ...emptyQuestionProgress, status: value, updatedAt: 0 };
+  }
+
+  if (!value || typeof value !== 'object') {
+    return emptyQuestionProgress;
+  }
+
+  return {
+    status: Boolean(value.status),
+    revision: Boolean(value.revision),
+    note: value.note || '',
+    updatedAt: Number(value.updatedAt) || 0,
+  };
+};
+
+const mergeQuestionProgress = (existing = emptyQuestionProgress, incoming = emptyQuestionProgress) => {
+  const normalizedExisting = normalizeQuestionProgress(existing);
+  const normalizedIncoming = normalizeQuestionProgress(incoming);
+
+  if (normalizedIncoming.updatedAt > normalizedExisting.updatedAt) {
+    return normalizedIncoming;
+  }
+
+  if (normalizedExisting.updatedAt > normalizedIncoming.updatedAt) {
+    return normalizedExisting;
+  }
+
+  // Legacy progress has no per-question timestamp. Prefer preserving solved
+  // work instead of allowing an old empty browser copy to reset cloud progress.
+  return {
+    status: normalizedExisting.status || normalizedIncoming.status,
+    revision: normalizedExisting.revision || normalizedIncoming.revision,
+    note: normalizedIncoming.note || normalizedExisting.note || '',
+    updatedAt: normalizedIncoming.updatedAt || normalizedExisting.updatedAt || 0,
+  };
+};
+
+const mergeProgressData = (...progressSources) => {
+  const validSheetIds = getValidSheetIds();
+  const merged = {};
+
+  progressSources.forEach(progressData => {
+    Object.entries(progressData || {}).forEach(([sheetId, questions]) => {
+      if (!validSheetIds.has(sheetId) || !questions || typeof questions !== 'object') return;
+
+      Object.entries(questions).forEach(([questionId, questionProgress]) => {
+        const normalized = normalizeQuestionProgress(questionProgress);
+        const existing = merged[sheetId]?.[questionId] || emptyQuestionProgress;
+        const next = mergeQuestionProgress(existing, normalized);
+
+        if (!merged[sheetId]) merged[sheetId] = {};
+        merged[sheetId][questionId] = next;
+      });
+    });
+  });
+
+  return merged;
+};
+
+const normalizeStoredProgress = (progressData) => {
+  if (!progressData || typeof progressData !== 'object') return {};
+  if (isOldFormat(progressData)) return migrateToNewFormat(progressData, {});
+  return mergeProgressData(progressData);
+};
+
+const stableProgressData = (progressData) => {
+  const normalized = mergeProgressData(progressData);
+  return Object.keys(normalized).sort().reduce((sheetAcc, sheetId) => {
+    sheetAcc[sheetId] = Object.keys(normalized[sheetId]).sort().reduce((questionAcc, questionId) => {
+      questionAcc[questionId] = normalizeQuestionProgress(normalized[sheetId][questionId]);
+      return questionAcc;
+    }, {});
+    return sheetAcc;
+  }, {});
+};
+
+const progressDataEquals = (left, right) => (
+  JSON.stringify(stableProgressData(left)) === JSON.stringify(stableProgressData(right))
+);
+
+const hasProgressEntries = (progressData) => (
+  Object.values(progressData || {}).some(sheet => Object.keys(sheet || {}).length > 0)
+);
+
+const readProgressFromStorageKey = (key) => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? normalizeStoredProgress(JSON.parse(stored)) : {};
+  } catch (_) {
+    return {};
+  }
+};
+
+const readStoredProgress = (uid) => {
+  if (!uid) return readProgressFromStorageKey(LEGACY_PROGRESS_STORAGE_KEY);
+
+  const userProgress = readProgressFromStorageKey(getProgressStorageKey(uid));
+  if (hasProgressEntries(userProgress)) return userProgress;
+
+  return readProgressFromStorageKey(LEGACY_PROGRESS_STORAGE_KEY);
+};
+
+const saveStoredProgress = (uid, progressData) => {
+  try {
+    localStorage.setItem(getProgressStorageKey(uid), JSON.stringify(mergeProgressData(progressData)));
+  } catch (error) {
+    console.error('Failed to save progress locally:', error);
+  }
+};
+
+const readPendingProgress = (uid) => {
+  if (!uid) return {};
+  return readProgressFromStorageKey(getPendingProgressStorageKey(uid));
+};
+
+const savePendingProgress = (uid, progressData) => {
+  if (!uid) return;
+  try {
+    localStorage.setItem(getPendingProgressStorageKey(uid), JSON.stringify(mergeProgressData(progressData)));
+  } catch (error) {
+    console.error('Failed to queue pending progress sync:', error);
+  }
+};
+
+const clearPendingProgress = (uid) => {
+  if (!uid) return;
+  try {
+    localStorage.removeItem(getPendingProgressStorageKey(uid));
+  } catch (_) { }
+};
 
 const countSolvedQuestions = (progressData) => {
   let totalSolved = 0;
@@ -124,8 +262,24 @@ const consolidateA2ZProgress = (nestedProgress, a2zIds) => {
   return fixed;
 };
 
+const saveProgressToCloud = async (firebaseUser, progressData, extraFields = {}) => {
+  const docRef = doc(db, 'users', firebaseUser.uid);
+  const normalizedProgress = mergeProgressData(progressData);
+
+  await setDoc(docRef, {
+    progress: normalizedProgress,
+    totalSolved: countSolvedQuestions(normalizedProgress),
+    displayName: firebaseUser.displayName || '',
+    email: firebaseUser.email || '',
+    photoURL: firebaseUser.photoURL || '',
+    updatedAt: serverTimestamp(),
+    ...extraFields,
+  }, { merge: true });
+};
+
 export const ProgressProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
+  const userUid = user?.uid;
   const [progress, setProgress] = useState({});
   const [loadingCloud, setLoadingCloud] = useState(false);
   const progressRef = useRef(progress);
@@ -145,29 +299,14 @@ export const ProgressProvider = ({ children }) => {
   // ─────────────────────────────────────────────────────────────
   const fetchedForUid = useRef(null);
 
-  // 1. Initial Load from LocalStorage (for guest or initial state)
+  // 1. Load local progress for the current signed-in user (or guest).
+  // Older builds used one shared localStorage key, so signed-in users also
+  // merge that legacy copy once and then continue with their uid-scoped key.
   useEffect(() => {
-    const stored = localStorage.getItem('dsaTrackerProgress');
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        // Skip old flat format — wait for Firestore migration
-        if (isOldFormat(parsed)) return;
-
-        // Validate: all top-level keys must be valid sheet IDs
-        const validSheetIds = new Set(SHEETS.map(s => s.id));
-        const storedKeys = Object.keys(parsed);
-        const hasInvalidKey = storedKeys.some(k => !validSheetIds.has(k));
-        if (hasInvalidKey) {
-          console.log('🧹 Clearing corrupted localStorage progress (invalid sheet keys).');
-          localStorage.removeItem('dsaTrackerProgress');
-          return;
-        }
-
-        setProgress(parsed);
-      } catch (_) { }
-    }
-  }, []);
+    const storedProgress = readStoredProgress(userUid);
+    progressRef.current = storedProgress;
+    setProgress(storedProgress);
+  }, [userUid]);
 
   // 2. Fetch from Firestore on login — migrate or consolidate if needed
   useEffect(() => {
@@ -184,20 +323,26 @@ export const ProgressProvider = ({ children }) => {
     if (fetchedForUid.current === user.uid) return;
     fetchedForUid.current = user.uid;
 
+    let cancelled = false;
+
     const fetchCloudProgress = async () => {
       setLoadingCloud(true);
       try {
         const docRef = doc(db, 'users', user.uid);
         const docSnap = await getDoc(docRef);
+        const localProgress = readStoredProgress(user.uid);
+        const pendingProgress = readPendingProgress(user.uid);
+        let cloudDataToLoad = {};
+        let needsWrite = false;
+        let shouldDeleteOldRevision = false;
+        let extraWriteFields = {};
 
         if (docSnap.exists()) {
           const docData = docSnap.data();
           const cloudProgress = docData.progress || {};
           const cloudRevision = docData.revision || {};
 
-          let dataToLoad = cloudProgress;
-          let needsWrite = false;
-          let shouldDeleteOldRevision = false;
+          cloudDataToLoad = normalizeStoredProgress(cloudProgress);
 
           // ── Case 1: Old flat format { questionId: boolean } ──
           if (
@@ -206,8 +351,8 @@ export const ProgressProvider = ({ children }) => {
           ) {
             console.log('⚙️ Old flat format detected, migrating to nested…');
             // BUG 2 FIX: No ID filtering — pass only flat maps, keep all questions.
-            dataToLoad = migrateToNewFormat(cloudProgress, cloudRevision);
-            console.log('📦 Migration result:', Object.entries(dataToLoad).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
+            cloudDataToLoad = migrateToNewFormat(cloudProgress, cloudRevision);
+            console.log('📦 Migration result:', Object.entries(cloudDataToLoad).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
             needsWrite = true;
             // After migration, wipe the old `revision` field so this branch
             // never triggers again for this user on future logins.
@@ -218,82 +363,102 @@ export const ProgressProvider = ({ children }) => {
             const a2zIds = await buildA2ZQuestionIds();
             if (hasScatteredA2ZProgress(cloudProgress, a2zIds)) {
               console.log('🔧 A2Z questions found in wrong sheet buckets — consolidating…');
-              dataToLoad = consolidateA2ZProgress(cloudProgress, a2zIds);
-              console.log('📦 Consolidation result:', Object.entries(dataToLoad).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
+              cloudDataToLoad = consolidateA2ZProgress(cloudProgress, a2zIds);
+              console.log('📦 Consolidation result:', Object.entries(cloudDataToLoad).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
               needsWrite = true;
-            }
-          }
-
-          // Count real entries to decide if cloud has data
-          const cloudCount = Object.values(dataToLoad).reduce(
-            (sum, sheet) => sum + Object.keys(sheet || {}).length, 0
-          );
-
-          if (cloudCount > 0) {
-            setProgress(dataToLoad);
-            localStorage.setItem('dsaTrackerProgress', JSON.stringify(dataToLoad));
-
-            if (needsWrite) {
-              const totalSolved = countSolvedQuestions(dataToLoad);
-
-              await setDoc(docRef, {
-                progress: dataToLoad,
-                totalSolved,
-                displayName: user.displayName || '',
-                email: user.email || '',
-                photoURL: user.photoURL || '',
-                updatedAt: serverTimestamp(),
-                // Remove the stale flat `revision` field so migration never re-fires.
-                ...(shouldDeleteOldRevision ? { revision: deleteField() } : {}),
-              }, { merge: true });
-              console.log('✅ Fixed progress saved to Firestore.');
-            }
-          } else {
-            // Cloud has no data → sync local to cloud
-            console.log('Cloud empty, syncing local progress to cloud.');
-            const localStored = localStorage.getItem('dsaTrackerProgress');
-            if (localStored) {
-              try {
-                const localData = JSON.parse(localStored);
-                if (!isOldFormat(localData) && Object.keys(localData).length > 0) {
-                  await setDoc(docRef, { progress: localData }, { merge: true });
-                  setProgress(localData);
-                }
-              } catch (_) { }
             }
           }
         } else {
           // No cloud doc at all → sync local to cloud or create new doc
           console.log('No cloud doc. Creating one and syncing local data...');
-          const localStored = localStorage.getItem('dsaTrackerProgress');
-          let localData = {};
-          if (localStored) {
-            try {
-              const parsed = JSON.parse(localStored);
-              if (!isOldFormat(parsed)) localData = parsed;
-            } catch (_) { }
-          }
-
-          const totalSolved = countSolvedQuestions(localData);
-
-          await setDoc(docRef, {
-            progress: localData,
-            totalSolved,
-            displayName: user.displayName || '',
-            email: user.email || '',
-            photoURL: user.photoURL || '',
+          needsWrite = true;
+          extraWriteFields = {
             createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-          }, { merge: true });
+          };
+        }
+
+        const mergedProgress = mergeProgressData(cloudDataToLoad, localProgress, pendingProgress);
+        const shouldWriteMerged = (
+          needsWrite ||
+          !progressDataEquals(mergedProgress, cloudDataToLoad) ||
+          hasProgressEntries(pendingProgress)
+        );
+
+        if (!cancelled) {
+          progressRef.current = mergedProgress;
+          setProgress(mergedProgress);
+          saveStoredProgress(user.uid, mergedProgress);
+        }
+
+        if (shouldWriteMerged) {
+          await saveProgressToCloud(user, mergedProgress, {
+            ...extraWriteFields,
+            // Remove the stale flat `revision` field so migration never re-fires.
+            ...(shouldDeleteOldRevision ? { revision: deleteField() } : {}),
+          });
+          clearPendingProgress(user.uid);
+          console.log('✅ Progress merged and saved to Firestore.');
         }
       } catch (error) {
         console.error('Error fetching cloud progress:', error);
+        const fallbackProgress = mergeProgressData(
+          progressRef.current,
+          readStoredProgress(user.uid),
+          readPendingProgress(user.uid)
+        );
+        progressRef.current = fallbackProgress;
+        setProgress(fallbackProgress);
+        saveStoredProgress(user.uid, fallbackProgress);
+        savePendingProgress(user.uid, fallbackProgress);
       } finally {
-        setLoadingCloud(false);
+        if (!cancelled) setLoadingCloud(false);
       }
     };
 
     fetchCloudProgress();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return undefined;
+
+    let syncing = false;
+
+    const flushPendingProgress = async () => {
+      if (syncing || navigator.onLine === false) return;
+
+      const pendingProgress = readPendingProgress(user.uid);
+      if (!hasProgressEntries(pendingProgress)) return;
+
+      syncing = true;
+      const mergedProgress = mergeProgressData(progressRef.current, pendingProgress);
+      try {
+        await saveProgressToCloud(user, mergedProgress);
+        clearPendingProgress(user.uid);
+        progressRef.current = mergedProgress;
+        setProgress(mergedProgress);
+        saveStoredProgress(user.uid, mergedProgress);
+      } catch (error) {
+        console.error('Error retrying pending progress sync:', error);
+        savePendingProgress(user.uid, mergedProgress);
+      } finally {
+        syncing = false;
+      }
+    };
+
+    flushPendingProgress();
+    const intervalId = window.setInterval(flushPendingProgress, 60 * 1000);
+    window.addEventListener('focus', flushPendingProgress);
+    window.addEventListener('online', flushPendingProgress);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener('focus', flushPendingProgress);
+      window.removeEventListener('online', flushPendingProgress);
+    };
   }, [user]);
 
   // ─────────────────────────────────────────────────────────────
@@ -314,31 +479,24 @@ export const ProgressProvider = ({ children }) => {
         [questionId]: {
           ...(currentProgress[sheetId]?.[questionId] || emptyQuestionProgress),
           [isRevision ? 'revision' : 'status']: status,
+          updatedAt: Date.now(),
         },
       },
     };
 
     progressRef.current = newProgress;
     setProgress(newProgress);
-    localStorage.setItem('dsaTrackerProgress', JSON.stringify(newProgress));
+    saveStoredProgress(userUid, newProgress);
 
     if (user) {
       try {
-        const docRef = doc(db, 'users', user.uid);
-
-        const totalSolved = countSolvedQuestions(newProgress);
-
-        await setDoc(docRef, {
-          progress: newProgress,
-          totalSolved,
-          displayName: user.displayName || '',
-          email: user.email || '',
-          photoURL: user.photoURL || '',
+        await saveProgressToCloud(user, newProgress, {
           ...(!isRevision && status ? { lastSolvedAt: serverTimestamp() } : {}),
-          updatedAt: serverTimestamp(),
-        }, { merge: true });
+        });
+        clearPendingProgress(user.uid);
       } catch (error) {
         console.error('Error syncing to Firestore:', error);
+        savePendingProgress(user.uid, newProgress);
       }
     }
   };
@@ -355,28 +513,22 @@ export const ProgressProvider = ({ children }) => {
         [questionId]: {
           ...(currentProgress[sheetId]?.[questionId] || emptyQuestionProgress),
           note,
+          updatedAt: Date.now(),
         },
       },
     };
 
     progressRef.current = newProgress;
     setProgress(newProgress);
-    localStorage.setItem('dsaTrackerProgress', JSON.stringify(newProgress));
+    saveStoredProgress(userUid, newProgress);
 
     if (user) {
       try {
-        const docRef = doc(db, 'users', user.uid);
-
-        await setDoc(docRef, {
-          progress: newProgress,
-          totalSolved: countSolvedQuestions(newProgress),
-          displayName: user.displayName || '',
-          email: user.email || '',
-          photoURL: user.photoURL || '',
-          updatedAt: serverTimestamp(),
-        }, { merge: true });
+        await saveProgressToCloud(user, newProgress);
+        clearPendingProgress(user.uid);
       } catch (error) {
         console.error('Error syncing note to Firestore:', error);
+        savePendingProgress(user.uid, newProgress);
       }
     }
   };

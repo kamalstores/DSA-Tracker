@@ -5,10 +5,11 @@ import { SHEETS, fetchAndParseSheet } from '../utils/dataParser';
 
 const Dashboard = ({ setActiveSheet, setShowDashboard }) => {
   const { user } = useContext(AuthContext);
-  const { progress } = useContext(ProgressContext);
+  const { progress, loadingCloud } = useContext(ProgressContext);
 
   const [selectedSheets, setSelectedSheets] = useState(() => SHEETS.map(s => s.id));
   const [sheetTotals, setSheetTotals] = useState({});
+  const hasLoadedProgress = Object.values(progress || {}).some(sheet => Object.keys(sheet || {}).length > 0);
 
   useEffect(() => {
     const loadTotals = async () => {
@@ -34,6 +35,15 @@ const Dashboard = ({ setActiveSheet, setShowDashboard }) => {
       <div className="dashboard-empty">
         <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Combined Progress</h1>
         <p>Please sign in to view your combined progress and dashboard.</p>
+      </div>
+    );
+  }
+
+  if (loadingCloud && !hasLoadedProgress) {
+    return (
+      <div className="dashboard-empty">
+        <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Combined Progress</h1>
+        <p>Loading your saved progress...</p>
       </div>
     );
   }
