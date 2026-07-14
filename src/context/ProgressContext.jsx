@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, useRef } from 'react';
+import React, { createContext, useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { db } from '../firebase-config';
 import { doc, getDoc, setDoc, deleteField, serverTimestamp } from 'firebase/firestore';
 import { AuthContext } from './AuthContext';
@@ -10,6 +10,7 @@ const emptyQuestionProgress = { status: false, revision: false, note: '', update
 const LEGACY_PROGRESS_STORAGE_KEY = 'dsaTrackerProgress';
 const PROGRESS_STORAGE_PREFIX = 'dsaTrackerProgress';
 const PENDING_PROGRESS_STORAGE_PREFIX = 'dsaTrackerPendingProgress';
+const USER_PROGRESS_COLLECTION = 'userProgress';
 
 const getProgressStorageKey = (uid) => uid
   ? `${PROGRESS_STORAGE_PREFIX}:${uid}`
@@ -152,6 +153,12 @@ const clearPendingProgress = (uid) => {
   } catch (_) { }
 };
 
+const getRejectedMessage = (result) => (
+  result.status === 'rejected'
+    ? result.reason?.message || String(result.reason)
+    : ''
+);
+
 const countSolvedQuestions = (progressData) => {
   let totalSolved = 0;
   Object.values(progressData || {}).forEach(sheet => {
@@ -263,18 +270,32 @@ const consolidateA2ZProgress = (nestedProgress, a2zIds) => {
 };
 
 const saveProgressToCloud = async (firebaseUser, progressData, extraFields = {}) => {
-  const docRef = doc(db, 'users', firebaseUser.uid);
+  const userRef = doc(db, 'users', firebaseUser.uid);
+  const progressRef = doc(db, USER_PROGRESS_COLLECTION, firebaseUser.uid);
   const normalizedProgress = mergeProgressData(progressData);
-
-  await setDoc(docRef, {
+  const totalSolved = countSolvedQuestions(normalizedProgress);
+  const commonPayload = {
+    uid: firebaseUser.uid,
     progress: normalizedProgress,
-    totalSolved: countSolvedQuestions(normalizedProgress),
+    totalSolved,
     displayName: firebaseUser.displayName || '',
     email: firebaseUser.email || '',
     photoURL: firebaseUser.photoURL || '',
     updatedAt: serverTimestamp(),
     ...extraFields,
-  }, { merge: true });
+  };
+
+  const results = await Promise.allSettled([
+    setDoc(userRef, commonPayload, { merge: true }),
+    setDoc(progressRef, commonPayload, { merge: true }),
+  ]);
+
+  if (results.some(result => result.status === 'fulfilled')) return;
+
+  throw new Error(
+    results.map(getRejectedMessage).filter(Boolean).join(' | ') ||
+    'Failed to save progress to Firestore.'
+  );
 };
 
 export const ProgressProvider = ({ children }) => {
@@ -282,6 +303,8 @@ export const ProgressProvider = ({ children }) => {
   const userUid = user?.uid;
   const [progress, setProgress] = useState({});
   const [loadingCloud, setLoadingCloud] = useState(false);
+  const [syncStatus, setSyncStatus] = useState('idle');
+  const [syncError, setSyncError] = useState('');
   const progressRef = useRef(progress);
 
   useEffect(() => {
@@ -328,21 +351,49 @@ export const ProgressProvider = ({ children }) => {
     const fetchCloudProgress = async () => {
       setLoadingCloud(true);
       try {
-        const docRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(docRef);
+        const userRef = doc(db, 'users', user.uid);
+        const progressDocRef = doc(db, USER_PROGRESS_COLLECTION, user.uid);
+        const [userDocResult, progressDocResult] = await Promise.allSettled([
+          getDoc(userRef),
+          getDoc(progressDocRef),
+        ]);
+
+        if (
+          userDocResult.status === 'rejected' &&
+          progressDocResult.status === 'rejected'
+        ) {
+          throw new Error(
+            [getRejectedMessage(userDocResult), getRejectedMessage(progressDocResult)]
+              .filter(Boolean)
+              .join(' | ') || 'Failed to read saved progress from Firestore.'
+          );
+        }
+
+        const docSnap = userDocResult.status === 'fulfilled' ? userDocResult.value : null;
+        const progressDocSnap = progressDocResult.status === 'fulfilled' ? progressDocResult.value : null;
         const localProgress = readStoredProgress(user.uid);
         const pendingProgress = readPendingProgress(user.uid);
         let cloudDataToLoad = {};
         let needsWrite = false;
         let shouldDeleteOldRevision = false;
         let extraWriteFields = {};
+        let userCloudProgress = {};
 
-        if (docSnap.exists()) {
+        if (progressDocSnap?.exists()) {
+          const progressDocData = progressDocSnap.data();
+          cloudDataToLoad = mergeProgressData(
+            cloudDataToLoad,
+            normalizeStoredProgress(progressDocData.progress || {})
+          );
+        }
+
+        if (docSnap?.exists()) {
           const docData = docSnap.data();
           const cloudProgress = docData.progress || {};
           const cloudRevision = docData.revision || {};
+          userCloudProgress = normalizeStoredProgress(cloudProgress);
 
-          cloudDataToLoad = normalizeStoredProgress(cloudProgress);
+          cloudDataToLoad = mergeProgressData(cloudDataToLoad, userCloudProgress);
 
           // ── Case 1: Old flat format { questionId: boolean } ──
           if (
@@ -351,30 +402,36 @@ export const ProgressProvider = ({ children }) => {
           ) {
             console.log('⚙️ Old flat format detected, migrating to nested…');
             // BUG 2 FIX: No ID filtering — pass only flat maps, keep all questions.
-            cloudDataToLoad = migrateToNewFormat(cloudProgress, cloudRevision);
-            console.log('📦 Migration result:', Object.entries(cloudDataToLoad).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
+            userCloudProgress = migrateToNewFormat(cloudProgress, cloudRevision);
+            cloudDataToLoad = mergeProgressData(cloudDataToLoad, userCloudProgress);
+            console.log('📦 Migration result:', Object.entries(userCloudProgress).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
             needsWrite = true;
             // After migration, wipe the old `revision` field so this branch
             // never triggers again for this user on future logins.
             shouldDeleteOldRevision = Object.keys(cloudRevision).length > 0;
           }
           // ── Case 2: New nested format but A2Z questions in wrong buckets ──
-          else if (Object.keys(cloudProgress).length > 0) {
+          else if (Object.keys(userCloudProgress).length > 0) {
             const a2zIds = await buildA2ZQuestionIds();
-            if (hasScatteredA2ZProgress(cloudProgress, a2zIds)) {
+            if (hasScatteredA2ZProgress(userCloudProgress, a2zIds)) {
               console.log('🔧 A2Z questions found in wrong sheet buckets — consolidating…');
-              cloudDataToLoad = consolidateA2ZProgress(cloudProgress, a2zIds);
-              console.log('📦 Consolidation result:', Object.entries(cloudDataToLoad).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
+              userCloudProgress = consolidateA2ZProgress(userCloudProgress, a2zIds);
+              cloudDataToLoad = mergeProgressData(cloudDataToLoad, userCloudProgress);
+              console.log('📦 Consolidation result:', Object.entries(userCloudProgress).map(([k, v]) => `${k}: ${Object.keys(v).length}`));
               needsWrite = true;
             }
           }
         } else {
-          // No cloud doc at all → sync local to cloud or create new doc
-          console.log('No cloud doc. Creating one and syncing local data...');
+          console.log('No users cloud doc found. Creating one while syncing progress...');
           needsWrite = true;
           extraWriteFields = {
             createdAt: serverTimestamp(),
           };
+        }
+
+        if (!hasProgressEntries(cloudDataToLoad) && !progressDocSnap?.exists()) {
+          console.log('No cloud progress doc found. Creating one while syncing progress...');
+          needsWrite = true;
         }
 
         const mergedProgress = mergeProgressData(cloudDataToLoad, localProgress, pendingProgress);
@@ -391,16 +448,22 @@ export const ProgressProvider = ({ children }) => {
         }
 
         if (shouldWriteMerged) {
+          savePendingProgress(user.uid, mergedProgress);
+          setSyncStatus('syncing');
           await saveProgressToCloud(user, mergedProgress, {
             ...extraWriteFields,
             // Remove the stale flat `revision` field so migration never re-fires.
             ...(shouldDeleteOldRevision ? { revision: deleteField() } : {}),
           });
           clearPendingProgress(user.uid);
+          setSyncStatus('synced');
+          setSyncError('');
           console.log('✅ Progress merged and saved to Firestore.');
         }
       } catch (error) {
         console.error('Error fetching cloud progress:', error);
+        setSyncStatus('error');
+        setSyncError(error?.message || 'Failed to sync progress.');
         const fallbackProgress = mergeProgressData(
           progressRef.current,
           readStoredProgress(user.uid),
@@ -422,6 +485,44 @@ export const ProgressProvider = ({ children }) => {
     };
   }, [user]);
 
+  const syncProgressNow = useCallback(async () => {
+    if (!user) return true;
+
+    const mergedProgress = mergeProgressData(
+      progressRef.current,
+      readStoredProgress(user.uid),
+      readPendingProgress(user.uid)
+    );
+
+    progressRef.current = mergedProgress;
+    setProgress(mergedProgress);
+    saveStoredProgress(user.uid, mergedProgress);
+
+    if (!hasProgressEntries(mergedProgress)) {
+      clearPendingProgress(user.uid);
+      setSyncStatus('synced');
+      setSyncError('');
+      return true;
+    }
+
+    savePendingProgress(user.uid, mergedProgress);
+    setSyncStatus('syncing');
+    setSyncError('');
+
+    try {
+      await saveProgressToCloud(user, mergedProgress);
+      clearPendingProgress(user.uid);
+      setSyncStatus('synced');
+      return true;
+    } catch (error) {
+      console.error('Error syncing progress to Firestore:', error);
+      savePendingProgress(user.uid, mergedProgress);
+      setSyncStatus('error');
+      setSyncError(error?.message || 'Failed to sync progress.');
+      return false;
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!user) return undefined;
 
@@ -435,15 +536,20 @@ export const ProgressProvider = ({ children }) => {
 
       syncing = true;
       const mergedProgress = mergeProgressData(progressRef.current, pendingProgress);
+      setSyncStatus('syncing');
+      setSyncError('');
       try {
         await saveProgressToCloud(user, mergedProgress);
         clearPendingProgress(user.uid);
         progressRef.current = mergedProgress;
         setProgress(mergedProgress);
         saveStoredProgress(user.uid, mergedProgress);
+        setSyncStatus('synced');
       } catch (error) {
         console.error('Error retrying pending progress sync:', error);
         savePendingProgress(user.uid, mergedProgress);
+        setSyncStatus('error');
+        setSyncError(error?.message || 'Failed to sync progress.');
       } finally {
         syncing = false;
       }
@@ -489,14 +595,20 @@ export const ProgressProvider = ({ children }) => {
     saveStoredProgress(userUid, newProgress);
 
     if (user) {
+      savePendingProgress(user.uid, newProgress);
+      setSyncStatus('syncing');
+      setSyncError('');
       try {
         await saveProgressToCloud(user, newProgress, {
           ...(!isRevision && status ? { lastSolvedAt: serverTimestamp() } : {}),
         });
         clearPendingProgress(user.uid);
+        setSyncStatus('synced');
       } catch (error) {
         console.error('Error syncing to Firestore:', error);
         savePendingProgress(user.uid, newProgress);
+        setSyncStatus('error');
+        setSyncError(error?.message || 'Failed to sync progress.');
       }
     }
   };
@@ -523,12 +635,18 @@ export const ProgressProvider = ({ children }) => {
     saveStoredProgress(userUid, newProgress);
 
     if (user) {
+      savePendingProgress(user.uid, newProgress);
+      setSyncStatus('syncing');
+      setSyncError('');
       try {
         await saveProgressToCloud(user, newProgress);
         clearPendingProgress(user.uid);
+        setSyncStatus('synced');
       } catch (error) {
         console.error('Error syncing note to Firestore:', error);
         savePendingProgress(user.uid, newProgress);
+        setSyncStatus('error');
+        setSyncError(error?.message || 'Failed to sync progress.');
       }
     }
   };
@@ -552,7 +670,16 @@ export const ProgressProvider = ({ children }) => {
   };
 
   return (
-    <ProgressContext.Provider value={{ progress, updateQuestionStatus, updateQuestionNote, getSheetStats, loadingCloud }}>
+    <ProgressContext.Provider value={{
+      progress,
+      updateQuestionStatus,
+      updateQuestionNote,
+      getSheetStats,
+      loadingCloud,
+      syncStatus,
+      syncError,
+      syncProgressNow,
+    }}>
       {children}
     </ProgressContext.Provider>
   );

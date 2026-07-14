@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 import { AuthContext } from '../context/AuthContext';
+import { ProgressContext } from '../context/ProgressContext';
 import { Sun, Moon, LogIn, LogOut, LayoutDashboard, ShieldCheck, X, Menu } from 'lucide-react';
 
 // Track real viewport width — reliable across all mobile browsers
@@ -132,9 +133,27 @@ const SupportModal = ({ onClose }) => {
 const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSidebarOpen }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { user, login, logout } = useContext(AuthContext);
+  const { syncProgressNow, syncStatus } = useContext(ProgressContext);
   const isAdmin = user && ADMIN_UIDS.includes(user.uid);
   const [showSupport, setShowSupport] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const isMobile = useIsMobile();
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+
+    setLoggingOut(true);
+    try {
+      const synced = await syncProgressNow();
+      if (!synced) {
+        window.alert('Your progress could not be saved to the cloud. Please check your internet connection and try again before logging out.');
+        return;
+      }
+      await logout();
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
     <>
@@ -167,6 +186,18 @@ const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSi
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
+          {user && !isMobile && syncStatus === 'syncing' && (
+            <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
+              Syncing...
+            </span>
+          )}
+
+          {user && !isMobile && syncStatus === 'error' && (
+            <span style={{ color: 'var(--danger-color)', fontSize: '0.8rem', fontWeight: 700 }}>
+              Sync failed
+            </span>
+          )}
+
           {user ? (
             <>
               {/* Dashboard button: icon-only on mobile */}
@@ -194,12 +225,13 @@ const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSi
               {/* Logout: icon-only on mobile */}
               <button
                 className="btn-primary"
-                onClick={logout}
+                onClick={handleLogout}
+                disabled={loggingOut || syncStatus === 'syncing'}
                 style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: isMobile ? '0.5rem' : undefined }}
-                title="Logout"
+                title={syncStatus === 'error' ? 'Progress sync failed' : 'Logout'}
               >
                 <LogOut size={16} />
-                {!isMobile && <span>Logout</span>}
+                {!isMobile && <span>{loggingOut ? 'Saving...' : 'Logout'}</span>}
               </button>
             </>
           ) : (
