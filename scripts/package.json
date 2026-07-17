@@ -1,0 +1,19 @@
+{
+  "name": "dsa-tracker-migration",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Firebase → Supabase migration toolkit for Master DSA. Firebase is only ever READ — never written, never deleted.",
+  "scripts": {
+    "audit": "node 01-audit-firebase.mjs",
+    "seed": "node 02-seed-questions.mjs",
+    "migrate": "node 03-migrate-to-supabase.mjs",
+    "migrate:dry": "node 03-migrate-to-supabase.mjs --dry-run",
+    "validate": "node 04-validate-migration.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.5",
+    "firebase-admin": "^12.5.0"
+  }
+}

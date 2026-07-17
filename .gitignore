@@ -6,3 +6,18 @@ node_modules/
 
 # Lock files
 package-lock.json
+
+# Build output
+dist/
+
+# ── Secrets — never commit ──
+.env
+.env.local
+.env.*.local
+scripts/.env
+firebase-service-account.json
+scripts/firebase-service-account.json
+scripts/*service-account*.json
+
+# Migration snapshots contain real user data — keep them out of git
+scripts/snapshots/

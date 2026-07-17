@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 import { AuthContext } from '../context/AuthContext';
 import { ProgressContext } from '../context/ProgressContext';
-import { Sun, Moon, LogIn, LogOut, LayoutDashboard, ShieldCheck, X, Menu, BellRing } from 'lucide-react';
+import { Sun, Moon, LogIn, LogOut, LayoutDashboard, ShieldCheck, X, Menu } from 'lucide-react';
 
 // Track real viewport width — reliable across all mobile browsers
 const useIsMobile = (breakpoint = 768) => {
@@ -15,8 +15,6 @@ const useIsMobile = (breakpoint = 768) => {
   return isMobile;
 };
 
-// Must match the ADMIN_UID in AdminDashboard.jsx
-const ADMIN_UIDS = ['JROhXIAevXfsMos9qTTXcpf92vD2', 'kcFyQ6WdW9VBxUnCMt1NIBzJRyL2'];
 /* ─── Support Modal ──────────────────────────────────────────── */
 const SupportModal = ({ onClose }) => {
   const go = (url) => { window.open(url, '_blank', 'noreferrer'); onClose(); };
@@ -128,18 +126,19 @@ const SupportModal = ({ onClose }) => {
   );
 };
 
-/* ─── Announcement Modal ─────────────────────────────────────── */
-const AnnouncementModal = ({ onClose }) => {
+/* ─── Auth Confirm Modal (Sign In / Logout) ──────────────────── */
+const AuthConfirmModal = ({ action, onConfirm, onClose }) => {
+  const isLogin = action === 'login';
   return (
     <div
       onClick={onClose}
       style={{
         position: 'fixed', inset: 0, zIndex: 3000,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: 'rgba(0,0,0,0.6)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        animation: 'modal-fade-in 0.2s ease',
+        background: 'rgba(0,0,0,0.5)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        animation: 'modal-fade-in 0.18s ease',
       }}
     >
       <div
@@ -147,45 +146,65 @@ const AnnouncementModal = ({ onClose }) => {
         style={{
           background: 'var(--surface-color)',
           border: '1px solid var(--border-color)',
-          borderRadius: '1.25rem',
-          padding: '2rem 2.25rem',
-          maxWidth: '420px',
-          width: '90%',
-          boxShadow: '0 24px 60px rgba(0,0,0,0.5)',
-          animation: 'modal-pop 0.3s cubic-bezier(0.34,1.56,0.64,1)',
-          position: 'relative',
+          borderRadius: '1rem',
+          padding: '1.5rem 1.75rem',
+          maxWidth: '320px',
+          width: '88%',
+          boxShadow: '0 16px 48px rgba(0,0,0,0.45)',
+          animation: 'modal-pop 0.25s cubic-bezier(0.34,1.56,0.64,1)',
           textAlign: 'center',
         }}
       >
-        <button onClick={onClose} style={{
-          position: 'absolute', top: '1rem', right: '1rem',
-          background: 'transparent', border: 'none',
-          color: 'var(--text-secondary)', cursor: 'pointer',
-          display: 'flex', padding: '0.25rem', borderRadius: '50%',
+        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+          {isLogin ? '🔐' : '👋'}
+        </div>
+
+        <h3 style={{
+          fontSize: '1.05rem', fontWeight: 700,
+          marginBottom: '0.35rem', color: 'var(--text-primary)',
         }}>
-          <X size={18} />
-        </button>
+          {isLogin ? 'Sign In' : 'Sign Out'}
+        </h3>
 
-        <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📢</div>
-
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.4rem', color: 'var(--text-primary)' }}>
-          Migration Update
-        </h2>
-
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-          A migration will be carried out as soon as possible. If you experience any issues after the migration,
-          please don&apos;t hesitate to contact me immediately.
+        <p style={{
+          color: 'var(--text-secondary)', fontSize: '0.82rem',
+          lineHeight: 1.55, marginBottom: '1.25rem',
+        }}>
+          {isLogin
+            ? 'Sign in with Google to sync your progress across devices.'
+            : 'Your progress will be saved before signing out.'}
         </p>
 
-        <button onClick={onClose} style={{
-          width: '100%', padding: '0.75rem',
-          background: 'var(--primary-color)', border: 'none',
-          borderRadius: '0.75rem', color: '#fff',
-          cursor: 'pointer', fontSize: '0.9rem', fontWeight: 700,
-          transition: 'all 0.2s',
-        }}>
-          Got it
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button
+            onClick={onClose}
+            style={{
+              flex: 1, padding: '0.55rem',
+              background: 'transparent',
+              border: '1px solid var(--border-color)',
+              borderRadius: '0.6rem',
+              color: 'var(--text-secondary)',
+              cursor: 'pointer', fontSize: '0.82rem',
+              fontWeight: 600, transition: 'all 0.2s',
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => { onConfirm(); onClose(); }}
+            style={{
+              flex: 1, padding: '0.55rem',
+              background: isLogin ? 'var(--primary-color)' : 'var(--danger-color)',
+              border: 'none',
+              borderRadius: '0.6rem',
+              color: '#fff',
+              cursor: 'pointer', fontSize: '0.82rem',
+              fontWeight: 700, transition: 'all 0.2s',
+            }}
+          >
+            {isLogin ? 'Sign In' : 'Sign Out'}
+          </button>
+        </div>
       </div>
 
       <style>{`
@@ -202,21 +221,15 @@ const AnnouncementModal = ({ onClose }) => {
 /* ─── Header ─────────────────────────────────────────────────── */
 const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSidebarOpen }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const { user, login, logout } = useContext(AuthContext);
+  // isAdmin now comes from the database (profiles.is_admin, enforced
+  // server-side by RLS + the admin RPC) instead of hardcoded UIDs.
+  const { user, login, logout, isAdmin } = useContext(AuthContext);
   const { syncProgressNow, syncStatus } = useContext(ProgressContext);
-  const isAdmin = user && ADMIN_UIDS.includes(user.uid);
-  const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [showSupport, setShowSupport] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  // null | 'login' | 'logout'
+  const [authConfirm, setAuthConfirm] = useState(null);
   const isMobile = useIsMobile();
-
-  useEffect(() => {
-    setShowAnnouncement(true);
-  }, []);
-
-  const handleCloseAnnouncement = () => {
-    setShowAnnouncement(false);
-  };
 
   const handleLogout = async () => {
     if (loggingOut) return;
@@ -254,15 +267,7 @@ const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSi
         </div>
 
         <div className="header-right">
-          <button
-            className={isMobile ? 'icon-btn' : 'btn-secondary'}
-            onClick={() => setShowAnnouncement(true)}
-            style={isMobile ? undefined : { display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-            title="Website update"
-          >
-            <BellRing size={16} />
-            {!isMobile && <span>Update</span>}
-          </button>
+
 
           {/* Support button — hide on mobile to save space */}
           {!isMobile && (
@@ -314,7 +319,7 @@ const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSi
               {/* Logout: icon-only on mobile */}
               <button
                 className="btn-primary"
-                onClick={handleLogout}
+                onClick={() => setAuthConfirm('logout')}
                 disabled={loggingOut || syncStatus === 'syncing'}
                 style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: isMobile ? '0.5rem' : undefined }}
                 title={syncStatus === 'error' ? 'Progress sync failed' : 'Logout'}
@@ -326,7 +331,7 @@ const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSi
           ) : (
             <button
               className="btn-primary"
-              onClick={login}
+              onClick={() => setAuthConfirm('login')}
               style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: isMobile ? '0.5rem' : undefined }}
             >
               <LogIn size={16} />
@@ -336,7 +341,13 @@ const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSi
         </div>
       </header>
 
-      {showAnnouncement && <AnnouncementModal onClose={handleCloseAnnouncement} />}
+      {authConfirm && (
+        <AuthConfirmModal
+          action={authConfirm}
+          onConfirm={authConfirm === 'login' ? login : handleLogout}
+          onClose={() => setAuthConfirm(null)}
+        />
+      )}
       {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
     </>
   );

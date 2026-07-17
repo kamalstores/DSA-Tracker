@@ -1,22 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { db } from '../firebase-config';
-import { collection, getDocs } from 'firebase/firestore';
-import { SHEETS, fetchAndParseSheet } from '../utils/dataParser';
+import { SHEETS } from '../utils/dataParser';
+import { fetchAdminUsers, fetchSheets } from '../services/adminService';
 import AdminUsers from './AdminUsers';
 
-// ─────────────────────────────────────────────
-// 🔐 Replace this with YOUR Firebase UID
-//    Firebase Console → Authentication → Users → UID column
-// ─────────────────────────────────────────────
-const ADMIN_UIDS = ['JROhXIAevXfsMos9qTTXcpf92vD2', 'kcFyQ6WdW9VBxUnCMt1NIBzJRyL2'];
-
-// Map sheet IDs to display labels for the topic chart
-const SHEET_LABELS = Object.fromEntries(SHEETS.map(s => [s.id, s.name]));
+// ═══════════════════════════════════════════════════════════════════════════
+// Admin dashboard — data comes from the admin_list_users() RPC.
+//
+// Security model (replaces the old client-side ADMIN_UIDS check):
+//   • profiles.is_admin is set in the database (admin_emails allow-list).
+//   • The RPC is SECURITY DEFINER and raises 'admin only' for everyone else.
+//   • Non-admins cannot read ANY other user's data — RLS guarantees it.
+// The rows arrive pre-aggregated (total_solved + per-sheet counts from
+// user_sheet_stats), so no client-side normalization of legacy formats and
+// no scanning of raw progress is needed.
+// ═══════════════════════════════════════════════════════════════════════════
 
 function timeAgo(ts) {
   if (!ts) return 'Never';
-  const date = ts.toDate ? ts.toDate() : new Date(ts);
+  const date = new Date(ts);
   const diff = Math.floor((Date.now() - date.getTime()) / 1000);
   if (diff < 60) return `${diff}s ago`;
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
@@ -24,81 +26,18 @@ function timeAgo(ts) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
-function getActivityLevel(ts) {
-  if (!ts) return { className: 'activity-never', text: 'Never' };
-  const date = ts.toDate ? ts.toDate() : new Date(ts);
-  const diffHours = (Date.now() - date.getTime()) / 3600000;
-  
-  if (diffHours < 1) return { className: 'activity-high', text: timeAgo(ts) };
-  if (diffHours < 24) return { className: 'activity-medium', text: timeAgo(ts) };
-  if (diffHours > 72) return { className: 'activity-low', text: timeAgo(ts) };
-  return { className: 'activity-normal', text: timeAgo(ts) };
-}
-
-const SHEET_TOTALS = {
-  a2z_flawless: 455,
-  SDE: 191,
-  blind75: 75,
-  neetcode150: 150,
-  neetcode250: 250,
-  striver_cp: 297
-};
-
-const VALID_SHEET_IDS = new Set(SHEETS.map(s => s.id));
-
-const normalizeQuestionProgress = (value) => {
-  if (typeof value === 'boolean') {
-    return { status: value, revision: false, note: '' };
-  }
-
-  if (!value || typeof value !== 'object') {
-    return { status: false, revision: false, note: '' };
-  }
-
-  return {
-    status: Boolean(value.status),
-    revision: Boolean(value.revision),
-    note: value.note || '',
-  };
-};
-
-const countSolved = (progressBySheet) => Object.values(progressBySheet).reduce(
-  (sum, sheet) => sum + Object.values(sheet || {}).filter(q => q?.status).length,
-  0
-);
-
 function isSolvedToday(ts) {
   if (!ts) return false;
-  const date = ts.toDate ? ts.toDate() : new Date(ts);
+  const date = new Date(ts);
   const now = new Date();
-  return (
-    date.getDate() === now.getDate() &&
-    date.getMonth() === now.getMonth() &&
-    date.getFullYear() === now.getFullYear()
-  );
+  return date.getDate() === now.getDate()
+    && date.getMonth() === now.getMonth()
+    && date.getFullYear() === now.getFullYear();
 }
 
 function isOnlineRecently(ts) {
   if (!ts) return false;
-  const date = ts.toDate ? ts.toDate() : new Date(ts);
-  const diffMinutes = (Date.now() - date.getTime()) / 60000;
-  return diffMinutes <= 15; // Online if active in the last 15 minutes
-}
-
-function getTimestampMillis(ts) {
-  if (!ts) return 0;
-  const date = ts.toDate ? ts.toDate() : new Date(ts);
-  const time = date.getTime();
-  return Number.isNaN(time) ? 0 : time;
-}
-
-function getUserActivityAt(user) {
-  return [user.lastSeenAt, user.updatedAt, user.lastSolvedAt]
-    .filter(Boolean)
-    .reduce(
-      (latest, current) => getTimestampMillis(current) > getTimestampMillis(latest) ? current : latest,
-      null
-    );
+  return (Date.now() - new Date(ts).getTime()) / 60000 <= 15;
 }
 
 const StatCard = ({ value, label, color }) => (
@@ -109,51 +48,47 @@ const StatCard = ({ value, label, color }) => (
 );
 
 const AdminDashboard = () => {
-  const { user } = useContext(AuthContext);
+  const { user, isAdmin } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
+  const [sheetTotals, setSheetTotals] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
-  // Set of question IDs that belong to A2Z sheet — used for consolidation
-  const [a2zQuestionIds, setA2ZQuestionIds] = useState(new Set());
-
-  const isAdmin = user && ADMIN_UIDS.includes(user.uid);
-
-  // Load A2Z question IDs once — used to detect and fix scattered progress
-  useEffect(() => {
-    const loadA2ZIds = async () => {
-      const parsed = await fetchAndParseSheet('a2z_flawless');
-      if (!parsed) return;
-      const ids = new Set();
-      const traverse = (groups) => {
-        groups.forEach(g => {
-          (g.questions || []).forEach(q => { if (q.id) ids.add(q.id); });
-          (g.subcategories || []).forEach(sub => traverse([sub]));
-        });
-      };
-      traverse(parsed.data);
-      setA2ZQuestionIds(ids);
-    };
-    loadA2ZIds();
-  }, []);
 
   useEffect(() => {
-    if (!isAdmin) return;
-    const fetchUsers = async () => {
+    if (!user || !isAdmin) { setLoading(false); return; }
+    let cancelled = false;
+
+    (async () => {
       try {
-        const snap = await getDocs(collection(db, 'users'));
-        const data = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
-        setUsers(data);
+        const [rows, sheets] = await Promise.all([fetchAdminUsers(), fetchSheets()]);
+        if (cancelled) return;
+        // Map RPC rows to the field names the table component renders.
+        setUsers(rows.map((r) => ({
+          uid: r.user_id,
+          email: r.email,
+          displayName: r.display_name,
+          photoURL: r.photo_url,
+          location: r.location,
+          totalSolved: r.total_solved,
+          createdAt: r.created_at,
+          lastSeenAt: r.last_seen_at,
+          lastSolvedAt: r.last_solved_at,
+          sheetCounts: r.sheet_counts || {},
+        })));
+        setSheetTotals(Object.fromEntries(sheets.map((s) => [s.id, s.total_questions])));
       } catch (e) {
-        setError('Failed to load user data. Check Firestore rules.');
+        if (!cancelled) setError(e.message === 'admin only'
+          ? 'Access denied by the server: this account is not an admin.'
+          : `Failed to load admin data: ${e.message}`);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
-    };
-    fetchUsers();
-  }, [isAdmin]);
+    })();
 
-  // ── Access denied ──
+    return () => { cancelled = true; };
+  }, [user, isAdmin]);
+
   if (!user) {
     return (
       <div className="admin-access-denied">
@@ -170,7 +105,6 @@ const AdminDashboard = () => {
         <div className="admin-lock">⛔</div>
         <h2>Access Denied</h2>
         <p>You don't have permission to view this page.</p>
-        <p className="admin-uid-hint">Your UID: <code>{user.uid}</code></p>
       </div>
     );
   }
@@ -188,95 +122,44 @@ const AdminDashboard = () => {
     return <div className="admin-access-denied"><div className="admin-lock">⚠️</div><h2>{error}</h2></div>;
   }
 
-  // ── Aggregate stats ──
-  // Consolidate handles flat, nested, and mixed format progress
-  const consolidate = (prog) => {
-    if (!prog) return {};
-    const fixed = {};
-    const putQuestion = (sheetId, qId, qData) => {
-      const normalized = normalizeQuestionProgress(qData);
-      if (!fixed[sheetId]) fixed[sheetId] = {};
-      const existing = fixed[sheetId][qId];
-      fixed[sheetId][qId] = existing
-        ? {
-            status: existing.status || normalized.status,
-            revision: existing.revision || normalized.revision,
-            note: existing.note || normalized.note,
-          }
-        : normalized;
-    };
-
-    for (const [key, value] of Object.entries(prog)) {
-      if (typeof value === 'boolean') {
-        putQuestion('a2z_flawless', key, value);
-      } else if (value && typeof value === 'object') {
-        if (VALID_SHEET_IDS.has(key)) {
-          for (const [qId, qData] of Object.entries(value)) {
-            const realSheet = a2zQuestionIds.has(qId) ? 'a2z_flawless' : key;
-            putQuestion(realSheet, qId, qData);
-          }
-        } else if ('status' in value || 'revision' in value || 'note' in value) {
-          putQuestion('a2z_flawless', key, value);
-        }
-      }
-    }
-    return fixed;
+  const getSolved = (u) => u.totalSolved || 0;
+  const getSheetSolved = (u, sheetId) => u.sheetCounts?.[sheetId]?.solved || 0;
+  const getUserActivityAt = (u) => {
+    const times = [u.lastSeenAt, u.lastSolvedAt].filter(Boolean).map((t) => new Date(t).getTime());
+    return times.length ? new Date(Math.max(...times)).toISOString() : null;
   };
 
-  const getSolved = (u) => {
-    const prog = u.progress || {};
-    const fixed = consolidate(prog);
-    const calculated = countSolved(fixed);
-
-    if (Object.keys(prog).length > 0) return calculated;
-    return Number(u.totalSolved) || 0;
-  };
-
-  // Count solved for a specific sheet column
-  const getSheetSolved = (u, sheetId) => {
-    const prog = u.progress || {};
-    const fixed = consolidate(prog);
-    const sheetProg = fixed[sheetId] || {};
-    return countSolved({ [sheetId]: sheetProg });
-  };
-
+  // ── Aggregates (rows are small + pre-aggregated; fine to fold client-side) ─
   const totalUsers = users.length;
-  const solvedTodayCount = users.filter(u => isSolvedToday(u.lastSolvedAt)).length;
-  const onlineNowCount = users.filter(u => isOnlineRecently(getUserActivityAt(u))).length;
+  const solvedTodayCount = users.filter((u) => isSolvedToday(u.lastSolvedAt)).length;
+  const onlineNowCount = users.filter((u) => isOnlineRecently(getUserActivityAt(u))).length;
   const totalProblemsAllTime = users.reduce((acc, u) => acc + getSolved(u), 0);
   const mostActive = users.reduce((max, u) => (!max || getSolved(u) > getSolved(max)) ? u : max, null);
 
-  // ── Engagement Health ──
-  const activeUsersCount = users.filter(u => getSolved(u) > 0).length;
+  const activeUsersCount = users.filter((u) => getSolved(u) > 0).length;
   const zeroSolversCount = totalUsers - activeUsersCount;
   const activeUsersPct = totalUsers > 0 ? Math.round((activeUsersCount / totalUsers) * 100) : 0;
   const dropOffPct = totalUsers > 0 ? Math.round((zeroSolversCount / totalUsers) * 100) : 0;
   const avgSolves = activeUsersCount > 0 ? Math.round(totalProblemsAllTime / activeUsersCount) : 0;
 
-  // ── User Segmentation ──
-  const powerUsers = users.filter(u => getSolved(u) >= 100).length;
-  const activeUsersSeg = users.filter(u => getSolved(u) >= 10 && getSolved(u) < 100).length;
-  const starterUsers = users.filter(u => getSolved(u) >= 1 && getSolved(u) < 10).length;
+  const powerUsers = users.filter((u) => getSolved(u) >= 100).length;
+  const activeUsersSeg = users.filter((u) => getSolved(u) >= 10 && getSolved(u) < 100).length;
+  const starterUsers = users.filter((u) => getSolved(u) >= 1 && getSolved(u) < 10).length;
 
-  // ── Demographics ──
-  const usersWithLocation = users.filter(u => u.location && u.location !== 'Unknown');
-  const indianUsers = usersWithLocation.filter(u => u.location.toLowerCase().includes('india')).length;
+  const usersWithLocation = users.filter((u) => u.location && u.location !== 'Unknown');
+  const indianUsers = usersWithLocation.filter((u) => u.location.toLowerCase().includes('india')).length;
   const overseasUsers = usersWithLocation.length - indianUsers;
 
-  // ── Sheet Adoption (per sheet) ──
   const sheetStats = {};
   let maxCompletionPct = 1;
-  SHEETS.forEach(s => {
+  SHEETS.forEach((s) => {
     let totalSolvesInSheet = 0;
     let uniqueUsersInSheet = 0;
-    users.forEach(u => {
+    users.forEach((u) => {
       const solved = getSheetSolved(u, s.id);
-      if (solved > 0) {
-        uniqueUsersInSheet++;
-        totalSolvesInSheet += solved;
-      }
+      if (solved > 0) { uniqueUsersInSheet++; totalSolvesInSheet += solved; }
     });
-    const totalPossible = activeUsersCount * (SHEET_TOTALS[s.id] || 1);
+    const totalPossible = activeUsersCount * (sheetTotals[s.id] || 1);
     const completionPct = activeUsersCount > 0 ? ((totalSolvesInSheet / totalPossible) * 100) : 0;
     if (completionPct > maxCompletionPct) maxCompletionPct = completionPct;
     sheetStats[s.id] = { completionPct, uniqueUsersInSheet };
@@ -284,24 +167,22 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      {/* Header */}
       <div className="admin-header">
         <div>
           <h1 className="admin-title">Admin Dashboard</h1>
-          <p className="admin-subtitle">Live data from Firestore · {totalUsers} registered users</p>
+          <p className="admin-subtitle">Live data from Supabase · {totalUsers} registered users</p>
         </div>
         <span className="admin-badge">🛡️ Admin</span>
       </div>
 
-      {/* Admin Navigation Tabs */}
       <div className="admin-tabs">
-        <button 
+        <button
           className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}
         >
           📊 Overview
         </button>
-        <button 
+        <button
           className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
           onClick={() => setActiveTab('users')}
         >
@@ -311,7 +192,6 @@ const AdminDashboard = () => {
 
       {activeTab === 'overview' ? (
         <>
-          {/* Platform Stats */}
           <div className="admin-section">
             <h2 className="admin-section-title">Platform Stats</h2>
             <div className="admin-stats-grid">
@@ -322,7 +202,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Engagement Health */}
           <div className="admin-section">
             <h2 className="admin-section-title">Engagement Health</h2>
             <div className="admin-stats-grid">
@@ -337,7 +216,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* User Segmentation */}
           <div className="admin-section">
             <h2 className="admin-section-title">User Segmentation</h2>
             <div className="admin-stats-grid">
@@ -348,7 +226,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Demographics */}
           <div className="admin-section">
             <h2 className="admin-section-title">Demographics</h2>
             <div className="admin-stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
@@ -358,11 +235,10 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Sheet Activity Chart */}
           <div className="admin-section">
             <h2 className="admin-section-title">Solves by Sheet</h2>
             <div className="admin-topic-chart">
-              {SHEETS.map(s => {
+              {SHEETS.map((s) => {
                 const stats = sheetStats[s.id] || { completionPct: 0, uniqueUsersInSheet: 0 };
                 const relativePct = maxCompletionPct > 0 ? (stats.completionPct / maxCompletionPct) * 100 : 0;
                 return (
@@ -372,10 +248,7 @@ const AdminDashboard = () => {
                       <span className="admin-topic-subtext">{stats.uniqueUsersInSheet} users</span>
                     </div>
                     <div className="admin-topic-bar-track">
-                      <div
-                        className="admin-topic-bar-fill"
-                        style={{ width: `${relativePct}%` }}
-                      />
+                      <div className="admin-topic-bar-fill" style={{ width: `${relativePct}%` }} />
                     </div>
                     <span className="admin-topic-count">{stats.completionPct.toFixed(1)}%</span>
                   </div>
@@ -385,10 +258,11 @@ const AdminDashboard = () => {
           </div>
         </>
       ) : (
-        <AdminUsers 
-          users={users} 
-          getSolved={getSolved} 
-          getSheetSolved={getSheetSolved} 
+        <AdminUsers
+          users={users}
+          getSolved={getSolved}
+          getSheetSolved={getSheetSolved}
+          sheetTotals={sheetTotals}
         />
       )}
     </div>

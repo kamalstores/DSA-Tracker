@@ -1,197 +1,171 @@
-import React, { createContext, useState, useEffect } from 'react';
-import {
-  browserLocalPersistence,
-  onAuthStateChanged,
-  setPersistence,
-  signInWithPopup,
-  signOut,
-} from 'firebase/auth';
-import { auth, googleProvider, analytics, db } from '../firebase-config';
-import { logEvent } from 'firebase/analytics';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import React, { createContext, useState, useEffect, useRef, useCallback } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import { fetchMyProfile, touchLastSeen, updateOwnLocation } from '../services/progressService';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AuthContext — Supabase Auth with Google OAuth.
+//
+// Identity model (the fix for "different progress on different browsers"):
+//   • Supabase Auth maps one verified Google e-mail to exactly ONE
+//     auth.users row. The UUID of that row is the permanent user id.
+//   • A database trigger (handle_new_user) creates the profiles row — the
+//     client can neither create nor duplicate users.
+//   • No sign-up path exists that could mint a second identity for the same
+//     Google account, on any browser, on any device.
+//
+// The context exposes the same contract the components already use:
+//   { user: {uid,email,displayName,photoURL}, login, logout, loading }
+// plus { profile, isAdmin } (profile.is_admin comes from the DB, replacing
+// the old hardcoded ADMIN_UIDS arrays).
+// ═══════════════════════════════════════════════════════════════════════════
 
 export const AuthContext = createContext();
 
 const HEARTBEAT_INTERVAL_MS = 5 * 60 * 1000;
 
-const ensureLocalAuthPersistence = async () => {
-  try {
-    await setPersistence(auth, browserLocalPersistence);
-  } catch (error) {
-    console.error('Failed to enable persistent Firebase auth', error);
-  }
-};
-
-const updateLastSeen = async (uid) => {
-  if (!uid) return;
-  try {
-    await setDoc(doc(db, 'users', uid), {
-      lastSeenAt: serverTimestamp(),
-    }, { merge: true });
-  } catch (error) {
-    console.error('Failed to update user activity heartbeat:', error);
-  }
-};
-
-// Ensures every authenticated user has a Firestore document.
-// This runs on every page load for logged-in users, so it will
-// automatically backfill documents for users who signed up before
-// this logic was added.
-const ensureUserDocument = async (firebaseUser) => {
-  if (!firebaseUser) return;
-  try {
-    const userRef = doc(db, 'users', firebaseUser.uid);
-    const docSnap = await getDoc(userRef);
-
-    let isNewUser = false;
-    let needsLocation = false;
-
-    if (!docSnap.exists()) {
-      isNewUser = true;
-      needsLocation = true;
-    } else {
-      const data = docSnap.data();
-      if (!data.location || data.location === 'Unknown') {
-        needsLocation = true;
-      }
-    }
-
-    let locationString = 'Unknown';
-    if (needsLocation) {
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        const data = await res.json();
-        if (data.city && data.region && data.country_name) {
-          locationString = `${data.city}, ${data.region}, ${data.country_name}`;
-        } else if (data.city && data.country_name) {
-          locationString = `${data.city}, ${data.country_name}`;
-        } else if (data.country_name) {
-          locationString = data.country_name;
-        }
-      } catch (locErr) {
-        console.error('Failed to fetch location:', locErr);
-      }
-    }
-
-    if (isNewUser) {
-      // Brand new user — create their document immediately
-      await setDoc(userRef, {
-        displayName: firebaseUser.displayName || '',
-        email: firebaseUser.email || '',
-        photoURL: firebaseUser.photoURL || '',
-        location: locationString,
-        createdAt: serverTimestamp(),
-        lastSeenAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        progress: {},
-        totalSolved: 0,
-      });
-      console.log('✅ New user document created in Firestore:', firebaseUser.uid);
-
-      // Send email notification to admin via Web3Forms
-      try {
-        await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            access_key: "YOUR_WEB3FORMS_ACCESS_KEY", // Get this from web3forms.com
-            subject: "New User Signup - DSA Tracker",
-            from_name: "DSA Tracker System",
-            message: `A new user has just signed up!\n\nName: ${firebaseUser.displayName || 'N/A'}\nEmail: ${firebaseUser.email || 'N/A'}\nLocation: ${locationString}\nUID: ${firebaseUser.uid}`
-          })
-        });
-        console.log('📧 Signup notification sent to admin.');
-      } catch (emailErr) {
-        console.error('Failed to send admin notification email:', emailErr);
-      }
-    } else if (needsLocation && locationString !== 'Unknown') {
-      // Silently update existing user with their newly fetched location
-      await setDoc(userRef, {
-        location: locationString,
-        lastSeenAt: serverTimestamp(),
-      }, { merge: true });
-      console.log(`✅ Silently saved location for existing user ${firebaseUser.uid}: ${locationString}`);
-    } else {
-      await updateLastSeen(firebaseUser.uid);
-    }
-  } catch (err) {
-    console.error('Error ensuring user document:', err);
-  }
+const normalizeUser = (sessionUser) => {
+  if (!sessionUser) return null;
+  const meta = sessionUser.user_metadata || {};
+  return {
+    uid: sessionUser.id,
+    email: sessionUser.email || '',
+    displayName: meta.full_name || meta.name || sessionUser.email || '',
+    photoURL: meta.avatar_url || meta.picture || '',
+  };
 };
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const userUid = user?.uid;
+  const locationTried = useRef(false);
 
+  // ── Session bootstrapping + auth state subscription ──────────────────────
   useEffect(() => {
-    let unsubscribe = () => {};
     let cancelled = false;
 
-    const initAuth = async () => {
-      await ensureLocalAuthPersistence();
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (cancelled) return;
+      setUser(normalizeUser(session?.user));
+      setLoading(false);
+    });
 
-      unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-        // Ensure Firestore doc exists for every authenticated user
-        // (catches both new sign-ups and existing users missing from Firestore)
-        await ensureUserDocument(currentUser);
-        setUser(currentUser);
-        setLoading(false);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser((prev) => {
+        const next = normalizeUser(session?.user);
+        // Avoid re-render loops on token refresh: same uid → keep the object.
+        if (prev && next && prev.uid === next.uid) return prev;
+        return next;
       });
-    };
-
-    initAuth();
+      setLoading(false);
+    });
 
     return () => {
       cancelled = true;
-      unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 
+  // ── Load my profile row (is_admin, location, …) ──────────────────────────
+  useEffect(() => {
+    if (!userUid) { setProfile(null); return undefined; }
+    let cancelled = false;
+
+    (async () => {
+      try {
+        // The DB trigger creates the profile at signup; retry briefly covers
+        // the very first sign-in race.
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const p = await fetchMyProfile(userUid);
+          if (cancelled) return;
+          if (p) { setProfile(p); return; }
+          await new Promise((r) => setTimeout(r, 700));
+        }
+      } catch (err) {
+        console.error('Failed to load profile:', err);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [userUid]);
+
+  // ── One-time best-effort location capture (feeds admin demographics) ─────
+  useEffect(() => {
+    if (!profile || locationTried.current) return;
+    if (profile.location && profile.location !== 'Unknown') return;
+    locationTried.current = true;
+
+    (async () => {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const d = await res.json();
+        const loc = [d.city, d.region, d.country_name].filter(Boolean).join(', ');
+        if (loc) await updateOwnLocation(loc);
+      } catch {
+        /* purely cosmetic — never block anything on this */
+      }
+    })();
+  }, [profile]);
+
+  // ── Presence heartbeat (server-side last_seen_at) ────────────────────────
   useEffect(() => {
     if (!userUid) return undefined;
 
-    const sendHeartbeat = () => {
+    let last = 0;
+    const beat = () => {
       if (document.visibilityState === 'hidden' || navigator.onLine === false) return;
-      updateLastSeen(userUid);
+      const now = Date.now();
+      if (now - last < 60 * 1000) return; // throttle
+      last = now;
+      touchLastSeen();
     };
 
-    sendHeartbeat();
-    const intervalId = window.setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
-    window.addEventListener('focus', sendHeartbeat);
-    document.addEventListener('visibilitychange', sendHeartbeat);
-
+    beat();
+    const id = window.setInterval(beat, HEARTBEAT_INTERVAL_MS);
+    window.addEventListener('focus', beat);
+    document.addEventListener('visibilitychange', beat);
     return () => {
-      window.clearInterval(intervalId);
-      window.removeEventListener('focus', sendHeartbeat);
-      document.removeEventListener('visibilitychange', sendHeartbeat);
+      window.clearInterval(id);
+      window.removeEventListener('focus', beat);
+      document.removeEventListener('visibilitychange', beat);
     };
   }, [userUid]);
 
-  const login = async () => {
+  // ── Actions ──────────────────────────────────────────────────────────────
+  const login = useCallback(async () => {
     try {
-      await ensureLocalAuthPersistence();
-      await signInWithPopup(auth, googleProvider);
-      logEvent(analytics, 'sign_up', { method: 'google' });
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+          queryParams: { access_type: 'offline', prompt: 'select_account' },
+        },
+      });
+      if (error) throw error;
     } catch (error) {
       console.error('Error signing in with Google', error);
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
-      await signOut(auth);
+      await supabase.auth.signOut();
+      setProfile(null);
     } catch (error) {
       console.error('Error signing out', error);
     }
-  };
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{
+      user,
+      profile,
+      isAdmin: Boolean(profile?.is_admin),
+      login,
+      logout,
+      loading,
+    }}>
       {!loading && children}
     </AuthContext.Provider>
   );

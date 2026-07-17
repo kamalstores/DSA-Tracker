@@ -80,7 +80,7 @@ function getInitials(name, email) {
   return '?';
 }
 
-const AdminUsers = ({ users, getSolved, getSheetSolved }) => {
+const AdminUsers = ({ users, getSolved, getSheetSolved, sheetTotals }) => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('totalSolved');
   const [filterOnline, setFilterOnline] = useState(false);
@@ -226,7 +226,8 @@ const AdminUsers = ({ users, getSolved, getSheetSolved }) => {
                   </td>
                   {SHEETS.map(s => {
                     const solved = getSheetSolved(u, s.id);
-                    const totalQ = SHEET_TOTALS[s.id] || 1;
+                    // Live totals from the sheets table; hardcoded map is only a fallback.
+                    const totalQ = (sheetTotals && sheetTotals[s.id]) || SHEET_TOTALS[s.id] || 1;
                     const pct = Math.round((solved / totalQ) * 100);
                     return (
                       <td key={s.id} className="admin-sheet-cell">
