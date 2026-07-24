@@ -16,24 +16,28 @@ const FilterSearch = ({ filter, setFilter, searchQuery, setSearchQuery }) => {
       
       <div className="filter-tabs">
         <button 
+          type="button"
           className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
           onClick={() => setFilter('all')}
         >
           All
         </button>
         <button 
+          type="button"
           className={`filter-tab ${filter === 'done' ? 'active' : ''}`}
           onClick={() => setFilter('done')}
         >
           ✅ Done
         </button>
         <button 
+          type="button"
           className={`filter-tab ${filter === 'revision' ? 'active' : ''}`}
           onClick={() => setFilter('revision')}
         >
           ⭐ Revision
         </button>
         <button 
+          type="button"
           className={`filter-tab ${filter === 'not_done' ? 'active' : ''}`}
           onClick={() => setFilter('not_done')}
         >

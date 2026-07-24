@@ -629,6 +629,15 @@ const QuestionList = ({ data, sheetId, filter, searchQuery }) => {
 
   // Group celebration overlay
   const [celebration, setCelebration] = useState(null); // { type: 'sub'|'heading', title }
+  const celebrationTimer = useRef(null);
+
+  useEffect(() => {
+    clearTimeout(praiseTimer.current);
+    clearTimeout(celebrationTimer.current);
+    setPraiseVisible(false);
+    setPraiseMsg('');
+    setCelebration(null);
+  }, [filter, searchQuery]);
 
   const showAuthToast = useCallback(() => {
     setAuthToastVisible(true);
@@ -647,7 +656,8 @@ const QuestionList = ({ data, sheetId, filter, searchQuery }) => {
   // Called by QuestionGroup when sub/heading fully completed
   const handleCelebrate = useCallback((type, title) => {
     const tagline = type === 'heading' ? pick(HEADING_PRAISE) : pick(SUB_PRAISE);
-    setTimeout(() => setCelebration({ type, title, tagline }), 300);
+    clearTimeout(celebrationTimer.current);
+    celebrationTimer.current = setTimeout(() => setCelebration({ type, title, tagline }), 300);
   }, []);
 
   const filterQuestion = (q) => {
@@ -668,7 +678,6 @@ const QuestionList = ({ data, sheetId, filter, searchQuery }) => {
     return { ...node, originalProg: prog, questions: filteredQ, subcategories: filteredSubs };
   };
 
-  const isSearching  = searchQuery.length > 0 || filter !== 'all';
   const filteredData = data.map(filterNode).filter(n => n.questions.length > 0 || n.subcategories.length > 0);
 
   if (filteredData.length === 0)
@@ -680,7 +689,7 @@ const QuestionList = ({ data, sheetId, filter, searchQuery }) => {
         {filteredData.map((node, i) => (
           <QuestionGroup
             key={i} group={node} sheetId={sheetId}
-            defaultOpen={isSearching}
+            defaultOpen={false}
             onAuthRequired={showAuthToast}
             onQuestionToggle={handleQuestionToggle}
             onCelebrate={handleCelebrate}
