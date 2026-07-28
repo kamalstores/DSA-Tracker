@@ -1,59 +1,36 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { SHEETS } from '../utils/dataParser';
-import { fetchAdminUsers, fetchSheets } from '../services/adminService';
+import {
+  fetchAdminUsers,
+  fetchSheets,
+  fetchActivityTrend,
+  fetchUserSegments,
+  fetchRetentionCohorts
+} from '../services/adminService';
+
+import AdminOverview from './admin/AdminOverview';
 import AdminUsers from './AdminUsers';
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Admin dashboard — data comes from the admin_list_users() RPC.
-//
-// Security model (replaces the old client-side ADMIN_UIDS check):
-//   • profiles.is_admin is set in the database (admin_emails allow-list).
-//   • The RPC is SECURITY DEFINER and raises 'admin only' for everyone else.
-//   • Non-admins cannot read ANY other user's data — RLS guarantees it.
-// The rows arrive pre-aggregated (total_solved + per-sheet counts from
-// user_sheet_stats), so no client-side normalization of legacy formats and
-// no scanning of raw progress is needed.
-// ═══════════════════════════════════════════════════════════════════════════
-
-function timeAgo(ts) {
-  if (!ts) return 'Never';
-  const date = new Date(ts);
-  const diff = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
-}
-
-function isSolvedToday(ts) {
-  if (!ts) return false;
-  const date = new Date(ts);
-  const now = new Date();
-  return date.getDate() === now.getDate()
-    && date.getMonth() === now.getMonth()
-    && date.getFullYear() === now.getFullYear();
-}
-
-function isOnlineRecently(ts) {
-  if (!ts) return false;
-  return (Date.now() - new Date(ts).getTime()) / 60000 <= 15;
-}
-
-const StatCard = ({ value, label, color }) => (
-  <div className="admin-stat-card" style={{ borderTopColor: color }}>
-    <div className="admin-stat-value" style={{ color }}>{value}</div>
-    <div className="admin-stat-label">{label}</div>
-  </div>
-);
+import AdminRetention from './admin/AdminRetention';
+import AdminDemographics from './admin/Admindemographics';
 
 const AdminDashboard = () => {
   const { user, isAdmin } = useContext(AuthContext);
+
+  // Data states
   const [users, setUsers] = useState([]);
   const [sheetTotals, setSheetTotals] = useState({});
+  const [activityTrend, setActivityTrend] = useState(null);
+  const [engagementHealth, setEngagementHealth] = useState(null);
+  const [userSegments, setUserSegments] = useState(null);
+  const [retentionCohorts, setRetentionCohorts] = useState(null);
+  const [activeUserStats, setActiveUserStats] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
+
+  // Cross-component state
+  const [segmentFilter, setSegmentFilter] = useState(''); // E.g., 'power', 'active', 'starters', 'ghosts'
 
   useEffect(() => {
     if (!user || !isAdmin) { setLoading(false); return; }
@@ -61,22 +38,98 @@ const AdminDashboard = () => {
 
     (async () => {
       try {
-        const [rows, sheets] = await Promise.all([fetchAdminUsers(), fetchSheets()]);
+        const [
+          rows,
+          sheetsData,
+          activity,
+          segments,
+          retention
+        ] = await Promise.all([
+          fetchAdminUsers(),
+          fetchSheets(),
+          fetchActivityTrend(),
+          fetchUserSegments(),
+          fetchRetentionCohorts()
+        ]);
+
         if (cancelled) return;
-        // Map RPC rows to the field names the table component renders.
-        setUsers(rows.map((r) => ({
-          uid: r.user_id,
-          email: r.email,
-          displayName: r.display_name,
-          photoURL: r.photo_url,
-          location: r.location,
-          totalSolved: r.total_solved,
-          createdAt: r.created_at,
-          lastSeenAt: r.last_seen_at,
-          lastSolvedAt: r.last_solved_at,
-          sheetCounts: r.sheet_counts || {},
-        })));
-        setSheetTotals(Object.fromEntries(sheets.map((s) => [s.id, s.total_questions])));
+
+        // Map users
+        const mappedUsers = rows.map((r) => {
+          const sheetCounts = r.sheet_counts || {};
+          // The per-sheet solved counts are what the "View Sheets" breakdown
+          // actually shows, but the profile's cached total_solved field can
+          // drift out of sync with it (e.g. after the Firebase→Supabase
+          // merge). Trust the sheet sum as the source of truth whenever we
+          // have sheet data, so the "Total Solved" column always matches
+          // what you see when you expand a user's row.
+          const sheetSolvedSum = Object.values(sheetCounts)
+            .reduce((sum, sc) => sum + (sc?.solved || 0), 0);
+
+          return {
+            uid: r.user_id,
+            email: r.email,
+            displayName: r.display_name,
+            photoURL: r.photo_url,
+            location: r.location,
+            totalSolved: sheetSolvedSum > 0 ? sheetSolvedSum : (r.total_solved || 0),
+            createdAt: r.created_at,
+            lastSeenAt: r.last_seen_at,
+            lastSolvedAt: r.last_solved_at,
+            sheetCounts,
+          };
+        });
+        setUsers(mappedUsers);
+        setSheetTotals(Object.fromEntries(sheetsData.map((s) => [s.id, s.total_questions])));
+        setActivityTrend(activity);
+        setUserSegments(segments);
+        setRetentionCohorts(retention);
+
+        // Derive Engagement Health from user segments and activity (we can do it client side or combined)
+        const totalUsers = mappedUsers.length;
+        const activeUsersCount = mappedUsers.filter(u => (u.totalSolved || 0) > 0).length;
+        const totalProblemsAllTime = mappedUsers.reduce((acc, u) => acc + (u.totalSolved || 0), 0);
+        const mostActive = mappedUsers.reduce((max, u) => (!max || (u.totalSolved || 0) > (max.totalSolved || 0)) ? u : max, null);
+
+        // Find users who have visited recently but have 0 solves
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).getTime();
+        const browsingOnlyCount = mappedUsers.filter(u =>
+          (u.totalSolved || 0) === 0 &&
+          u.lastSeenAt &&
+          new Date(u.lastSeenAt).getTime() > thirtyDaysAgo
+        ).length;
+
+        setEngagementHealth({
+          active_count: activeUsersCount,
+          active_pct: totalUsers > 0 ? Math.round((activeUsersCount / totalUsers) * 100) : 0,
+          drop_off_pct: totalUsers > 0 ? Math.round(((totalUsers - activeUsersCount) / totalUsers) * 100) : 0,
+          avg_solves: activeUsersCount > 0 ? Math.round(totalProblemsAllTime / activeUsersCount) : 0,
+          browsing_only_count: browsingOnlyCount,
+          top_solver: mostActive ? { name: mostActive.displayName?.split(' ')[0] || 'Unknown', count: mostActive.totalSolved } : null
+        });
+
+        // Daily / Weekly / Monthly active users, based on the most recent
+        // activity timestamp we have for each user (seen or solved).
+        const now = Date.now();
+        const DAY_MS = 24 * 60 * 60 * 1000;
+        const getLatestActivityMs = (u) => {
+          const candidates = [u.lastSeenAt, u.lastSolvedAt]
+            .filter(Boolean)
+            .map((ts) => new Date(ts).getTime())
+            .filter((t) => !Number.isNaN(t));
+          return candidates.length ? Math.max(...candidates) : 0;
+        };
+        let dau = 0, wau = 0, mau = 0;
+        mappedUsers.forEach((u) => {
+          const activityMs = getLatestActivityMs(u);
+          if (!activityMs) return;
+          const ageDays = (now - activityMs) / DAY_MS;
+          if (ageDays <= 1) dau++;
+          if (ageDays <= 7) wau++;
+          if (ageDays <= 30) mau++;
+        });
+        setActiveUserStats({ dau, wau, mau });
+
       } catch (e) {
         if (!cancelled) setError(e.message === 'admin only'
           ? 'Access denied by the server: this account is not an admin.'
@@ -122,149 +175,77 @@ const AdminDashboard = () => {
     return <div className="admin-access-denied"><div className="admin-lock">⚠️</div><h2>{error}</h2></div>;
   }
 
-  const getSolved = (u) => u.totalSolved || 0;
-  const getSheetSolved = (u, sheetId) => u.sheetCounts?.[sheetId]?.solved || 0;
-  const getUserActivityAt = (u) => {
-    const times = [u.lastSeenAt, u.lastSolvedAt].filter(Boolean).map((t) => new Date(t).getTime());
-    return times.length ? new Date(Math.max(...times)).toISOString() : null;
+  // Top strip helpers
+  const isSolvedToday = (ts) => {
+    if (!ts) return false;
+    const d = new Date(ts);
+    const now = new Date();
+    return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   };
+  const isOnlineRecently = (ts) => ts && ((Date.now() - new Date(ts).getTime()) / 60000 <= 15);
 
-  // ── Aggregates (rows are small + pre-aggregated; fine to fold client-side) ─
-  const totalUsers = users.length;
   const solvedTodayCount = users.filter((u) => isSolvedToday(u.lastSolvedAt)).length;
-  const onlineNowCount = users.filter((u) => isOnlineRecently(getUserActivityAt(u))).length;
-  const totalProblemsAllTime = users.reduce((acc, u) => acc + getSolved(u), 0);
-  const mostActive = users.reduce((max, u) => (!max || getSolved(u) > getSolved(max)) ? u : max, null);
-
-  const activeUsersCount = users.filter((u) => getSolved(u) > 0).length;
-  const zeroSolversCount = totalUsers - activeUsersCount;
-  const activeUsersPct = totalUsers > 0 ? Math.round((activeUsersCount / totalUsers) * 100) : 0;
-  const dropOffPct = totalUsers > 0 ? Math.round((zeroSolversCount / totalUsers) * 100) : 0;
-  const avgSolves = activeUsersCount > 0 ? Math.round(totalProblemsAllTime / activeUsersCount) : 0;
-
-  const powerUsers = users.filter((u) => getSolved(u) >= 100).length;
-  const activeUsersSeg = users.filter((u) => getSolved(u) >= 10 && getSolved(u) < 100).length;
-  const starterUsers = users.filter((u) => getSolved(u) >= 1 && getSolved(u) < 10).length;
-
-  const usersWithLocation = users.filter((u) => u.location && u.location !== 'Unknown');
-  const indianUsers = usersWithLocation.filter((u) => u.location.toLowerCase().includes('india')).length;
-  const overseasUsers = usersWithLocation.length - indianUsers;
-
-  const sheetStats = {};
-  let maxCompletionPct = 1;
-  SHEETS.forEach((s) => {
-    let totalSolvesInSheet = 0;
-    let uniqueUsersInSheet = 0;
-    users.forEach((u) => {
-      const solved = getSheetSolved(u, s.id);
-      if (solved > 0) { uniqueUsersInSheet++; totalSolvesInSheet += solved; }
-    });
-    const totalPossible = activeUsersCount * (sheetTotals[s.id] || 1);
-    const completionPct = activeUsersCount > 0 ? ((totalSolvesInSheet / totalPossible) * 100) : 0;
-    if (completionPct > maxCompletionPct) maxCompletionPct = completionPct;
-    sheetStats[s.id] = { completionPct, uniqueUsersInSheet };
-  });
+  const onlineNowCount = users.filter((u) => isOnlineRecently(
+    [u.lastSeenAt, u.lastSolvedAt].filter(Boolean).sort().pop()
+  )).length;
 
   return (
     <div className="admin-dashboard">
-      <div className="admin-header">
+      <div className="admin-header" style={{ marginBottom: '1rem' }}>
         <div>
           <h1 className="admin-title">Admin Dashboard</h1>
-          <p className="admin-subtitle">Live data from Supabase · {totalUsers} registered users</p>
         </div>
         <span className="admin-badge">🛡️ Admin</span>
       </div>
 
-      <div className="admin-tabs">
-        <button
-          className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          📊 Overview
-        </button>
-        <button
-          className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
-          onClick={() => setActiveTab('users')}
-        >
-          👥 Users
-        </button>
+      {/* Top Strip */}
+      <div style={{ display: 'flex', gap: '2rem', padding: '0.75rem 1rem', background: 'var(--surface-color)', borderRadius: '0.75rem', marginBottom: '2rem', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}>
+        <div><span style={{ color: 'var(--text-secondary)' }}>Total Users: </span><strong style={{ color: 'var(--text-primary)' }}>{users.length}</strong></div>
+        <div><span style={{ color: 'var(--text-secondary)' }}>Active Today: </span><strong style={{ color: '#3ddc84' }}>{solvedTodayCount}</strong></div>
+        <div><span style={{ color: 'var(--text-secondary)' }}>Online Now: </span><strong style={{ color: '#34d399' }}>{onlineNowCount}</strong></div>
       </div>
 
-      {activeTab === 'overview' ? (
-        <>
-          <div className="admin-section">
-            <h2 className="admin-section-title">Platform Stats</h2>
-            <div className="admin-stats-grid">
-              <StatCard value={totalUsers} label="Total Users" color="#8ab4f8" />
-              <StatCard value={totalProblemsAllTime} label="Total Solves" color="#fdd663" />
-              <StatCard value={solvedTodayCount} label="Active Today" color="#3ddc84" />
-              <StatCard value={onlineNowCount} label="Online Now" color="#34d399" />
-            </div>
-          </div>
+      <div className="admin-tabs">
+        {[
+          { id: 'overview', label: '📊 Overview' },
+          { id: 'users', label: '👥 Users' },
+          { id: 'retention', label: '📈 Retention' },
+          { id: 'locations', label: '🌍 Locations' }
+        ].map(tab => (
+          <button
+            key={tab.id}
+            className={`admin-tab ${activeTab === tab.id ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-          <div className="admin-section">
-            <h2 className="admin-section-title">Engagement Health</h2>
-            <div className="admin-stats-grid">
-              <StatCard value={`${activeUsersPct}%`} label={`Active Users (${activeUsersCount})`} color="#8ab4f8" />
-              <StatCard value={avgSolves} label="Avg Solves / Active User" color="#3ddc84" />
-              <StatCard value={`${dropOffPct}%`} label={`Drop-off Rate (${zeroSolversCount} users)`} color="#f28b82" />
-              <StatCard
-                value={mostActive ? getSolved(mostActive) : 0}
-                label={`Top Solver: ${mostActive?.displayName?.split(' ')[0] || '—'}`}
-                color="#fdd663"
-              />
-            </div>
-          </div>
-
-          <div className="admin-section">
-            <h2 className="admin-section-title">User Segmentation</h2>
-            <div className="admin-stats-grid">
-              <StatCard value={powerUsers} label="Power (100+)" color="#a855f7" />
-              <StatCard value={activeUsersSeg} label="Active (10-99)" color="#3b82f6" />
-              <StatCard value={starterUsers} label="Starters (1-9)" color="#10b981" />
-              <StatCard value={zeroSolversCount} label="Ghosts (0)" color="#64748b" />
-            </div>
-          </div>
-
-          <div className="admin-section">
-            <h2 className="admin-section-title">Demographics</h2>
-            <div className="admin-stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
-              <StatCard value={indianUsers} label="Indian Users" color="#ff9933" />
-              <StatCard value={overseasUsers} label="Overseas Users" color="#3b82f6" />
-              <StatCard value={totalUsers - usersWithLocation.length} label="Unknown Location" color="#64748b" />
-            </div>
-          </div>
-
-          <div className="admin-section">
-            <h2 className="admin-section-title">Solves by Sheet</h2>
-            <div className="admin-topic-chart">
-              {SHEETS.map((s) => {
-                const stats = sheetStats[s.id] || { completionPct: 0, uniqueUsersInSheet: 0 };
-                const relativePct = maxCompletionPct > 0 ? (stats.completionPct / maxCompletionPct) * 100 : 0;
-                return (
-                  <div key={s.id} className="admin-topic-row">
-                    <div className="admin-topic-name-wrap">
-                      <span className="admin-topic-name">{s.name}</span>
-                      <span className="admin-topic-subtext">{stats.uniqueUsersInSheet} users</span>
-                    </div>
-                    <div className="admin-topic-bar-track">
-                      <div className="admin-topic-bar-fill" style={{ width: `${relativePct}%` }} />
-                    </div>
-                    <span className="admin-topic-count">{stats.completionPct.toFixed(1)}%</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </>
-      ) : (
-        <AdminUsers
+      {activeTab === 'overview' && (
+        <AdminOverview
           users={users}
-          getSolved={getSolved}
-          getSheetSolved={getSheetSolved}
+          activityTrend={activityTrend}
+          engagementHealth={engagementHealth}
+          userSegments={userSegments}
+          activeUserStats={activeUserStats}
           sheetTotals={sheetTotals}
+          setActiveTab={setActiveTab}
+          setSegmentFilter={setSegmentFilter}
         />
       )}
+
+      {activeTab === 'users' && (
+        <AdminUsers
+          users={users}
+          sheetTotals={sheetTotals}
+          segmentFilter={segmentFilter}
+          setSegmentFilter={setSegmentFilter}
+        />
+      )}
+
+      {activeTab === 'retention' && <AdminRetention cohorts={retentionCohorts} />}
+      {activeTab === 'locations' && <AdminDemographics users={users} />}
     </div>
   );
 };
