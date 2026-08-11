@@ -34,6 +34,12 @@ export const SHEETS = [
     name: 'Striver CP Sheet',
     file: '/data/striver_cp.json',
     description: '<a href="https://takeuforward.org/interview-experience/strivers-cp-sheet" target="_blank" rel="noopener noreferrer">CP sheet</a> by Striver.'
+  },
+  {
+    id: 'leetcode_sql50',
+    name: 'LeetCode SQL 50',
+    file: '/data/leetcode_sql50.json',
+    description: '<a href="https://leetcode.com/studyplan/top-sql-50/" target="_blank" rel="noopener noreferrer">Top 50 SQL questions</a> from LeetCode Study Plan.'
   }
 ];
 

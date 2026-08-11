@@ -1,0 +1,337 @@
+[
+  {
+    "heading": "Select",
+    "problems": [
+      {
+        "id": "leetcode_sql_recyclableandlo_1",
+        "title": "Recyclable and Low Fat Products",
+        "link": "https://leetcode.com/problems/recyclable-and-low-fat-products/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_findcustomerref_2",
+        "title": "Find Customer Referee",
+        "link": "https://leetcode.com/problems/find-customer-referee/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_bigcountries_3",
+        "title": "Big Countries",
+        "link": "https://leetcode.com/problems/big-countries/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_articleviewsi_4",
+        "title": "Article Views I",
+        "link": "https://leetcode.com/problems/article-views-i/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_invalidtweets_5",
+        "title": "Invalid Tweets",
+        "link": "https://leetcode.com/problems/invalid-tweets/",
+        "difficulty": "Medium"
+      }
+    ]
+  },
+  {
+    "heading": "Basic Joins",
+    "problems": [
+      {
+        "id": "leetcode_sql_replaceemployee_6",
+        "title": "Replace Employee ID With The Unique Identifier",
+        "link": "https://leetcode.com/problems/replace-employee-id-with-the-unique-identifier/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_productsalesana_7",
+        "title": "Product Sales Analysis I",
+        "link": "https://leetcode.com/problems/product-sales-analysis-i/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_customerwhovisi_8",
+        "title": "Customer Who Visited but Did Not Make Any Transactions",
+        "link": "https://leetcode.com/problems/customer-who-visited-but-did-not-make-any-transactions/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_risingtemperatu_9",
+        "title": "Rising Temperature",
+        "link": "https://leetcode.com/problems/rising-temperature/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_averagetimeofpr_10",
+        "title": "Average Time of Process per Machine",
+        "link": "https://leetcode.com/problems/average-time-of-process-per-machine/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_employeebonus_11",
+        "title": "Employee Bonus",
+        "link": "https://leetcode.com/problems/employee-bonus/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_studentsandexam_12",
+        "title": "Students and Examinations",
+        "link": "https://leetcode.com/problems/students-and-examinations/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_managerswithatl_13",
+        "title": "Managers with at Least 5 Direct Reports",
+        "link": "https://leetcode.com/problems/managers-with-at-least-5-direct-reports/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_confirmationrat_14",
+        "title": "Confirmation Rate",
+        "link": "https://leetcode.com/problems/confirmation-rate/",
+        "difficulty": "Medium"
+      }
+    ]
+  },
+  {
+    "heading": "Basic Aggregate Functions",
+    "problems": [
+      {
+        "id": "leetcode_sql_notboringmovies_15",
+        "title": "Not Boring Movies",
+        "link": "https://leetcode.com/problems/not-boring-movies/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_averagesellingp_16",
+        "title": "Average Selling Price",
+        "link": "https://leetcode.com/problems/average-selling-price/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_projectemployee_17",
+        "title": "Project Employees I",
+        "link": "https://leetcode.com/problems/project-employees-i/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_percentageofuse_18",
+        "title": "Percentage of Users Attended a Contest",
+        "link": "https://leetcode.com/problems/percentage-of-users-attended-a-contest/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_queriesqualitya_19",
+        "title": "Queries Quality and Percentage",
+        "link": "https://leetcode.com/problems/queries-quality-and-percentage/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_monthlytransact_20",
+        "title": "Monthly Transactions I",
+        "link": "https://leetcode.com/problems/monthly-transactions-i/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_immediatefoodde_21",
+        "title": "Immediate Food Delivery II",
+        "link": "https://leetcode.com/problems/immediate-food-delivery-ii/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_gameplayanalysi_22",
+        "title": "Game Play Analysis IV",
+        "link": "https://leetcode.com/problems/game-play-analysis-iv/",
+        "difficulty": "Medium"
+      }
+    ]
+  },
+  {
+    "heading": "Sorting and Grouping",
+    "problems": [
+      {
+        "id": "leetcode_sql_numberofuniques_23",
+        "title": "Number of Unique Subjects Taught by Each Teacher",
+        "link": "https://leetcode.com/problems/number-of-unique-subjects-taught-by-each-teacher/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_useractivityfor_24",
+        "title": "User Activity for the Past 30 Days I",
+        "link": "https://leetcode.com/problems/user-activity-for-the-past-30-days-i/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_productsalesana_25",
+        "title": "Product Sales Analysis III",
+        "link": "https://leetcode.com/problems/product-sales-analysis-iii/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_classeswithatle_26",
+        "title": "Classes With at Least 5 Students",
+        "link": "https://leetcode.com/problems/classes-with-at-least-5-students/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_findfollowersco_27",
+        "title": "Find Followers Count",
+        "link": "https://leetcode.com/problems/find-followers-count/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_biggestsinglenu_28",
+        "title": "Biggest Single Number",
+        "link": "https://leetcode.com/problems/biggest-single-number/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_customerswhobou_29",
+        "title": "Customers Who Bought All Products",
+        "link": "https://leetcode.com/problems/customers-who-bought-all-products/",
+        "difficulty": "Medium"
+      }
+    ]
+  },
+  {
+    "heading": "Advanced Select and Joins",
+    "problems": [
+      {
+        "id": "leetcode_sql_thenumberofempl_30",
+        "title": "The Number of Employees Which Report to Each Employee",
+        "link": "https://leetcode.com/problems/the-number-of-employees-which-report-to-each-employee/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_primarydepartme_31",
+        "title": "Primary Department for Each Employee",
+        "link": "https://leetcode.com/problems/primary-department-for-each-employee/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_trianglejudgeme_32",
+        "title": "Triangle Judgement",
+        "link": "https://leetcode.com/problems/triangle-judgement/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_consecutivenumb_33",
+        "title": "Consecutive Numbers",
+        "link": "https://leetcode.com/problems/consecutive-numbers/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_productpriceata_34",
+        "title": "Product Price at a Given Date",
+        "link": "https://leetcode.com/problems/product-price-at-a-given-date/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_lastpersontofit_35",
+        "title": "Last Person to Fit in the Bus",
+        "link": "https://leetcode.com/problems/last-person-to-fit-in-the-bus/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_countsalarycate_36",
+        "title": "Count Salary Categories",
+        "link": "https://leetcode.com/problems/count-salary-categories/",
+        "difficulty": "Medium"
+      }
+    ]
+  },
+  {
+    "heading": "Subqueries",
+    "problems": [
+      {
+        "id": "leetcode_sql_employeeswhosem_37",
+        "title": "Employees Whose Manager Left the Company",
+        "link": "https://leetcode.com/problems/employees-whose-manager-left-the-company/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_exchangeseats_38",
+        "title": "Exchange Seats",
+        "link": "https://leetcode.com/problems/exchange-seats/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_movierating_39",
+        "title": "Movie Rating",
+        "link": "https://leetcode.com/problems/movie-rating/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_restaurantgrowt_40",
+        "title": "Restaurant Growth",
+        "link": "https://leetcode.com/problems/restaurant-growth/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_friendrequestsi_41",
+        "title": "Friend Requests II: Who Has the Most Friends",
+        "link": "https://leetcode.com/problems/friend-requests-ii-who-has-the-most-friends/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_investmentsin20_42",
+        "title": "Investments in 2016",
+        "link": "https://leetcode.com/problems/investments-in-2016/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_departmenttopth_43",
+        "title": "Department Top Three Salaries",
+        "link": "https://leetcode.com/problems/department-top-three-salaries/",
+        "difficulty": "Medium"
+      }
+    ]
+  },
+  {
+    "heading": "Advanced String Functions / Regex / Clause",
+    "problems": [
+      {
+        "id": "leetcode_sql_fixnamesinatabl_44",
+        "title": "Fix Names in a Table",
+        "link": "https://leetcode.com/problems/fix-names-in-a-table/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_patientswithaco_45",
+        "title": "Patients With a Condition",
+        "link": "https://leetcode.com/problems/patients-with-a-condition/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_deleteduplicate_46",
+        "title": "Delete Duplicate Emails",
+        "link": "https://leetcode.com/problems/delete-duplicate-emails/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_secondhighestsa_47",
+        "title": "Second Highest Salary",
+        "link": "https://leetcode.com/problems/second-highest-salary/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_groupsoldproduc_48",
+        "title": "Group Sold Products By The Date",
+        "link": "https://leetcode.com/problems/group-sold-products-by-the-date/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_listtheproducts_49",
+        "title": "List the Products Ordered in a Period",
+        "link": "https://leetcode.com/problems/list-the-products-ordered-in-a-period/",
+        "difficulty": "Medium"
+      },
+      {
+        "id": "leetcode_sql_finduserswithva_50",
+        "title": "Find Users With Valid E-Mails",
+        "link": "https://leetcode.com/problems/find-users-with-valid-e-mails/",
+        "difficulty": "Medium"
+      }
+    ]
+  }
+]
