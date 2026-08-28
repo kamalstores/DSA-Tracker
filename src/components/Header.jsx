@@ -236,10 +236,18 @@ const Header = ({ setShowDashboard, setShowAdmin, mobileSidebarOpen, setMobileSi
 
     setLoggingOut(true);
     try {
-      const synced = await syncProgressNow();
+      let synced = false;
+      try {
+        synced = await syncProgressNow();
+      } catch (err) {
+        console.warn('Progress sync threw during logout:', err);
+      }
       if (!synced) {
-        window.alert('Your progress could not be saved to the cloud. Please check your internet connection and try again before logging out.');
-        return;
+        const proceed = window.confirm(
+          'Your progress could not be saved to the cloud. Sign out anyway?\n\n' +
+          '(Unsaved changes are cached locally and will sync when you sign in again.)'
+        );
+        if (!proceed) return;
       }
       await logout();
     } finally {

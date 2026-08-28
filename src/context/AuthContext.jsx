@@ -49,6 +49,9 @@ export const AuthProvider = ({ children }) => {
       if (cancelled) return;
       setUser(normalizeUser(session?.user));
       setLoading(false);
+    }).catch((err) => {
+      console.error('Failed to retrieve session:', err);
+      if (!cancelled) setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
