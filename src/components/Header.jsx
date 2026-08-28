@@ -129,6 +129,25 @@ const SupportModal = ({ onClose }) => {
 /* ─── Auth Confirm Modal (Sign In / Logout) ──────────────────── */
 const AuthConfirmModal = ({ action, onConfirm, onClose }) => {
   const isLogin = action === 'login';
+  const [busy, setBusy] = useState(false);
+
+  const handleConfirm = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await onConfirm();
+      // For login: the page should redirect to Google.
+      // If we reach here, the redirect didn't happen (error was already shown
+      // by the login function), so keep the modal open for the user to retry.
+      // For logout: close the modal after completion.
+      if (!isLogin) onClose();
+    } catch (err) {
+      console.error('Auth confirm action failed:', err);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <div
       onClick={onClose}
@@ -178,31 +197,37 @@ const AuthConfirmModal = ({ action, onConfirm, onClose }) => {
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button
             onClick={onClose}
+            disabled={busy}
             style={{
               flex: 1, padding: '0.55rem',
               background: 'transparent',
               border: '1px solid var(--border-color)',
               borderRadius: '0.6rem',
               color: 'var(--text-secondary)',
-              cursor: 'pointer', fontSize: '0.82rem',
+              cursor: busy ? 'not-allowed' : 'pointer', fontSize: '0.82rem',
               fontWeight: 600, transition: 'all 0.2s',
+              opacity: busy ? 0.5 : 1,
             }}
           >
             Cancel
           </button>
           <button
-            onClick={() => { onConfirm(); onClose(); }}
+            onClick={handleConfirm}
+            disabled={busy}
             style={{
               flex: 1, padding: '0.55rem',
               background: isLogin ? 'var(--primary-color)' : 'var(--danger-color)',
               border: 'none',
               borderRadius: '0.6rem',
               color: '#fff',
-              cursor: 'pointer', fontSize: '0.82rem',
+              cursor: busy ? 'not-allowed' : 'pointer', fontSize: '0.82rem',
               fontWeight: 700, transition: 'all 0.2s',
+              opacity: busy ? 0.7 : 1,
             }}
           >
-            {isLogin ? 'Sign In' : 'Sign Out'}
+            {busy
+              ? (isLogin ? 'Redirecting...' : 'Signing Out...')
+              : (isLogin ? 'Sign In' : 'Sign Out')}
           </button>
         </div>
       </div>

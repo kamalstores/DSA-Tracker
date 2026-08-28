@@ -135,10 +135,9 @@ export const AuthProvider = ({ children }) => {
     };
   }, [userUid]);
 
-  // ── Actions ──────────────────────────────────────────────────────────────
   const login = useCallback(async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: window.location.origin,
@@ -146,8 +145,24 @@ export const AuthProvider = ({ children }) => {
         },
       });
       if (error) throw error;
+
+      // signInWithOAuth should redirect via window.location.assign().
+      // If we're still here after it returned, manually redirect as a fallback.
+      if (data?.url) {
+        // Small delay to let Supabase's own redirect fire first
+        await new Promise((r) => setTimeout(r, 500));
+        // If still on this page, force the redirect
+        window.location.assign(data.url);
+      }
+      return true;
     } catch (error) {
-      console.error('Error signing in with Google', error);
+      console.error('Error signing in with Google:', error);
+      window.alert(
+        'Sign-in failed: ' + (error?.message || 'Unknown error') +
+        '\n\nPlease check that Google OAuth is enabled in your Supabase project dashboard ' +
+        '(Authentication → Providers → Google).'
+      );
+      return false;
     }
   }, []);
 
