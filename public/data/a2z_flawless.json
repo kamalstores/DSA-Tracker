@@ -3905,7 +3905,7 @@
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/prime-factorisation-of-a-number?tab=editorial",
                         "gfg_link": "https://www.geeksforgeeks.org/problems/prime-factors5052/1",
                         "cs_link": "https://www.codingninjas.com/studio/problems/prime-factorisation_1760849",
-                        "lc_link": null,
+                        "lc_link": "https://leetcode.com/problems/count-primes/description/",
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
@@ -3941,9 +3941,9 @@
                         "yt_link": "https://youtu.be/os82DjD2-MA?si=BBEu7_45pXaRlv4M",
                         "plus_link": "https://takeuforward.org/plus/dsa/problems/count-primes-in-range-l-to-r",
                         "editorial_link": "https://takeuforward.org/plus/dsa/problems/count-primes-in-range-l-to-r?tab=editorial",
-                        "gfg_link": "https://www.geeksforgeeks.org/problems/sieve-of-eratosthenes5242/1",
-                        "cs_link": "https://www.codingninjas.com/studio/problems/prime-factorisation_1760849",
-                        "lc_link": "https://leetcode.com/problems/count-primes/",
+                        "gfg_link": "https://www.geeksforgeeks.org/problems/find-prime-numbers-in-a-range4718/1",
+                        "cs_link": null,
+                        "lc_link": null,
                         "company_tags": null,
                         "difficulty": 2,
                         "ques_topic": "[]"
