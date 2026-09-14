@@ -20,12 +20,29 @@ const useIsMobile = (breakpoint = 768) => {
 
 function App() {
   const isMobile = useIsMobile();
-  const [activeSheet, setActiveSheet] = useState('a2z_flawless')
-  const [showDashboard, setShowDashboard] = useState(false)
-  const [showAdmin, setShowAdmin] = useState(false)
+  
+  const [activeSheet, setActiveSheet] = useState(() => {
+    try { return localStorage.getItem('dsa_active_sheet') || 'a2z_flawless'; } catch(e) { return 'a2z_flawless'; }
+  });
+  const [showDashboard, setShowDashboard] = useState(() => {
+    try { return localStorage.getItem('dsa_show_dashboard') === 'true'; } catch(e) { return false; }
+  });
+  const [showAdmin, setShowAdmin] = useState(() => {
+    try { return localStorage.getItem('dsa_show_admin') === 'true'; } catch(e) { return false; }
+  });
+
   // Desktop: sidebar open by default; Mobile: always use overlay
   const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 768)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+
+  // Persist state changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('dsa_active_sheet', activeSheet);
+      localStorage.setItem('dsa_show_dashboard', showDashboard);
+      localStorage.setItem('dsa_show_admin', showAdmin);
+    } catch(e) { /* ignore */ }
+  }, [activeSheet, showDashboard, showAdmin]);
 
   // Close mobile sidebar when a sheet is selected
   const handleSetActiveSheet = (id) => {
@@ -39,6 +56,11 @@ function App() {
     setMobileSidebarOpen(false)
   }
 
+  const handleSetShowAdmin = (v) => {
+    setShowAdmin(v);
+    setShowDashboard(false);
+  }
+
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -46,7 +68,7 @@ function App() {
           <div className="app-container">
             <Header
               setShowDashboard={handleSetShowDashboard}
-              setShowAdmin={(v) => { setShowAdmin(v); setShowDashboard(false); }}
+              setShowAdmin={handleSetShowAdmin}
               mobileSidebarOpen={mobileSidebarOpen}
               setMobileSidebarOpen={setMobileSidebarOpen}
             />

@@ -5,29 +5,29 @@ import { AuthContext } from '../context/AuthContext';
 
 /* ─── Celebration messages ───────────────────────────────────── */
 const SINGLE_PRAISE = [
-  '🔥 Keep going!',       '💪 Crushed it!',      '⚡ One more down!',
-  '🎯 Nailed it!',        '🚀 On fire!',          '✨ Nice work!',
+  '🔥 Keep going!', '💪 Crushed it!', '⚡ One more down!',
+  '🎯 Nailed it!', '🚀 On fire!', '✨ Nice work!',
   '🧠 Big brain move!',
 ];
 
 const SUB_PRAISE = [
-  '🎉 Sub-topic cleared!',  '🏅 Section smashed!',   '💥 You\'re on a roll!',
-  '⚡ Lightning fast!',     '🦾 Unstoppable!',        '🌊 Riding the wave!',
+  '🎉 Sub-topic cleared!', '🏅 Section smashed!', '💥 You\'re on a roll!',
+  '⚡ Lightning fast!', '🦾 Unstoppable!', '🌊 Riding the wave!',
   '🎖️ Badge earned!',
 ];
 
 const HEADING_PRAISE = [
-  '🏆 LEGENDARY!',          '👑 Absolute king!',      '🔱 Master of this topic!',
-  '🌟 Hall of fame!',       '🎊 GOAT behaviour!',     '💎 Diamond grind!',
+  '🏆 LEGENDARY!', '👑 Absolute king!', '🔱 Master of this topic!',
+  '🌟 Hall of fame!', '🎊 GOAT behaviour!', '💎 Diamond grind!',
   '🚀 To the moon!',
 ];
 
 /* ─── Canvas Confetti helper (no dependency) ─────────────────── */
 function fireConfetti(canvas, count = 60, spread = 'normal') {
   const ctx = canvas.getContext('2d');
-  const W = canvas.width  = canvas.offsetWidth;
+  const W = canvas.width = canvas.offsetWidth;
   const H = canvas.height = canvas.offsetHeight;
-  const colors = ['#8ab4f8','#3ddc84','#fdd663','#f28b82','#c58af9','#ff9800'];
+  const colors = ['#8ab4f8', '#3ddc84', '#fdd663', '#f28b82', '#c58af9', '#ff9800'];
 
   const particles = Array.from({ length: count }, () => ({
     x: spread === 'center' ? W / 2 : Math.random() * W,
@@ -83,12 +83,14 @@ function spawnMicroBurst(x, y) {
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  const colors = ['#3ddc84','#8ab4f8','#fdd663','#f28b82','#c58af9'];
+  const colors = ['#3ddc84', '#8ab4f8', '#fdd663', '#f28b82', '#c58af9'];
   const dots = Array.from({ length: 14 }, (_, i) => {
     const angle = (i / 14) * Math.PI * 2;
     const speed = Math.random() * 3 + 2;
-    return { x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
-      r: Math.random() * 4 + 2, color: colors[i % colors.length], life: 1 };
+    return {
+      x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+      r: Math.random() * 4 + 2, color: colors[i % colors.length], life: 1
+    };
   });
   let frame;
   const draw = () => {
@@ -354,11 +356,11 @@ const NotesModal = ({ questionTitle, initialValue, onClose, onSave }) => {
 
 /* ─── Progress helper ────────────────────────────────────────── */
 const getProgress = (node, sheetProgress) => {
-  let total     = node.questions?.length || 0;
+  let total = node.questions?.length || 0;
   let completed = node.questions?.filter(q => sheetProgress[q.id]?.status).length || 0;
   node.subcategories?.forEach(sub => {
     const s = getProgress(sub, sheetProgress);
-    total     += s.total;
+    total += s.total;
     completed += s.completed;
   });
   return { total, completed };
@@ -371,11 +373,11 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
   const [activeNote, setActiveNote] = useState(null);
 
   const showBlog = sheetId === 'a2z_flawless' || sheetId === 'SDE';
-  const showYt   = sheetId === 'a2z_flawless' || sheetId === 'SDE';
-  const showGfg  = sheetId === 'a2z_flawless';
-  const showCn   = sheetId === 'a2z_flawless';
-  const showTuf  = sheetId === 'a2z_flawless';
-  const isCF     = sheetId === 'striver_cp';
+  const showYt = sheetId === 'a2z_flawless' || sheetId === 'SDE';
+  const showGfg = sheetId === 'a2z_flawless';
+  const showCn = sheetId === 'a2z_flawless';
+  const showTuf = sheetId === 'a2z_flawless';
+  const isCF = sheetId === 'striver_cp';
 
 
   const openNote = (q, note) => {
@@ -394,109 +396,109 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
 
   return (
     <>
-    <div style={{ overflowX: 'auto' }}>
-      <table className="questions-table">
-        <thead>
-          <tr>
-            <th style={{ width: '40%' }}>Topic</th>
-            {showBlog && <th style={{ textAlign: 'center' }}>Blog</th>}
-            {showYt   && <th style={{ textAlign: 'center' }}>YT</th>}
-            <th style={{ textAlign: 'center' }}>{isCF ? 'CF' : 'LC'}</th>
-            {showGfg  && <th style={{ textAlign: 'center' }}>GFG</th>}
-            {showCn   && <th style={{ textAlign: 'center' }}>CN</th>}
-            {showTuf  && <th style={{ textAlign: 'center' }}>TUF</th>}
-            <th style={{ textAlign: 'center' }}>Done</th>
-            <th style={{ textAlign: 'center' }}>Note</th>
-            <th style={{ textAlign: 'center' }}>Rev</th>
-          </tr>
-        </thead>
-        <tbody>
-          {questions.map(q => {
-            const qProgress = progress[sheetId]?.[q.id] || { status: false, revision: false, note: '' };
-            const done = qProgress.status;
-            const hasNote = Boolean(qProgress.note);
-            return (
-              <tr key={q.id} className={done ? 'q-row-done' : ''}>
-                <td style={{ position: 'relative' }}>
-                  <div className="question-title-cell">
-                    <span style={{
-                      width: '3px', height: '100%', position: 'absolute', left: 0, top: 0,
-                      borderRadius: '0 2px 2px 0',
-                      backgroundColor: done ? '#3ddc84' : 'transparent',
-                      boxShadow: done ? '0 0 8px rgba(61,220,132,0.6)' : 'none',
-                      transition: 'all 0.4s ease',
-                    }} />
-                    <a href={q.url} target="_blank" rel="noreferrer" className="question-link"
-                      style={{ textDecoration: done ? 'line-through' : 'none', opacity: done ? 0.55 : 1, transition: 'all 0.3s ease' }}>
-                      {q.title}
-                    </a>
-                  </div>
-                </td>
-                {showBlog && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.blog} type="blog" /></td>}
-                {showYt   && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.yt}   type="yt"   /></td>}
-                <td style={{ textAlign: 'center' }}>{isCF ? <LinkIcon url={q.links?.cf} type="cf" /> : <LinkIcon url={q.links?.lc} type="lc" />}</td>
-                {showGfg  && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.gfg}  type="gfg"  /></td>}
-                {showCn   && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.cn}   type="cn"   /></td>}
-                {showTuf  && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.tuf}  type="tuf"  /></td>}
+      <div style={{ overflowX: 'auto' }}>
+        <table className="questions-table">
+          <thead>
+            <tr>
+              <th style={{ width: '40%' }}>Topic</th>
+              {showBlog && <th style={{ textAlign: 'center' }}>Blog</th>}
+              {showYt && <th style={{ textAlign: 'center' }}>YT</th>}
+              <th style={{ textAlign: 'center' }}>{isCF ? 'CF' : 'LC'}</th>
+              {showGfg && <th style={{ textAlign: 'center' }}>GFG</th>}
+              {showCn && <th style={{ textAlign: 'center' }}>CN</th>}
+              {showTuf && <th style={{ textAlign: 'center' }}>TUF</th>}
+              <th style={{ textAlign: 'center' }}>Done</th>
+              <th style={{ textAlign: 'center' }}>Note</th>
+              <th style={{ textAlign: 'center' }}>Rev</th>
+            </tr>
+          </thead>
+          <tbody>
+            {questions.map(q => {
+              const qProgress = progress[sheetId]?.[q.id] || { status: false, revision: false, note: '' };
+              const done = qProgress.status;
+              const hasNote = Boolean(qProgress.note);
+              return (
+                <tr key={q.id} className={done ? 'q-row-done' : ''}>
+                  <td style={{ position: 'relative' }}>
+                    <div className="question-title-cell">
+                      <span style={{
+                        width: '3px', height: '100%', position: 'absolute', left: 0, top: 0,
+                        borderRadius: '0 2px 2px 0',
+                        backgroundColor: done ? '#3ddc84' : 'transparent',
+                        boxShadow: done ? '0 0 8px rgba(61,220,132,0.6)' : 'none',
+                        transition: 'all 0.4s ease',
+                      }} />
+                      <a href={q.url} target="_blank" rel="noreferrer" className="question-link"
+                        style={{ textDecoration: done ? 'line-through' : 'none', opacity: done ? 0.55 : 1, transition: 'all 0.3s ease' }}>
+                        {q.title}
+                      </a>
+                    </div>
+                  </td>
+                  {showBlog && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.blog} type="blog" /></td>}
+                  {showYt && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.yt} type="yt" /></td>}
+                  <td style={{ textAlign: 'center' }}>{isCF ? <LinkIcon url={q.links?.cf} type="cf" /> : <LinkIcon url={q.links?.lc} type="lc" />}</td>
+                  {showGfg && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.gfg} type="gfg" /></td>}
+                  {showCn && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.cn} type="cn" /></td>}
+                  {showTuf && <td style={{ textAlign: 'center' }}><LinkIcon url={q.links?.tuf} type="tuf" /></td>}
 
-                {/* Custom Done Checkbox */}
-                <td style={{ textAlign: 'center' }}>
-                  <button
-                    className={`custom-checkbox ${done ? 'checked' : ''} ${!user ? 'disabled' : ''}`}
-                    onClick={(e) => {
-                      if (!user) { onAuthRequired(); return; }
-                      const next = !done;
-                      updateQuestionStatus(sheetId, q.id, next, false);
-                      if (next) {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        spawnMicroBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
-                        onQuestionToggle(sheetId, q.id);
-                      }
-                    }}
-                    title={done ? 'Mark as undone' : 'Mark as done'}
-                  >
-                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      {done && <polyline points="2,8 6,12 14,4" />}
-                    </svg>
-                  </button>
-                </td>
+                  {/* Custom Done Checkbox */}
+                  <td style={{ textAlign: 'center' }}>
+                    <button
+                      className={`custom-checkbox ${done ? 'checked' : ''} ${!user ? 'disabled' : ''}`}
+                      onClick={(e) => {
+                        if (!user) { onAuthRequired(); return; }
+                        const next = !done;
+                        updateQuestionStatus(sheetId, q.id, next, false);
+                        if (next) {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          spawnMicroBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+                          onQuestionToggle(sheetId, q.id);
+                        }
+                      }}
+                      title={done ? 'Mark as undone' : 'Mark as done'}
+                    >
+                      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        {done && <polyline points="2,8 6,12 14,4" />}
+                      </svg>
+                    </button>
+                  </td>
 
-                {/* Notes */}
-                <td className="question-note-cell">
-                  <button
-                    className={`note-open-btn ${hasNote ? 'has-note' : ''}`}
-                    onClick={() => openNote(q, qProgress.note)}
-                    title={hasNote ? 'Edit note' : 'Add note'}
-                    aria-label={hasNote ? `Edit note for ${q.title}` : `Add note for ${q.title}`}
-                  >
-                    {hasNote ? <CheckCircle size={22} strokeWidth={2.4} /> : <PlusCircle size={22} strokeWidth={2.4} />}
-                  </button>
-                </td>
+                  {/* Notes */}
+                  <td className="question-note-cell">
+                    <button
+                      className={`note-open-btn ${hasNote ? 'has-note' : ''}`}
+                      onClick={() => openNote(q, qProgress.note)}
+                      title={hasNote ? 'Edit note' : 'Add note'}
+                      aria-label={hasNote ? `Edit note for ${q.title}` : `Add note for ${q.title}`}
+                    >
+                      {hasNote ? <CheckCircle size={22} strokeWidth={2.4} /> : <PlusCircle size={22} strokeWidth={2.4} />}
+                    </button>
+                  </td>
 
-                {/* Revision */}
-                <td style={{ textAlign: 'center' }}>
-                  <Star
-                    size={20}
-                    fill={qProgress.revision ? 'currentColor' : 'none'}
-                    className={`action-icon ${qProgress.revision ? 'active' : ''}`}
-                    style={{ cursor: user ? 'pointer' : 'not-allowed', opacity: user ? 1 : 0.5 }}
-                    onClick={() => { if (!user) { onAuthRequired(); return; } updateQuestionStatus(sheetId, q.id, !qProgress.revision, true); }}
-                  />
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-    {activeNote && (
-      <NotesModal
-        questionTitle={activeNote.title}
-        initialValue={activeNote.note}
-        onClose={() => setActiveNote(null)}
-        onSave={saveNote}
-      />
-    )}
+                  {/* Revision */}
+                  <td style={{ textAlign: 'center' }}>
+                    <Star
+                      size={20}
+                      fill={qProgress.revision ? 'currentColor' : 'none'}
+                      className={`action-icon ${qProgress.revision ? 'active' : ''}`}
+                      style={{ cursor: user ? 'pointer' : 'not-allowed', opacity: user ? 1 : 0.5 }}
+                      onClick={() => { if (!user) { onAuthRequired(); return; } updateQuestionStatus(sheetId, q.id, !qProgress.revision, true); }}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {activeNote && (
+        <NotesModal
+          questionTitle={activeNote.title}
+          initialValue={activeNote.note}
+          onClose={() => setActiveNote(null)}
+          onSave={saveNote}
+        />
+      )}
     </>
   );
 };
@@ -504,16 +506,37 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
 /* ─── Accordion Group ────────────────────────────────────────── */
 const QuestionGroup = ({ group, sheetId, defaultOpen = false, isSub = false, onAuthRequired, onQuestionToggle, onCelebrate }) => {
   const { progress } = useContext(ProgressContext);
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const storageKey = `dsa_accordion_${sheetId}_${group?.title || 'unknown'}`;
+  const [isOpen, setIsOpen] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved !== null) return saved === 'true';
+    } catch (e) {
+      // ignore
+    }
+    return defaultOpen;
+  });
   const prevCompleted = useRef(null);
 
-  useEffect(() => { if (defaultOpen) setIsOpen(true); }, [defaultOpen]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, isOpen);
+    } catch (e) {
+      // ignore
+    }
+  }, [isOpen, storageKey]);
+
+  useEffect(() => {
+    if (defaultOpen && localStorage.getItem(storageKey) === null) {
+      setIsOpen(true);
+    }
+  }, [defaultOpen, storageKey]);
 
   if (!group) return null;
   if (group.isHeading === false)
     return <QuestionTable questions={group.questions} sheetId={sheetId} onAuthRequired={onAuthRequired} onQuestionToggle={onQuestionToggle} />;
 
-  const hasQ   = group.questions?.length > 0;
+  const hasQ = group.questions?.length > 0;
   const hasSub = group.subcategories?.length > 0;
   if (!hasQ && !hasSub) return null;
 
@@ -534,19 +557,19 @@ const QuestionGroup = ({ group, sheetId, defaultOpen = false, isSub = false, onA
     prevCompleted.current = prog.completed;
   }, [prog.completed, prog.total]); // eslint-disable-line
 
-  const percentage = prog.total === 0 ? 0 : Math.round((prog.completed / prog.total) * 100);
+  const percentage = prog.total === 0 ? 0 : Number(((prog.completed / prog.total) * 100).toFixed(2));
 
   // Background: green glow when complete, gradient fill otherwise
-  const completeBg  = isSub
+  const completeBg = isSub
     ? 'linear-gradient(90deg, rgba(61,220,132,0.22) 0%, rgba(61,220,132,0.08) 100%)'
     : 'linear-gradient(90deg, rgba(61,220,132,0.18) 0%, rgba(61,220,132,0.05) 100%)';
   const progressBg = isSub ? 'rgba(16,185,129,0.15)' : 'rgba(59,130,246,0.12)';
-  const emptyBg    = isSub ? 'var(--bg-color)' : 'var(--surface-color)';
+  const emptyBg = isSub ? 'var(--bg-color)' : 'var(--surface-color)';
   const bg = isComplete
     ? completeBg
     : percentage > 0
-    ? `linear-gradient(to right, ${progressBg} ${percentage}%, ${emptyBg} ${percentage}%)`
-    : emptyBg;
+      ? `linear-gradient(to right, ${progressBg} ${percentage}%, ${emptyBg} ${percentage}%)`
+      : emptyBg;
 
   const completeBorder = isComplete
     ? (isSub ? '1px solid rgba(61,220,132,0.3)' : '1px solid rgba(61,220,132,0.45)')
@@ -615,7 +638,7 @@ const QuestionGroup = ({ group, sheetId, defaultOpen = false, isSub = false, onA
 /* ─── Main QuestionList ──────────────────────────────────────── */
 const QuestionList = ({ data, sheetId, filter, searchQuery }) => {
   const { progress } = useContext(ProgressContext);
-  const { login }    = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const sheetProgress = progress[sheetId] || {};
 
   // Auth toast
@@ -623,7 +646,7 @@ const QuestionList = ({ data, sheetId, filter, searchQuery }) => {
   const authTimer = useRef(null);
 
   // Single-question praise toast
-  const [praiseMsg,     setPraiseMsg]     = useState('');
+  const [praiseMsg, setPraiseMsg] = useState('');
   const [praiseVisible, setPraiseVisible] = useState(false);
   const praiseTimer = useRef(null);
 
@@ -663,15 +686,15 @@ const QuestionList = ({ data, sheetId, filter, searchQuery }) => {
   const filterQuestion = (q) => {
     if (searchQuery && !q.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     const p = sheetProgress[q.id] || { status: false, revision: false };
-    if (filter === 'done'     && !p.status)   return false;
-    if (filter === 'not_done' &&  p.status)   return false;
+    if (filter === 'done' && !p.status) return false;
+    if (filter === 'not_done' && p.status) return false;
     if (filter === 'revision' && !p.revision) return false;
     return true;
   };
 
   const filterNode = (node) => {
-    const prog         = getProgress(node, sheetProgress);
-    const filteredQ    = node.questions    ? node.questions.filter(filterQuestion) : [];
+    const prog = getProgress(node, sheetProgress);
+    const filteredQ = node.questions ? node.questions.filter(filterQuestion) : [];
     const filteredSubs = node.subcategories
       ? node.subcategories.map(filterNode).filter(s => s.questions.length > 0 || s.subcategories.length > 0)
       : [];

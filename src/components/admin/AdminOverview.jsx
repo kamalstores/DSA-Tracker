@@ -113,12 +113,7 @@ const ActivityTrendChart = ({ data }) => {
 const AdminOverview = ({
   users,
   activityTrend,
-  engagementHealth,
-  userSegments,
-  activeUserStats,
-  sheetTotals,
-  setActiveTab,
-  setSegmentFilter
+  activeUserStats
 }) => {
   const getSolved = (u) => u.totalSolved || 0;
   const getSheetSolved = (u, sheetId) => u.sheetCounts?.[sheetId]?.solved || 0;
@@ -132,29 +127,16 @@ const AdminOverview = ({
       const solved = getSheetSolved(u, s.id);
       if (solved > 0) { uniqueUsersInSheet++; totalSolvesInSheet += solved; }
     });
-    // Scale against the users who actually engaged with THIS sheet, not
-    // every active user platform-wide — otherwise sheets few people touch
-    // look artificially empty.
-    const totalQ = sheetTotals[s.id] || 1;
-    const totalPossible = uniqueUsersInSheet * totalQ;
-    const completionPct = uniqueUsersInSheet > 0 ? ((totalSolvesInSheet / totalPossible) * 100) : 0;
-    if (completionPct > maxCompletionPct) maxCompletionPct = completionPct;
-    sheetStats[s.id] = { completionPct, uniqueUsersInSheet, totalSolvesInSheet };
+    
+    // Started vs Total students
+    const startedCount = uniqueUsersInSheet;
+    const totalStudents = users.length;
+    const startedPct = totalStudents > 0 ? (startedCount / totalStudents) * 100 : 0;
+    if (startedPct > maxCompletionPct) maxCompletionPct = startedPct;
+    sheetStats[s.id] = { startedCount, totalStudents, startedPct, totalSolvesInSheet };
   });
 
-  const handleSegmentClick = (segment) => {
-    setSegmentFilter(segment);
-    setActiveTab('users');
-  };
 
-  // Stacked Bar for User Segments
-  const totalSegUsers = (userSegments?.power || 0) + (userSegments?.active || 0) + (userSegments?.starters || 0) + (userSegments?.ghosts || 0);
-
-  const getPct = (val) => totalSegUsers ? ((val / totalSegUsers) * 100) : 0;
-  const powerPct = getPct(userSegments?.power || 0);
-  const activePct = getPct(userSegments?.active || 0);
-  const starterPct = getPct(userSegments?.starters || 0);
-  const ghostPct = getPct(userSegments?.ghosts || 0);
 
   return (
     <>
@@ -172,54 +154,25 @@ const AdminOverview = ({
         </div>
       </div>
 
-      <div className="admin-section">
-        <h2 className="admin-section-title">Engagement Health</h2>
-        <div className="admin-stats-grid">
-          <StatCard value={`${engagementHealth?.active_pct || 0}%`} label={`Active Users (${engagementHealth?.active_count || 0})`} color="#8ab4f8" />
-          <StatCard value={`${engagementHealth?.drop_off_pct || 0}%`} label={`Drop-off Rate`} color="#ef4444" />
-          <StatCard value={engagementHealth?.avg_solves || 0} label="Avg Solves / Active User" color="#3ddc84" />
-          <StatCard value={engagementHealth?.browsing_only_count || 0} label="Browsing, Not Solving" color="#f59e0b" />
-          <StatCard
-            value={engagementHealth?.top_solver?.name ? engagementHealth.top_solver.count : 0}
-            label={`Top Solver: ${engagementHealth?.top_solver?.name || '—'}`}
-            color="#fdd663"
-          />
-        </div>
-      </div>
+
 
       <div className="admin-section">
-        <h2 className="admin-section-title">User Segmentation</h2>
-        <div className="admin-stacked-bar-container">
-          <div className="admin-stacked-bar">
-            {powerPct > 0 && <div className="segment power" style={{ width: `${powerPct}%` }} onClick={() => handleSegmentClick('power')} title={`Power (100+): ${userSegments.power}`}></div>}
-            {activePct > 0 && <div className="segment active" style={{ width: `${activePct}%` }} onClick={() => handleSegmentClick('active')} title={`Active (10-99): ${userSegments.active}`}></div>}
-            {starterPct > 0 && <div className="segment starters" style={{ width: `${starterPct}%` }} onClick={() => handleSegmentClick('starters')} title={`Starters (1-9): ${userSegments.starters}`}></div>}
-            {ghostPct > 0 && <div className="segment ghosts" style={{ width: `${ghostPct}%` }} onClick={() => handleSegmentClick('ghosts')} title={`Ghosts (0): ${userSegments.ghosts}`}></div>}
-          </div>
-          <div className="admin-segment-legend">
-            <span onClick={() => handleSegmentClick('power')}><span className="dot" style={{ background: '#a855f7' }}></span> Power ({userSegments?.power || 0})</span>
-            <span onClick={() => handleSegmentClick('active')}><span className="dot" style={{ background: '#3b82f6' }}></span> Active ({userSegments?.active || 0})</span>
-            <span onClick={() => handleSegmentClick('starters')}><span className="dot" style={{ background: '#10b981' }}></span> Starters ({userSegments?.starters || 0})</span>
-            <span onClick={() => handleSegmentClick('ghosts')}><span className="dot" style={{ background: '#64748b' }}></span> Ghosts ({userSegments?.ghosts || 0})</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="admin-section">
-        <h2 className="admin-section-title">Progress by Sheet</h2>
+        <h2 className="admin-section-title">Sheet Participation</h2>
         <div className="admin-topic-chart">
           {SHEETS.map((s) => {
-            const stats = sheetStats[s.id] || { completionPct: 0, uniqueUsersInSheet: 0, totalSolvesInSheet: 0 };
-            const relativePct = maxCompletionPct > 0 ? (stats.completionPct / maxCompletionPct) * 100 : 0;
+            const stats = sheetStats[s.id] || { startedCount: 0, totalStudents: users.length, startedPct: 0 };
+            const relativePct = maxCompletionPct > 0 ? (stats.startedPct / maxCompletionPct) * 100 : 0;
             return (
               <div key={s.id} className="admin-topic-row">
                 <div className="admin-topic-name-wrap">
                   <span className="admin-topic-name">{s.name}</span>
                 </div>
                 <div className="admin-topic-bar-track">
-                  <div className="admin-topic-bar-fill" style={{ width: `${relativePct}%` }} />
+                  <div className="admin-topic-bar-fill" style={{ width: `${relativePct}%`, background: 'var(--primary-color)' }} />
                 </div>
-                <span className="admin-topic-count">{stats.uniqueUsersInSheet} / {users.length} users</span>
+                <span className="admin-topic-count">
+                  {stats.startedCount} / {stats.totalStudents} users ({stats.startedPct.toFixed(1)}%)
+                </span>
               </div>
             );
           })}

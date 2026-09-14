@@ -37,7 +37,7 @@ const SheetView = ({ activeSheet }) => {
     return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading your saved progress...</div>;
   }
 
-  const stats = getSheetStats(activeSheet, sheetData.totalQuestions);
+  const stats = getSheetStats(activeSheet, sheetData.totalQuestions, sheetData.questionIds);
 
   return (
     <div className="sheet-view">

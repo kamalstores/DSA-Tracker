@@ -9,9 +9,6 @@ import {
 } from '../services/adminService';
 
 import AdminOverview from './admin/AdminOverview';
-import AdminUsers from './AdminUsers';
-import AdminRetention from './admin/AdminRetention';
-import AdminDemographics from './admin/Admindemographics';
 
 const AdminDashboard = () => {
   const { user, isAdmin } = useContext(AuthContext);
@@ -27,10 +24,6 @@ const AdminDashboard = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('overview');
-
-  // Cross-component state
-  const [segmentFilter, setSegmentFilter] = useState(''); // E.g., 'power', 'active', 'starters', 'ghosts'
 
   useEffect(() => {
     if (!user || !isAdmin) { setLoading(false); return; }
@@ -201,51 +194,15 @@ const AdminDashboard = () => {
       {/* Top Strip */}
       <div style={{ display: 'flex', gap: '2rem', padding: '0.75rem 1rem', background: 'var(--surface-color)', borderRadius: '0.75rem', marginBottom: '2rem', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}>
         <div><span style={{ color: 'var(--text-secondary)' }}>Total Users: </span><strong style={{ color: 'var(--text-primary)' }}>{users.length}</strong></div>
-        <div><span style={{ color: 'var(--text-secondary)' }}>Active Today: </span><strong style={{ color: '#3ddc84' }}>{solvedTodayCount}</strong></div>
+        <div><span style={{ color: 'var(--text-secondary)' }}>Active Users: </span><strong style={{ color: '#3ddc84' }}>{solvedTodayCount}</strong></div>
         <div><span style={{ color: 'var(--text-secondary)' }}>Online Now: </span><strong style={{ color: '#34d399' }}>{onlineNowCount}</strong></div>
       </div>
 
-      <div className="admin-tabs">
-        {[
-          { id: 'overview', label: '📊 Overview' },
-          { id: 'users', label: '👥 Users' },
-          { id: 'retention', label: '📈 Retention' },
-          { id: 'locations', label: '🌍 Locations' }
-        ].map(tab => (
-          <button
-            key={tab.id}
-            className={`admin-tab ${activeTab === tab.id ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {activeTab === 'overview' && (
-        <AdminOverview
-          users={users}
-          activityTrend={activityTrend}
-          engagementHealth={engagementHealth}
-          userSegments={userSegments}
-          activeUserStats={activeUserStats}
-          sheetTotals={sheetTotals}
-          setActiveTab={setActiveTab}
-          setSegmentFilter={setSegmentFilter}
-        />
-      )}
-
-      {activeTab === 'users' && (
-        <AdminUsers
-          users={users}
-          sheetTotals={sheetTotals}
-          segmentFilter={segmentFilter}
-          setSegmentFilter={setSegmentFilter}
-        />
-      )}
-
-      {activeTab === 'retention' && <AdminRetention cohorts={retentionCohorts} />}
-      {activeTab === 'locations' && <AdminDemographics users={users} />}
+      <AdminOverview
+        users={users}
+        activityTrend={activityTrend}
+        activeUserStats={activeUserStats}
+      />
     </div>
   );
 };

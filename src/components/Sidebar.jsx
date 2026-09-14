@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { SHEETS } from '../utils/dataParser';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { SHEETS, fetchAndParseSheet } from '../utils/dataParser';
 import { Book, Layout, GripVertical, ChevronDown, PanelLeftClose, PanelLeftOpen, X, HelpCircle } from 'lucide-react';
+import { ProgressContext } from '../context/ProgressContext';
 
 const useIsMobile = (breakpoint = 768) => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint);
@@ -37,6 +38,29 @@ const Sidebar = ({
   mobileSidebarOpen,
   setMobileSidebarOpen,
 }) => {
+  const { progress } = useContext(ProgressContext);
+  const [sheetTotals, setSheetTotals] = useState({});
+  const [sheetValidIds, setSheetValidIds] = useState({});
+
+  useEffect(() => {
+    const loadTotals = async () => {
+      const totals = {};
+      const validIds = {};
+      for (const s of SHEETS) {
+        try {
+          const parsed = await fetchAndParseSheet(s.id);
+          totals[s.id] = parsed ? parsed.totalQuestions : 0;
+          validIds[s.id] = parsed ? new Set(parsed.questionIds) : new Set();
+        } catch (e) {
+          // ignore error
+        }
+      }
+      setSheetTotals(totals);
+      setSheetValidIds(validIds);
+    };
+    loadTotals();
+  }, []);
+
   const [sheets, setSheets] = useState(getSavedOrder);
   const [sheetsOpen, setSheetsOpen] = useState(true);
   const dragIndex = useRef(null);
@@ -136,35 +160,73 @@ const Sidebar = ({
       <ul
         className="sheet-list"
         style={{
-          maxHeight: sheetsOpen ? `${sheets.length * 60}px` : '0px',
+          maxHeight: sheetsOpen ? '2000px' : '0px',
           overflow: 'hidden',
-          transition: 'max-height 0.3s ease',
+          transition: 'max-height 0.4s ease-in-out',
         }}
       >
-        {sheets.map((sheet, index) => (
-          <li
-            key={sheet.id}
-            draggable
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={(e) => handleDrop(e, index)}
-            onDragEnd={handleDragEnd}
-            className={`sheet-item ${(!showDashboard && activeSheet === sheet.id) ? 'active' : ''}`}
-            onClick={() => { setActiveSheet(sheet.id); setShowDashboard(false); }}
-            style={{
-              opacity: dragIndex.current === index ? 0.4 : 1,
-              borderTop: dragOverIndex === index && dragIndex.current !== index
-                ? '2px solid var(--primary-color)'
-                : '2px solid transparent',
-              transition: 'border-color 0.15s, opacity 0.15s',
-              cursor: 'grab',
-            }}
-          >
-            <GripVertical size={16} style={{ opacity: 0.35, flexShrink: 0, cursor: 'grab' }} />
-            <Book size={18} style={{ flexShrink: 0 }} />
-            <span>{sheet.name}</span>
-          </li>
-        ))}
+        {sheets.map((sheet, index) => {
+          const sheetProgress = progress[sheet.id] || {};
+          const validSet = sheetValidIds[sheet.id] || new Set();
+          let done = 0;
+          Object.entries(sheetProgress).forEach(([qId, q]) => {
+            if (!validSet.has(String(qId))) return;
+            if (q.status) done++;
+          });
+          const totalQ = sheetTotals[sheet.id] || 0;
+          const percentage = totalQ === 0 ? 0 : (done / totalQ) * 100;
+          const isComplete = totalQ > 0 && done === totalQ;
+
+          let bg = 'transparent';
+          let textColor = undefined;
+          let iconOpacity = 0.35;
+          
+          if (isComplete) {
+            bg = 'linear-gradient(135deg, #10b981 0%, #059669 100%)'; // Vibrant completed color
+            textColor = '#ffffff';
+            iconOpacity = 0.9;
+          } else if (percentage > 0) {
+            bg = `linear-gradient(to right, rgba(61, 220, 132, 0.08) ${percentage}%, transparent ${percentage}%)`;
+          }
+
+          return (
+            <li
+              key={sheet.id}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+              className={`sheet-item ${(!showDashboard && activeSheet === sheet.id) ? 'active' : ''}`}
+              onClick={() => { setActiveSheet(sheet.id); setShowDashboard(false); }}
+              style={{
+                color: textColor,
+                opacity: dragIndex.current === index ? 0.4 : 1,
+                borderTop: dragOverIndex === index && dragIndex.current !== index
+                  ? '2px solid var(--primary-color)'
+                  : '2px solid transparent',
+                background: bg,
+                transition: 'border-color 0.15s, opacity 0.15s, background 0.3s ease',
+                cursor: 'grab',
+              }}
+            >
+              <GripVertical size={16} style={{ opacity: iconOpacity, flexShrink: 0, cursor: 'grab' }} />
+              <Book size={18} style={{ flexShrink: 0 }} />
+              <span>{sheet.name}</span>
+            </li>
+          );
+        })}
+        {/* Invisible dropzone at the very bottom so users can easily drop sheets at the end */}
+        <li
+          onDragOver={(e) => handleDragOver(e, sheets.length)}
+          onDrop={(e) => handleDrop(e, sheets.length)}
+          style={{
+            height: '24px',
+            background: 'transparent',
+            borderTop: dragOverIndex === sheets.length ? '2px solid var(--primary-color)' : '2px solid transparent',
+            transition: 'border-color 0.15s',
+          }}
+        />
       </ul>
 
       <div className="sidebar-spacer" />

@@ -1,3 +1,4 @@
+
 export const SHEETS = [
   {
     id: 'a2z_flawless',
@@ -53,6 +54,7 @@ export const fetchAndParseSheet = async (sheetId) => {
 
     let normalized = [];
     let totalQuestions = 0;
+    let questionIds = [];
 
     // A2Z Flawless format (hierarchical: steps -> sub_steps -> topics)
     if (Array.isArray(data) && data.length > 0 && data[0].step_no) {
@@ -60,8 +62,9 @@ export const fetchAndParseSheet = async (sheetId) => {
         const subcategories = step.sub_steps?.map(sub => {
           const questions = sub.topics?.map(topic => {
             totalQuestions++;
+            questionIds.push(String(topic.id));
             return {
-              id: topic.id,
+              id: String(topic.id),
               title: topic.question_title,
               url: topic.lc_link || topic.gfg_link || topic.cs_link || topic.post_link,
               links: {
@@ -95,13 +98,14 @@ export const fetchAndParseSheet = async (sheetId) => {
         const title = group.category || group.heading;
         const questions = group.problems.map(q => {
           totalQuestions++;
+          questionIds.push(String(q.id));
           let diff = 1;
           if (q.difficulty?.toLowerCase() === 'easy') diff = 0;
           else if (q.difficulty?.toLowerCase() === 'hard') diff = 2;
 
           const linkKey = q.platform ? 'cf' : 'lc';
           return {
-            id: q.id,
+            id: String(q.id),
             title: q.title,
             url: q.link || q.leetcode_link,
             links: { [linkKey]: q.link || q.leetcode_link },
@@ -121,8 +125,9 @@ export const fetchAndParseSheet = async (sheetId) => {
       normalized = Object.keys(data).map(category => {
         const questions = data[category].map(q => {
           totalQuestions++;
+          questionIds.push(String(q.id));
           return {
-            id: q.id,
+            id: String(q.id),
             title: q.Question,
             url: q.Question_link,
             links: {
@@ -155,12 +160,14 @@ export const fetchAndParseSheet = async (sheetId) => {
     else if (Array.isArray(data)) {
       const questions = data.map(q => {
         totalQuestions++;
+        const qid = String(q.id || q.title?.substring(0, 20));
+        questionIds.push(qid);
         let diff = 1;
         if (q.title?.toLowerCase().includes('easy')) diff = 0;
         else if (q.title?.toLowerCase().includes('hard')) diff = 2;
 
         return {
-          id: q.id || q.title?.substring(0, 20),
+          id: qid,
           title: q.title?.split('\n')[0] || 'Unknown Problem',
           url: q.url || q.link,
           links: { lc: q.url || q.link },
@@ -178,7 +185,8 @@ export const fetchAndParseSheet = async (sheetId) => {
     return {
       info: sheetInfo,
       data: normalized,
-      totalQuestions
+      totalQuestions,
+      questionIds
     };
   } catch (error) {
     console.error("Failed to load sheet data", error);

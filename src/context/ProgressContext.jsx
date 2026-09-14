@@ -310,11 +310,15 @@ export const ProgressProvider = ({ children }) => {
     return ok && Object.keys(readOutbox()).length === 0;
   }, [userUid, flushOutbox, readOutbox]);
 
-  const getSheetStats = useCallback((sheetId, totalQuestions) => {
+  const getSheetStats = useCallback((sheetId, totalQuestions, validIds = []) => {
     const sheetProgress = progress[sheetId] || {};
+    const validSet = new Set(validIds);
     let completed = 0;
     let revision = 0;
-    Object.values(sheetProgress).forEach((q) => {
+    Object.entries(sheetProgress).forEach(([qId, q]) => {
+      // If validIds are provided, ignore ghost questions completely
+      if (validIds.length > 0 && !validSet.has(String(qId))) return;
+
       if (q.status) completed++;
       if (q.revision) revision++;
     });
@@ -322,7 +326,7 @@ export const ProgressProvider = ({ children }) => {
       completed,
       revision,
       total: totalQuestions,
-      percentage: totalQuestions === 0 ? 0 : Math.round((completed / totalQuestions) * 100),
+      percentage: totalQuestions === 0 ? 0 : Number(((completed / totalQuestions) * 100).toFixed(2)),
     };
   }, [progress]);
 
