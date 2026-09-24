@@ -377,7 +377,7 @@ const QuestionTable = ({ questions, sheetId, onAuthRequired, onQuestionToggle })
   const showGfg = sheetId === 'a2z_flawless';
   const showCn = sheetId === 'a2z_flawless';
   const showTuf = sheetId === 'a2z_flawless';
-  const isCF = sheetId === 'striver_cp';
+  const isCF = sheetId === 'striver_cp' || sheetId === 'begincp';
 
 
   const openNote = (q, note) => {

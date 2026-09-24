@@ -21,7 +21,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 export const VALID_SHEET_IDS = new Set([
-  'a2z_flawless', 'SDE', 'blind75', 'neetcode150', 'neetcode250', 'striver_cp',
+  'a2z_flawless', 'SDE', 'blind75', 'neetcode150', 'neetcode250', 'striver_cp', 'begincp',
 ]);
 
 export const EMPTY_Q = Object.freeze({ status: false, revision: false, note: '', updatedAt: 0 });

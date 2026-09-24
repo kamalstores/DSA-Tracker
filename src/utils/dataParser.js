@@ -37,6 +37,12 @@ export const SHEETS = [
     description: '<a href="https://takeuforward.org/interview-experience/strivers-cp-sheet" target="_blank" rel="noopener noreferrer">CP sheet</a> by Striver.'
   },
   {
+    id: 'begincp',
+    name: 'Beginner CP',
+    file: '/data/begincp.json',
+    description: 'A Codeforces problem sheet for competitive programming beginners.'
+  },
+  {
     id: 'leetcode_sql50',
     name: 'LeetCode SQL 50',
     file: '/data/leetcode_sql50.json',

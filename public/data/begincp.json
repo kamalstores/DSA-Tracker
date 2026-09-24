@@ -1,0 +1,622 @@
+[
+  {
+    "heading": "Easy",
+    "problems": [
+      {
+        "id": "begincp_watermelon",
+        "title": "Watermelon",
+        "link": "https://codeforces.com/problemset/problem/4/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_way_too_long_words",
+        "title": "Way Too Long Words",
+        "link": "https://codeforces.com/problemset/problem/71/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_petya_and_strings",
+        "title": "Petya and Strings",
+        "link": "https://codeforces.com/problemset/problem/112/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_helpful_maths",
+        "title": "Helpful Maths",
+        "link": "https://codeforces.com/problemset/problem/339/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_presents",
+        "title": "Presents",
+        "link": "https://codeforces.com/problemset/problem/136/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_beautiful_matrix",
+        "title": "Beautiful Matrix",
+        "link": "https://codeforces.com/problemset/problem/263/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_arrival_of_the_general",
+        "title": "Arrival of the General",
+        "link": "https://codeforces.com/problemset/problem/144/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_games",
+        "title": "Games",
+        "link": "https://codeforces.com/problemset/problem/268/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_young_physicist",
+        "title": "Young Physicist",
+        "link": "https://codeforces.com/problemset/problem/69/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_anton_and_letters",
+        "title": "Anton and Letters",
+        "link": "https://codeforces.com/problemset/problem/443/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_team_olympiad",
+        "title": "Team Olympiad",
+        "link": "https://codeforces.com/problemset/problem/490/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_fox_and_snake",
+        "title": "Fox And Snake",
+        "link": "https://codeforces.com/problemset/problem/510/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_iq_test",
+        "title": "IQ test",
+        "link": "https://codeforces.com/problemset/problem/25/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_choosing_teams",
+        "title": "Choosing Teams",
+        "link": "https://codeforces.com/problemset/problem/432/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_cakeminator",
+        "title": "Cakeminator",
+        "link": "https://codeforces.com/problemset/problem/330/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_lunch_rush",
+        "title": "Lunch Rush",
+        "link": "https://codeforces.com/problemset/problem/276/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_soft_drinking",
+        "title": "Soft Drinking",
+        "link": "https://codeforces.com/problemset/problem/151/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_playing_with_dice",
+        "title": "Playing with Dice",
+        "link": "https://codeforces.com/problemset/problem/378/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_greg_s_workout",
+        "title": "Greg's Workout",
+        "link": "https://codeforces.com/problemset/problem/255/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_perfect_permutation",
+        "title": "Perfect Permutation",
+        "link": "https://codeforces.com/problemset/problem/233/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_roma_and_lucky_numbers",
+        "title": "Roma and Lucky Numbers",
+        "link": "https://codeforces.com/problemset/problem/262/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_colorful_stones_simplified_edition",
+        "title": "Colorful Stones (Simplified Edition)",
+        "link": "https://codeforces.com/problemset/problem/265/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_levko_and_table",
+        "title": "Levko and Table",
+        "link": "https://codeforces.com/problemset/problem/361/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_soroban",
+        "title": "Soroban",
+        "link": "https://codeforces.com/problemset/problem/363/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_line_to_cashier",
+        "title": "Line to Cashier",
+        "link": "https://codeforces.com/problemset/problem/408/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_sleuth",
+        "title": "Sleuth",
+        "link": "https://codeforces.com/problemset/problem/49/A",
+        "platform": "Codeforces"
+      }
+    ]
+  },
+  {
+    "heading": "Medium",
+    "problems": [
+      {
+        "id": "begincp_string_task",
+        "title": "String Task",
+        "link": "https://codeforces.com/problemset/problem/118/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_twins",
+        "title": "Twins",
+        "link": "https://codeforces.com/problemset/problem/160/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_chat_room",
+        "title": "Chat room",
+        "link": "https://codeforces.com/problemset/problem/58/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_lucky_division",
+        "title": "Lucky Division",
+        "link": "https://codeforces.com/problemset/problem/122/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_game_with_sticks",
+        "title": "Game With Sticks",
+        "link": "https://codeforces.com/problemset/problem/451/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_dubstep",
+        "title": "Dubstep",
+        "link": "https://codeforces.com/problemset/problem/208/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_puzzles",
+        "title": "Puzzles",
+        "link": "https://codeforces.com/problemset/problem/337/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_expression",
+        "title": "Expression",
+        "link": "https://codeforces.com/problemset/problem/479/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_i_wanna_be_the_guy",
+        "title": "I Wanna Be the Guy",
+        "link": "https://codeforces.com/problemset/problem/469/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_even_odds",
+        "title": "Even Odds",
+        "link": "https://codeforces.com/problemset/problem/318/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_ilya_and_bank_account",
+        "title": "Ilya and Bank Account",
+        "link": "https://codeforces.com/problemset/problem/313/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_dragons",
+        "title": "Dragons",
+        "link": "https://codeforces.com/problemset/problem/230/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_dreamoon_and_stairs",
+        "title": "Dreamoon and Stairs",
+        "link": "https://codeforces.com/problemset/problem/476/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_devu_the_singer_and_churu_the_joker",
+        "title": "Devu, the Singer and Churu, the Joker",
+        "link": "https://codeforces.com/problemset/problem/439/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_valera_and_antique_items",
+        "title": "Valera and Antique Items",
+        "link": "https://codeforces.com/problemset/problem/441/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_appleman_and_easy_task",
+        "title": "Appleman and Easy Task",
+        "link": "https://codeforces.com/problemset/problem/462/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_bear_and_raspberry",
+        "title": "Bear and Raspberry",
+        "link": "https://codeforces.com/problemset/problem/385/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_minimum_difficulty",
+        "title": "Minimum Difficulty",
+        "link": "https://codeforces.com/problemset/problem/496/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_valera_and_x",
+        "title": "Valera and X",
+        "link": "https://codeforces.com/problemset/problem/404/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_watching_a_movie",
+        "title": "Watching a movie",
+        "link": "https://codeforces.com/problemset/problem/499/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_supercentral_point",
+        "title": "Supercentral Point",
+        "link": "https://codeforces.com/problemset/problem/165/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_contest",
+        "title": "Contest",
+        "link": "https://codeforces.com/problemset/problem/501/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_marks",
+        "title": "Marks",
+        "link": "https://codeforces.com/problemset/problem/152/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_array",
+        "title": "Array",
+        "link": "https://codeforces.com/problemset/problem/300/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_parallelepiped",
+        "title": "Parallelepiped",
+        "link": "https://codeforces.com/problemset/problem/224/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_football",
+        "title": "Football",
+        "link": "https://codeforces.com/problemset/problem/43/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_life_without_zeros",
+        "title": "Life Without Zeros",
+        "link": "https://codeforces.com/problemset/problem/75/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_collecting_beats_is_fun",
+        "title": "Collecting Beats is Fun",
+        "link": "https://codeforces.com/problemset/problem/373/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_vasya_and_digital_root",
+        "title": "Vasya and Digital Root",
+        "link": "https://codeforces.com/problemset/problem/355/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_lever",
+        "title": "Lever",
+        "link": "https://codeforces.com/problemset/problem/376/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_table",
+        "title": "Table",
+        "link": "https://codeforces.com/problemset/problem/359/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_eugeny_and_array",
+        "title": "Eugeny and Array",
+        "link": "https://codeforces.com/problemset/problem/302/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_reconnaissance_2",
+        "title": "Reconnaissance 2",
+        "link": "https://codeforces.com/problemset/problem/34/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_help_vasilisa_the_wise_2",
+        "title": "Help Vasilisa the Wise 2",
+        "link": "https://codeforces.com/problemset/problem/143/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_palindromic_times",
+        "title": "Palindromic Times",
+        "link": "https://codeforces.com/problemset/problem/108/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_exams",
+        "title": "Exams",
+        "link": "https://codeforces.com/problemset/problem/194/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_card_game",
+        "title": "Card Game",
+        "link": "https://codeforces.com/problemset/problem/106/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_worms_evolution",
+        "title": "Worms Evolution",
+        "link": "https://codeforces.com/problemset/problem/31/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_shell_game",
+        "title": "Shell Game",
+        "link": "https://codeforces.com/problemset/problem/35/A",
+        "platform": "Codeforces"
+      }
+    ]
+  },
+  {
+    "heading": "Hard",
+    "problems": [
+      {
+        "id": "begincp_cheap_travel",
+        "title": "Cheap Travel",
+        "link": "https://codeforces.com/problemset/problem/466/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_pashmak_and_garden",
+        "title": "Pashmak and Garden",
+        "link": "https://codeforces.com/problemset/problem/459/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_laptops",
+        "title": "Laptops",
+        "link": "https://codeforces.com/problemset/problem/456/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_counterexample",
+        "title": "Counterexample",
+        "link": "https://codeforces.com/problemset/problem/483/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_cut_ribbon",
+        "title": "Cut Ribbon",
+        "link": "https://codeforces.com/problemset/problem/189/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_tl",
+        "title": "TL",
+        "link": "https://codeforces.com/problemset/problem/350/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_domino",
+        "title": "Domino",
+        "link": "https://codeforces.com/problemset/problem/353/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_cifera",
+        "title": "Cifera",
+        "link": "https://codeforces.com/problemset/problem/114/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_fox_and_number_game",
+        "title": "Fox and Number Game",
+        "link": "https://codeforces.com/problemset/problem/389/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_giga_tower",
+        "title": "Giga Tower",
+        "link": "https://codeforces.com/problemset/problem/488/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_dzy_loves_chessboard",
+        "title": "DZY Loves Chessboard",
+        "link": "https://codeforces.com/problemset/problem/445/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_yaroslav_and_permutations",
+        "title": "Yaroslav and Permutations",
+        "link": "https://codeforces.com/problemset/problem/296/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_two_bags_of_potatoes",
+        "title": "Two Bags of Potatoes",
+        "link": "https://codeforces.com/problemset/problem/239/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_the_child_and_homework",
+        "title": "The Child and Homework",
+        "link": "https://codeforces.com/problemset/problem/437/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_comparing_strings",
+        "title": "Comparing Strings",
+        "link": "https://codeforces.com/problemset/problem/186/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_sockets",
+        "title": "Sockets",
+        "link": "https://codeforces.com/problemset/problem/257/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_snow_footprints",
+        "title": "Snow Footprints",
+        "link": "https://codeforces.com/problemset/problem/298/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_next_test",
+        "title": "Next Test",
+        "link": "https://codeforces.com/problemset/problem/27/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_rook_bishop_and_king",
+        "title": "Rook, Bishop and King",
+        "link": "https://codeforces.com/problemset/problem/370/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_bar",
+        "title": "Bar",
+        "link": "https://codeforces.com/problemset/problem/56/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_chord",
+        "title": "Chord",
+        "link": "https://codeforces.com/problemset/problem/88/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_dima_and_continuous_line",
+        "title": "Dima and Continuous Line",
+        "link": "https://codeforces.com/problemset/problem/358/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_guess_a_number",
+        "title": "Guess a number!",
+        "link": "https://codeforces.com/problemset/problem/416/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_point_on_spiral",
+        "title": "Point on Spiral",
+        "link": "https://codeforces.com/problemset/problem/279/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_cows_and_primitive_roots",
+        "title": "Cows and Primitive Roots",
+        "link": "https://codeforces.com/problemset/problem/284/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_funky_numbers",
+        "title": "Funky Numbers",
+        "link": "https://codeforces.com/problemset/problem/192/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_lefthanders_and_righthanders",
+        "title": "Lefthanders and Righthanders",
+        "link": "https://codeforces.com/problemset/problem/234/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_strange_addition",
+        "title": "Strange Addition",
+        "link": "https://codeforces.com/problemset/problem/305/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_plate_game",
+        "title": "Plate Game",
+        "link": "https://codeforces.com/problemset/problem/197/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_triangle",
+        "title": "Triangle",
+        "link": "https://codeforces.com/problemset/problem/18/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_nineteen",
+        "title": "Nineteen",
+        "link": "https://codeforces.com/problemset/problem/393/A",
+        "platform": "Codeforces"
+      }
+    ]
+  },
+  {
+    "heading": "Very Hard",
+    "problems": [
+      {
+        "id": "begincp_inna_and_pink_pony",
+        "title": "Inna and Pink Pony",
+        "link": "https://codeforces.com/problemset/problem/374/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_inna_and_alarm_clock",
+        "title": "Inna and Alarm Clock",
+        "link": "https://codeforces.com/problemset/problem/390/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_on_segment_s_own_points",
+        "title": "On Segment's Own Points",
+        "link": "https://codeforces.com/problemset/problem/397/A",
+        "platform": "Codeforces"
+      },
+      {
+        "id": "begincp_cinema",
+        "title": "Cinema",
+        "link": "https://codeforces.com/problemset/problem/200/A",
+        "platform": "Codeforces"
+      }
+    ]
+  }
+]

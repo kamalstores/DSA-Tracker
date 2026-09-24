@@ -15,6 +15,7 @@ const SHEETS = [
   { id: 'neetcode150',  name: 'NeetCode 150',     file: 'neetcode150.json',  position: 4 },
   { id: 'neetcode250',  name: 'NeetCode 250',     file: 'neetcode250.json',  position: 5 },
   { id: 'striver_cp',   name: 'Striver CP Sheet', file: 'striver_cp.json',   position: 6 },
+  { id: 'begincp',      name: 'Beginner CP',      file: 'begincp.json',      position: 7 },
 ];
 
 const diffOf = (d) => {
