@@ -1,12 +1,20 @@
 import React, { useMemo, useState } from 'react';
 
+const COUNTRY_ALIASES = {
+    'United States of America': 'United States',
+    USA: 'United States',
+    UK: 'United Kingdom',
+    'The Netherlands': 'Netherlands',
+};
+
 // Pull a country out of a free-text location string like
 // "Bilāspur, Chhattisgarh, India" -> "India". Falls back to the raw string
 // if there's no comma to split on.
 function getCountry(location) {
     if (!location || location === 'Unknown') return 'Unknown';
     const parts = location.split(',').map((p) => p.trim()).filter(Boolean);
-    return parts.length > 0 ? parts[parts.length - 1] : location;
+    const country = parts.length > 0 ? parts[parts.length - 1] : location;
+    return COUNTRY_ALIASES[country] || country;
 }
 
 const AdminDemographics = ({ users }) => {
@@ -42,7 +50,7 @@ const AdminDemographics = ({ users }) => {
     return (
         <div className="admin-section">
             <div className="admin-section-header">
-                <h2 className="admin-section-title">🌍 User Locations</h2>
+                <h2 className="admin-section-title">User Countries</h2>
                 <div className="admin-controls" style={{ flexWrap: 'wrap' }}>
                     <div className="admin-filter-toggles">
                         <button

@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { RefreshCw } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import {
   fetchAdminUsers,
@@ -9,6 +10,7 @@ import {
 } from '../services/adminService';
 
 import AdminOverview from './admin/AdminOverview';
+import AdminDemographics from './admin/Admindemographics';
 
 const AdminDashboard = () => {
   const { user, isAdmin } = useContext(AuthContext);
@@ -21,6 +23,8 @@ const AdminDashboard = () => {
   const [userSegments, setUserSegments] = useState(null);
   const [retentionCohorts, setRetentionCohorts] = useState(null);
   const [activeUserStats, setActiveUserStats] = useState(null);
+  const [refreshNonce, setRefreshNonce] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -28,6 +32,13 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (!user || !isAdmin) { setLoading(false); return; }
     let cancelled = false;
+    const currentMonthDays = new Date().getDate() - 1;
+    const now = new Date();
+    const isCurrentMonth = (row) => {
+      const activityDate = new Date(`${row.activity_date}T00:00:00`);
+      return activityDate.getFullYear() === now.getFullYear()
+        && activityDate.getMonth() === now.getMonth();
+    };
 
     (async () => {
       try {
@@ -40,7 +51,7 @@ const AdminDashboard = () => {
         ] = await Promise.all([
           fetchAdminUsers(),
           fetchSheets(),
-          fetchActivityTrend(),
+          fetchActivityTrend(currentMonthDays),
           fetchUserSegments(),
           fetchRetentionCohorts()
         ]);
@@ -74,9 +85,10 @@ const AdminDashboard = () => {
         });
         setUsers(mappedUsers);
         setSheetTotals(Object.fromEntries(sheetsData.map((s) => [s.id, s.total_questions])));
-        setActivityTrend(activity);
+        setActivityTrend(activity.filter(isCurrentMonth));
         setUserSegments(segments);
         setRetentionCohorts(retention);
+        setLastUpdated(new Date());
 
         // Derive Engagement Health from user segments and activity (we can do it client side or combined)
         const totalUsers = mappedUsers.length;
@@ -132,8 +144,15 @@ const AdminDashboard = () => {
       }
     })();
 
-    return () => { cancelled = true; };
-  }, [user, isAdmin]);
+    const refreshTimer = window.setInterval(() => {
+      setRefreshNonce((value) => value + 1);
+    }, 60 * 1000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(refreshTimer);
+    };
+  }, [user, isAdmin, refreshNonce]);
 
   if (!user) {
     return (
@@ -187,8 +206,20 @@ const AdminDashboard = () => {
       <div className="admin-header" style={{ marginBottom: '1rem' }}>
         <div>
           <h1 className="admin-title">Admin Dashboard</h1>
+          {lastUpdated && <div className="admin-refresh-status">Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>}
         </div>
-        <span className="admin-badge">🛡️ Admin</span>
+        <div className="admin-header-actions">
+          <button
+            className="admin-refresh-button"
+            onClick={() => { setLoading(true); setRefreshNonce((value) => value + 1); }}
+            title="Refresh dashboard data"
+            aria-label="Refresh dashboard data"
+          >
+            <RefreshCw size={16} />
+            Refresh
+          </button>
+          <span className="admin-badge">🛡️ Admin</span>
+        </div>
       </div>
 
       {/* Top Strip */}
@@ -203,6 +234,7 @@ const AdminDashboard = () => {
         activityTrend={activityTrend}
         activeUserStats={activeUserStats}
       />
+      <AdminDemographics users={users} />
     </div>
   );
 };
